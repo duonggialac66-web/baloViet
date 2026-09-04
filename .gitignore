@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# next.js
+/.next/
+/out/
+
+# production
+/dist/
+/build/
+
+# env files
+.env
+.env*
+.env*.local
+!.env.example
+
+# cache & misc
+.cache/
+.vite/
+vite.config.*.timestamp-*
+*.tsbuildinfo
+*-debug.log*
+logs/
+*.log
+.claude-replay.*
+.tmp-*
+.DS_Store
+
+# Platform-managed agentplat state
+/.plugins/
+/.opencode-skills/
