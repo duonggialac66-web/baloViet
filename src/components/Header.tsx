@@ -202,7 +202,7 @@ export default function Header() {
 
       {/* Search Modal */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[70] bg-black/90 backdrop-blur-md flex items-start justify-center pt-32 px-6">
+        <div className="fixed inset-0 z-[70] bg-black/90 backdrop-blur-md flex items-start justify-center pt-24 sm:pt-32 px-4 sm:px-6">
           <div className="w-full max-w-2xl">
             <form onSubmit={handleSearch} className="relative">
               <input
@@ -210,7 +210,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm sản phẩm..."
-                className="w-full bg-transparent border-b-2 border-[#F5B800] text-white font-display font-bold text-3xl lg:text-4xl uppercase tracking-wider py-4 pr-14 outline-none placeholder:text-[#2A2C2F]"
+                className="w-full bg-transparent border-b-2 border-[#F5B800] text-white font-display font-bold text-xl sm:text-3xl lg:text-4xl uppercase tracking-wider py-3 sm:py-4 pr-12 sm:pr-14 outline-none placeholder:text-[#6B6E72]"
                 autoFocus
               />
               <button
@@ -218,7 +218,7 @@ export default function Header() {
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-[#F5B800] hover:text-white transition-colors"
                 aria-label="Tìm kiếm"
               >
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none">
                   <circle cx="11" cy="11" r="8" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
@@ -226,7 +226,7 @@ export default function Header() {
             </form>
             <button
               onClick={() => setSearchOpen(false)}
-              className="mt-8 text-[#6B6E72] hover:text-white transition-colors text-sm flex items-center gap-2"
+              className="mt-6 sm:mt-8 text-[#6B6E72] hover:text-white transition-colors text-xs sm:text-sm flex items-center gap-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
                 <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

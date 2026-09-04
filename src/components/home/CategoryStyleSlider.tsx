@@ -168,10 +168,10 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
         {/* ========================================================================= */}
         {/* CAROUSEL TRACK - GPU HARDWARE ACCELERATED 60FPS CARDS CAROUSEL           */}
         {/* ========================================================================= */}
-        <div className="relative pt-4 pb-8 min-h-[380px] sm:min-h-[420px] lg:min-h-[460px] flex items-center justify-center">
+        <div className="relative pt-4 pb-6 min-h-[340px] sm:min-h-[400px] lg:min-h-[440px] flex items-center justify-center overflow-hidden">
           
-          <div className="w-full flex items-center justify-center gap-3 sm:gap-6 lg:gap-8 overflow-visible">
-            {CATEGORIES.map((cat, idx) => {
+          <div className="w-full flex items-center justify-center gap-2 sm:gap-5 lg:gap-7">
+            {items.map((cat, idx) => {
               const isActive = idx === activeIndex;
               const offset = idx - activeIndex;
 
@@ -182,31 +182,31 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
                 <div
                   key={cat.id}
                   onClick={() => setActiveIndex(idx)}
-                  className={`cursor-pointer transform-gpu transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none relative shrink-0 w-[140px] sm:w-[190px] lg:w-[220px] h-[260px] sm:h-[320px] lg:h-[360px] ${
+                  className={`cursor-pointer transform-gpu transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none relative shrink-0 w-[110px] sm:w-[170px] lg:w-[210px] h-[230px] sm:h-[300px] lg:h-[350px] ${
                     !isVisibleOnMobile ? "hidden sm:block" : "block"
                   } ${
                     isActive
-                      ? `z-30 scale-110 sm:scale-120 lg:scale-125 -translate-y-4 sm:-translate-y-6 shadow-2xl ${cat.glowColor}`
+                      ? `z-30 scale-105 sm:scale-115 lg:scale-120 -translate-y-3 sm:-translate-y-5 shadow-2xl ${cat.glowColor}`
                       : "z-10 opacity-70 hover:opacity-100 hover:scale-100 scale-95 translate-y-0 shadow-lg"
                   }`}
                 >
                   {/* ORGANIC GRADIENT CARD CONTAINER */}
                   <div
-                    className={`w-full h-full relative overflow-hidden bg-gradient-to-b ${cat.gradient} ${cat.shapeClass} p-3.5 sm:p-5 flex flex-col justify-between transition-opacity duration-300 border border-white/25 shadow-2xl`}
+                    className={`w-full h-full relative overflow-hidden bg-gradient-to-b ${cat.gradient} ${cat.shapeClass} p-2.5 sm:p-4 flex flex-col justify-between transition-opacity duration-300 border border-white/25 shadow-2xl`}
                   >
                     {/* CARD TITLE / HEADER */}
                     <div className="relative z-10 text-center pt-1">
                       <h4
                         className={`font-display font-black text-center tracking-tight leading-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] transition-all duration-300 ${
                           isActive
-                            ? "text-white text-base sm:text-lg lg:text-xl"
-                            : "text-white/90 text-xs sm:text-sm"
+                            ? "text-white text-xs sm:text-base lg:text-lg"
+                            : "text-white/90 text-[10px] sm:text-xs"
                         }`}
                       >
                         {cat.name}
                       </h4>
                       {!isActive && (
-                        <span className="text-[10px] text-white/90 font-bold bg-black/40 px-2 py-0.5 rounded-full inline-block mt-1 backdrop-blur-sm">
+                        <span className="text-[9px] sm:text-[10px] text-white/90 font-bold bg-black/40 px-1.5 sm:px-2 py-0.5 rounded-full inline-block mt-1 backdrop-blur-sm">
                           {cat.count} Mẫu
                         </span>
                       )}
@@ -217,8 +217,8 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
                       <div
                         className={`relative overflow-hidden transform-gpu transition-transform duration-500 ${
                           isActive
-                            ? "w-[85%] aspect-square rounded-2xl border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.6)]"
-                            : "w-[82%] aspect-square rounded-xl border border-white/20 shadow-md opacity-90"
+                            ? "w-[85%] aspect-square rounded-xl sm:rounded-2xl border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.6)]"
+                            : "w-[82%] aspect-square rounded-lg sm:rounded-xl border border-white/20 shadow-md opacity-90"
                         }`}
                       >
                         <img
@@ -235,14 +235,14 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
                       <div className="relative z-40 mt-auto flex items-center justify-center gap-1.5 animate-fadeIn">
                         
                         {/* Left Glass Pill: Rating Stars & Spec */}
-                        <div className="bg-[#0B0D0E]/90 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-xl text-white shadow-xl flex flex-col items-center">
-                          <div className="flex items-center gap-1 text-[#F5B800] text-[9px] sm:text-[10px] font-black">
+                        <div className="bg-[#0B0D0E]/90 backdrop-blur-md border border-white/20 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl text-white shadow-xl flex flex-col items-center">
+                          <div className="flex items-center gap-0.5 text-[#F5B800] text-[8px] sm:text-[9px] font-black">
                             <span>★ ★ ★ ★ ★</span>
                           </div>
-                          <div className="flex items-center gap-1.5 mt-0.5 text-[9px] sm:text-[10px] text-gray-300">
+                          <div className="flex items-center gap-1 mt-0.5 text-[8px] sm:text-[9px] text-gray-300">
                             <span className="font-bold text-white">{cat.reviews}</span>
                             <span>•</span>
-                            <span className="text-[#F5B800] font-semibold">{cat.spec}</span>
+                            <span className="text-[#F5B800] font-semibold truncate max-w-[80px]">{cat.spec}</span>
                           </div>
                         </div>
                       </div>
@@ -251,7 +251,7 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
 
                   {/* FLOOR MIRROR REFLECTION EFFECT */}
                   <div
-                    className={`w-full h-[45px] opacity-20 blur-[2px] pointer-events-none transition-opacity duration-300 overflow-hidden transform scale-y-[-0.5] translate-y-[-6px] bg-gradient-to-b ${cat.gradient} ${cat.shapeClass}`}
+                    className={`w-full h-[35px] sm:h-[45px] opacity-20 blur-[2px] pointer-events-none transition-opacity duration-300 overflow-hidden transform scale-y-[-0.5] translate-y-[-6px] bg-gradient-to-b ${cat.gradient} ${cat.shapeClass}`}
                   />
                 </div>
               );

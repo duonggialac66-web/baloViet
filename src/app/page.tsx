@@ -166,17 +166,17 @@ export default async function Home() {
       <CategoryStyleSlider initialCategories={sliderCategories} />
 
       {/* === STATS (Server-rendered) === */}
-      <section className="bg-white border-y border-[#E5E7EB] py-12">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-[#E5E7EB]">
+      <section className="bg-white border-y border-[#E5E7EB] py-8 sm:py-12">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-4 sm:divide-x divide-[#E5E7EB]">
             {stats.map((stat, i) => (
-              <div key={i} className="flex items-center justify-center py-4 px-4 gap-4 reveal-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                {stat.icon}
+              <div key={i} className="flex items-center justify-start sm:justify-center py-2 sm:py-4 px-2 sm:px-4 gap-4 reveal-up" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className="shrink-0">{stat.icon}</div>
                 <div className="flex flex-col text-left">
                   <p className="font-display font-black text-[#0B0D0E] text-2xl lg:text-3xl uppercase leading-none">
                     {stat.value}
                   </p>
-                  <p className="text-[#6B6E72] text-sm mt-1">{stat.label}</p>
+                  <p className="text-[#6B6E72] text-xs sm:text-sm mt-1">{stat.label}</p>
                 </div>
               </div>
             ))}
@@ -185,20 +185,20 @@ export default async function Home() {
       </section>
 
       {/* === BUILT FOR EVERY JOURNEY (Server-rendered) === */}
-      <section className="py-16 lg:py-20 bg-[#F3F4F6]">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-          <div className="mb-10 reveal-up">
-            <h2 className="font-display font-black text-[#0B0D0E] text-3xl lg:text-5xl uppercase tracking-tight">
+      <section className="py-12 sm:py-16 lg:py-20 bg-[#F3F4F6]">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="mb-6 sm:mb-10 reveal-up">
+            <h2 className="font-display font-black text-[#0B0D0E] text-2xl sm:text-4xl lg:text-5xl uppercase tracking-tight">
               Built for every journey
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {journeyItems.map((item, i) => (
               <Link
                 key={i}
                 href={item.href}
-                className="group relative overflow-hidden aspect-[4/3] lg:aspect-[16/9] block bg-[#1E2022] rounded-sm shadow-sm hover:shadow-lg transition-shadow reveal-up"
+                className="group relative overflow-hidden aspect-[4/3] lg:aspect-[16/9] block bg-[#1E2022] rounded-lg sm:rounded-sm shadow-sm hover:shadow-lg transition-shadow reveal-up"
                 style={{ animationDelay: `${i * 0.1}s` }}
                 aria-label={item.label}
               >
@@ -209,11 +209,11 @@ export default async function Home() {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 flex items-center justify-between">
-                  <span className="font-display font-black text-white text-2xl uppercase tracking-wide group-hover:text-[#F5B800] transition-colors">
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 flex items-center justify-between">
+                  <span className="font-display font-black text-white text-xl sm:text-2xl uppercase tracking-wide group-hover:text-[#F5B800] transition-colors">
                     {item.label}
                   </span>
-                  <div className="w-9 h-9 bg-[#F5B800] rounded-sm flex items-center justify-center group-hover:bg-white transition-colors">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 bg-[#F5B800] rounded-sm flex items-center justify-center group-hover:bg-white transition-colors shrink-0">
                     <svg className="w-4 h-4 text-black" viewBox="0 0 16 16" fill="none">
                       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                     </svg>

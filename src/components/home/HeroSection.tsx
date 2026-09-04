@@ -126,7 +126,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
 
   return (
     <section 
-      className="relative min-h-[calc(100vh-76px)] h-full bg-[#070b12] text-white pt-24 sm:pt-28 lg:pt-32 pb-10 sm:pb-12 px-6 sm:px-14 lg:px-20 flex flex-col justify-between overflow-hidden border-b border-gray-800/80 select-none group/hero"
+      className="relative min-h-[calc(100vh-70px)] sm:min-h-[calc(100vh-76px)] h-full bg-[#070b12] text-white pt-20 sm:pt-24 lg:pt-28 pb-6 sm:pb-10 px-4 sm:px-8 lg:px-16 flex flex-col justify-between overflow-hidden border-b border-gray-800/80 select-none group/hero"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
@@ -148,7 +148,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
           className="w-full h-full object-cover object-center hero-fade-in"
         />
         {/* Layered Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/80 to-[#070b12]/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/85 to-[#070b12]/65" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#070b12] via-[#070b12]/90 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-30" />
       </div>
@@ -156,44 +156,44 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
       {/* ================= FADED NAVIGATION BUTTONS ON BOTH SIDES ================= */}
       <button
         onClick={handlePrev}
-        className="absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 lg:w-13 lg:h-13 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 flex items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-30 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
+        className="hidden md:flex absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-40 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
         aria-label="Chương trình trước"
       >
-        <ChevronLeft className="w-6 h-6" />
+        <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6" />
       </button>
 
       <button
         onClick={handleNext}
-        className="absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 lg:w-13 lg:h-13 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 flex items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-30 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
+        className="hidden md:flex absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-40 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
         aria-label="Chương trình tiếp"
       >
-        <ChevronRight className="w-6 h-6" />
+        <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6" />
       </button>
 
       {/* Main Content Showcase for the Selected 1 Active Promotion */}
-      <div className="relative z-10 max-w-[1440px] mx-auto w-full my-auto py-4">
+      <div className="relative z-10 max-w-[1440px] mx-auto w-full my-auto py-3 sm:py-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           
           {/* Active Promo Showcase (Left & Center Details) */}
-          <div key={`content-${currentPromo.id}`} className="lg:col-span-8 space-y-4 hero-slide-up">
+          <div key={`content-${currentPromo.id}`} className="lg:col-span-8 space-y-3 sm:space-y-4 hero-slide-up">
             
             {/* Tag & Discount Badge */}
-            <div className="flex items-center gap-3">
-              <span className="px-3.5 py-1 rounded-md bg-black/70 border border-white/20 text-white font-mono font-bold text-xs uppercase tracking-wider backdrop-blur-md">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <span className="px-3 py-1 rounded-md bg-black/70 border border-white/20 text-white font-mono font-bold text-[11px] sm:text-xs uppercase tracking-wider backdrop-blur-md">
                 {currentPromo.tag}
               </span>
               {currentPromo.discountValue && (
-                <span className="px-3.5 py-1 rounded-md bg-[#FFB800] text-black font-black text-xs uppercase tracking-wider shadow-lg">
+                <span className="px-3 py-1 rounded-md bg-[#FFB800] text-black font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg">
                   {currentPromo.discountValue}
                 </span>
               )}
             </div>
 
             {/* Big Prominent Promotion Program Name Headline */}
-            <h1 className="font-display font-black text-5xl sm:text-7xl lg:text-[80px] xl:text-[90px] uppercase tracking-tight leading-[1.01] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
+            <h1 className="font-display font-black text-3xl sm:text-5xl md:text-6xl lg:text-[76px] xl:text-[84px] uppercase tracking-tight leading-[1.05] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)] break-words">
               {currentPromo.badge || currentPromo.title}
               {currentPromo.highlight && (
-                <span className="block text-[#FFB800] drop-shadow-[0_0_35px_rgba(255,184,0,0.5)] text-3xl sm:text-5xl lg:text-6xl font-extrabold mt-1.5">
+                <span className="block text-[#FFB800] drop-shadow-[0_0_35px_rgba(255,184,0,0.5)] text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mt-1 sm:mt-1.5">
                   {currentPromo.highlight}
                 </span>
               )}
@@ -201,16 +201,16 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
 
             {/* Description */}
             <div className="max-w-2xl pt-1">
-              <p className="text-gray-200 text-base sm:text-lg leading-relaxed font-light drop-shadow-md line-clamp-3">
+              <p className="text-gray-200 text-sm sm:text-base lg:text-lg leading-relaxed font-light drop-shadow-md line-clamp-3">
                 {currentPromo.description}
               </p>
             </div>
 
             {/* CTA Button */}
-            <div className="flex flex-wrap items-center gap-6 pt-2">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 sm:pt-2">
               <Link
                 href={currentPromo.targetUrl || "/san-pham"}
-                className="inline-flex items-center gap-3 bg-[#FFB800] text-black font-extrabold text-xs sm:text-sm uppercase tracking-widest px-8 py-3.5 rounded-full hover:bg-white transition-all shadow-2xl hover:scale-105 group"
+                className="inline-flex items-center gap-2.5 sm:gap-3 bg-[#FFB800] text-black font-extrabold text-xs sm:text-sm uppercase tracking-widest px-6 sm:px-8 py-3 sm:py-3.5 rounded-full hover:bg-white transition-all shadow-2xl hover:scale-105 group"
               >
                 <span>{currentPromo.ctaText || "SĂN DEAL NGAY"}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -221,7 +221,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
 
           {/* Right Card Spotlight */}
           <div key={`card-${currentPromo.id}`} className="hidden lg:flex lg:col-span-4 justify-center items-center hero-scale-up">
-            <div className="relative w-full max-w-[360px] aspect-[3/4] rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_45px_rgba(6,182,212,0.35)] bg-gray-950 p-4 flex flex-col justify-between group">
+            <div className="relative w-full max-w-[340px] aspect-[3/4] rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_45px_rgba(6,182,212,0.35)] bg-gray-950 p-4 flex flex-col justify-between group">
               <img
                 src={currentPromo.imageUrl}
                 alt={currentPromo.title}
@@ -246,16 +246,16 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
       </div>
 
       {/* ================= BOTTOM CAROUSEL SELECTOR (4 Cards Carousel) ================= */}
-      <div className="relative z-10 max-w-[1440px] mx-auto w-full pt-3 border-t border-gray-800/80">
+      <div className="relative z-10 max-w-[1440px] mx-auto w-full pt-2 sm:pt-3 border-t border-gray-800/80">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+          <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-1.5 sm:gap-2">
             <Tag className="w-3.5 h-3.5 text-[#FFB800]" />
-            Chọn chương trình ưu đãi để xem chi tiết ({activeIndex + 1}/{promotionsList.length})
+            Chương trình ưu đãi ({activeIndex + 1}/{promotionsList.length})
           </span>
         </div>
 
-        {/* Carousel Grid / Horizontal List of 4 Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        {/* Carousel Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
           {promotionsList.slice(0, 4).map((promo, idx) => {
             const isSelected = activeIndex === idx;
 
@@ -263,10 +263,10 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
               <div
                 key={promo.id || idx}
                 onClick={() => setActiveIndex(idx)}
-                className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 p-2.5 border ${
+                className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 p-2 sm:p-2.5 border ${
                   isSelected
                     ? "bg-gradient-to-r from-cyan-950/90 via-blue-950/90 to-slate-900/90 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-[1.02]"
-                    : "bg-gray-900/80 hover:bg-gray-800/90 border-white/10 opacity-70 hover:opacity-100"
+                    : "bg-gray-900/80 hover:bg-gray-800/90 border-white/10 opacity-75 hover:opacity-100"
                 }`}
               >
                 {/* Background Thumbnail Image */}
@@ -274,21 +274,21 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
                   <img src={promo.imageUrl} alt={promo.title} className="w-full h-full object-cover" />
                 </div>
 
-                <div className="relative z-10 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className={`p-1.5 rounded-lg border ${isSelected ? "bg-cyan-500/20 border-cyan-400" : "bg-black/40 border-white/10"}`}>
+                <div className="relative z-10 flex items-center justify-between min-w-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                    <div className={`p-1 sm:p-1.5 rounded-lg border shrink-0 ${isSelected ? "bg-cyan-500/20 border-cyan-400" : "bg-black/40 border-white/10"}`}>
                       {getTechIcon(idx)}
                     </div>
-                    <div>
-                      <h4 className={`font-black text-xs sm:text-sm uppercase tracking-wide ${isSelected ? "text-cyan-200" : "text-white"}`}>
+                    <div className="min-w-0">
+                      <h4 className={`font-black text-[11px] sm:text-xs md:text-sm uppercase tracking-wide truncate ${isSelected ? "text-cyan-200" : "text-white"}`}>
                         {promo.badge || promo.title}
                       </h4>
-                      <p className="text-[10px] text-gray-400 font-mono line-clamp-1">{promo.highlight}</p>
+                      <p className="text-[9px] sm:text-[10px] text-gray-400 font-mono truncate">{promo.highlight}</p>
                     </div>
                   </div>
 
                   {isSelected && (
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping shrink-0 ml-1" />
                   )}
                 </div>
               </div>
