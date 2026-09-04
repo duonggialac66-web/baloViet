@@ -14,15 +14,15 @@ export default function ProductEditClient({ product }: { product: any }) {
   const [message, setMessage] = useState("");
   
   const [formData, setFormData] = useState({
-    name: product.name,
-    sku: product.sku,
-    categorySlug: product.categorySlug,
-    price: product.price.toString(),
+    name: product.name || "",
+    sku: product.sku || "",
+    categorySlug: product.categorySlug || "balo-laptop",
+    price: product.price ? product.price.toString() : "0",
     salePrice: product.salePrice ? product.salePrice.toString() : "",
-    stock: product.stock.toString(),
-    imageUrl: product.imageUrl || "",
-    shortDescription: product.shortDescription,
-    description: product.description,
+    stock: product.stock !== undefined ? product.stock.toString() : "0",
+    imageUrl: (product.imageIds && product.imageIds.length > 0) ? product.imageIds[0] : (product.imageUrl || ""),
+    shortDescription: product.shortDescription || "",
+    description: product.description || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -41,6 +41,8 @@ export default function ProductEditClient({ product }: { product: any }) {
         price: parseInt(formData.price) || 0,
         salePrice: formData.salePrice ? parseInt(formData.salePrice) : null,
         stock: parseInt(formData.stock) || 0,
+        imageIds: formData.imageUrl ? [formData.imageUrl] : [],
+        imageAlts: [formData.name],
       };
 
       const res = await fetch(`/api/admin/products/${product.id}`, {

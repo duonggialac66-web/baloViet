@@ -40,12 +40,25 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const body = await req.json();
 
+    const { imageUrl, imageIds, imageAlts, ...rest } = body;
+    const finalImageIds = imageIds !== undefined ? imageIds : (imageUrl ? [imageUrl] : undefined);
+    const finalImageAlts = imageAlts !== undefined ? imageAlts : (rest.name ? [rest.name] : undefined);
+
+    const updateData: Record<string, any> = {
+      ...rest,
+      updatedAt: new Date(),
+    };
+
+    if (finalImageIds !== undefined) {
+      updateData.imageIds = finalImageIds;
+    }
+    if (finalImageAlts !== undefined) {
+      updateData.imageAlts = finalImageAlts;
+    }
+
     await db
       .update(products)
-      .set({
-        ...body,
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(products.id, id));
 
     return NextResponse.json({ success: true });

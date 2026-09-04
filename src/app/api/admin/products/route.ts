@@ -32,15 +32,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
+    const { imageUrl, imageIds, imageAlts, ...rest } = body;
     
     // Auto-generate id if not provided
-    const id = body.id || `bv-${nanoid(6)}`;
+    const id = rest.id || `bv-${nanoid(6)}`;
     
     // Auto-generate slug from name if not provided
-    let slug = body.slug;
-    if (!slug && body.name) {
+    let slug = rest.slug;
+    if (!slug && rest.name) {
       // Basic slugify
-      slug = body.name.toLowerCase()
+      slug = rest.name.toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[đĐ]/g, "d")
@@ -50,10 +51,15 @@ export async function POST(req: NextRequest) {
         .replace(/^-+|-+$/g, '');
     }
 
+    const finalImageIds = imageIds || (imageUrl ? [imageUrl] : []);
+    const finalImageAlts = imageAlts || (rest.name ? [rest.name] : []);
+
     await db.insert(products).values({
-      ...body,
+      ...rest,
       id,
       slug,
+      imageIds: finalImageIds,
+      imageAlts: finalImageAlts,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

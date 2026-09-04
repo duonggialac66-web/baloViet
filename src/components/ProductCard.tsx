@@ -97,14 +97,14 @@ export default function ProductCard({ product, variant = "default" }: ProductCar
             <div className="absolute inset-0 bg-[#E5E7EB] animate-pulse" />
           )}
           <img
-            src={product.images[0].url}
-            alt={product.images[0].alt}
+            src={product.images?.[0]?.url || "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&h=600&fit=crop"}
+            alt={product.images?.[0]?.alt || product.name}
             className={`w-[90%] h-[90%] object-contain transition-all duration-500 group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setImgLoaded(true)}
             loading="lazy"
           />
           {/* Hover second image */}
-          {product.images[1] && (
+          {product.images?.[1] && (
             <img
               src={product.images[1].url}
               alt={`${product.name} - góc nhìn khác`}

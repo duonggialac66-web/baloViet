@@ -39,6 +39,8 @@ export default function AdminCreateProductPage() {
         price: parseInt(formData.price) || 0,
         salePrice: formData.salePrice ? parseInt(formData.salePrice) : null,
         stock: parseInt(formData.stock) || 0,
+        imageIds: formData.imageUrl ? [formData.imageUrl] : [],
+        imageAlts: [formData.name],
         // Mock data for required complex fields in schema
         colors: [{ name: "Đen", hex: "#000000" }],
         specifications: { "Chất liệu": "Polyester" },
