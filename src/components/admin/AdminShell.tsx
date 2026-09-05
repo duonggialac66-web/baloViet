@@ -17,7 +17,8 @@ import {
   X,
   Bell,
   Search,
-  Home
+  Home,
+  ShieldCheck
 } from "lucide-react";
 import { useAuth } from "@/store/authContext";
 
@@ -26,6 +27,7 @@ const NAV_ITEMS = [
   { href: "/admin/don-hang", label: "Đơn hàng", icon: ShoppingCart },
   { href: "/admin/san-pham", label: "Sản phẩm", icon: Package },
   { href: "/admin/uu-dai", label: "Ưu đãi & Banner", icon: TicketPercent },
+  { href: "/admin/cam-ket", label: "Cam kết & Giới thiệu", icon: ShieldCheck },
   { href: "/admin/xoa-phong", label: "Xóa phông & PNG", icon: Sparkles },
   { href: "/admin/khach-hang", label: "Khách hàng", icon: Users },
   { href: "/admin/danh-muc", label: "Danh mục", icon: Tags },
@@ -44,6 +46,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   else if (pathname.includes("/danh-muc")) pageTitle = "Quản lý danh mục";
   else if (pathname.includes("/danh-gia")) pageTitle = "Quản lý đánh giá";
   else if (pathname.includes("/uu-dai")) pageTitle = "Quản lý ưu đãi";
+  else if (pathname.includes("/cam-ket")) pageTitle = "Quản lý cam kết & giới thiệu";
   else if (pathname.includes("/xoa-phong")) pageTitle = "Studio xóa phông";
 
   return (
