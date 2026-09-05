@@ -54,76 +54,97 @@ export async function createSession(userId: string, req?: Request): Promise<stri
 }
 
 export async function getSession() {
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get(COOKIE_NAME)?.value;
+  try {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get(COOKIE_NAME)?.value;
 
-  if (!sessionId) {
-    return { session: null, user: null };
-  }
+    if (!sessionId) {
+      return { session: null, user: null };
+    }
 
-  // Fetch session and associated user
-  const result = await db
-    .select({
-      session: sessions,
-      user: {
-        id: users.id,
-        email: users.email,
-        fullName: users.fullName,
-        phone: users.phone,
-        avatar: users.avatar,
-        role: users.role,
-        isActive: users.isActive,
-      },
-    })
-    .from(sessions)
-    .innerJoin(users, eq(sessions.userId, users.id))
-    .where(eq(sessions.id, sessionId))
-    .limit(1);
+    // Fetch session and associated user
+    const result = await db
+      .select({
+        session: sessions,
+        user: {
+          id: users.id,
+          email: users.email,
+          fullName: users.fullName,
+          phone: users.phone,
+          avatar: users.avatar,
+          role: users.role,
+          isActive: users.isActive,
+        },
+      })
+      .from(sessions)
+      .innerJoin(users, eq(sessions.userId, users.id))
+      .where(eq(sessions.id, sessionId))
+      .limit(1);
 
-  if (result.length === 0) {
-    return { session: null, user: null };
-  }
+    if (result.length === 0) {
+      return { session: null, user: null };
+    }
 
-  const { session, user } = result[0];
+    const { session, user } = result[0];
 
-  // Check if session has expired
-  if (new Date() > new Date(session.expiresAt)) {
-    // Delete expired session
-    await db.delete(sessions).where(eq(sessions.id, sessionId));
-    cookieStore.delete(COOKIE_NAME);
-    return { session: null, user: null };
-  }
+    // Check if session has expired
+    if (new Date() > new Date(session.expiresAt)) {
+      // Delete expired session
+      try {
+        await db.delete(sessions).where(eq(sessions.id, sessionId));
+      } catch (err) {
+        console.warn("Failed to delete expired session from db:", err);
+      }
+      cookieStore.delete(COOKIE_NAME);
+      return { session: null, user: null };
+    }
 
-  // Optionally extend session if it's halfway to expiry
-  const halfExpiry = new Date(session.createdAt || new Date());
-  halfExpiry.setDate(halfExpiry.getDate() + SESSION_EXPIRY_DAYS / 2);
-  if (new Date() > halfExpiry) {
-    const nextExpiresAt = new Date();
-    nextExpiresAt.setDate(nextExpiresAt.getDate() + SESSION_EXPIRY_DAYS);
-    
-    await db
-      .update(sessions)
-      .set({ expiresAt: nextExpiresAt })
-      .where(eq(sessions.id, sessionId));
+    // Optionally extend session if it's halfway to expiry
+    const halfExpiry = new Date(session.createdAt || new Date());
+    halfExpiry.setDate(halfExpiry.getDate() + SESSION_EXPIRY_DAYS / 2);
+    if (new Date() > halfExpiry) {
+      const nextExpiresAt = new Date();
+      nextExpiresAt.setDate(nextExpiresAt.getDate() + SESSION_EXPIRY_DAYS);
       
-    cookieStore.set(COOKIE_NAME, sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      expires: nextExpiresAt,
-      path: "/",
-    });
-  }
+      try {
+        await db
+          .update(sessions)
+          .set({ expiresAt: nextExpiresAt })
+          .where(eq(sessions.id, sessionId));
+          
+        cookieStore.set(COOKIE_NAME, sessionId, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          expires: nextExpiresAt,
+          path: "/",
+        });
+      } catch (err) {
+        console.warn("Failed to extend session in db:", err);
+      }
+    }
 
-  return { session, user };
+    return { session, user };
+  } catch (error) {
+    console.error("Error retrieving session from database:", error);
+    return { session: null, user: null };
+  }
 }
 
 export async function destroySession() {
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get(COOKIE_NAME)?.value;
+  try {
+    const cookieStore = await cookies();
+    const sessionId = cookieStore.get(COOKIE_NAME)?.value;
 
-  if (sessionId) {
-    await db.delete(sessions).where(eq(sessions.id, sessionId));
-    cookieStore.delete(COOKIE_NAME);
+    if (sessionId) {
+      try {
+        await db.delete(sessions).where(eq(sessions.id, sessionId));
+      } catch (err) {
+        console.warn("Failed to delete session from db:", err);
+      }
+      cookieStore.delete(COOKIE_NAME);
+    }
+  } catch (error) {
+    console.error("Error destroying session:", error);
   }
 }

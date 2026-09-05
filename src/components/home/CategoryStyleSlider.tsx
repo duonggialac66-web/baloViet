@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -15,86 +15,83 @@ export interface CategoryItem {
   reviews: number;
   spec: string;
   badge: string;
-  gradient: string;
-  glowColor: string;
-  shapeClass: string;
+  price?: string;
+  subtitle?: string;
+  gradient?: string;
+  glowColor?: string;
+  shapeClass?: string;
 }
 
-const CATEGORIES: CategoryItem[] = [
+const DEFAULT_CATEGORIES: CategoryItem[] = [
   {
     id: "cat-1",
-    name: "BALO LAPTOP PRO",
+    name: "BALO LAPTOP",
     slug: "balo-laptop",
-    description: "Balo laptop cao cấp tích hợp ngăn chống sốc 360°, đệm lưng thoáng khí AirFlow và cổng sạc USB-C thông minh.",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700&h=800&fit=crop&auto=format",
+    subtitle: "Chống Sốc 360° • Cổng Sạc USB-C",
+    description: "Balo laptop cao cấp với đệm chống sốc tổ ong 360°, đệm lưng thoáng khí AirFlow và cổng kết nối thông minh.",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop&auto=format",
     count: 24,
-    rating: 4.8,
+    rating: 4.9,
     reviews: 512,
-    spec: "17 inch Laptop",
-    badge: "Chống Sốc 360°",
-    gradient: "from-[#00F2FE] via-[#4FACFE] to-[#00C6FF]",
-    glowColor: "shadow-cyan-500/40",
-    shapeClass: "rounded-t-[44px] rounded-b-[24px]",
+    spec: "Laptop 15.6 - 17.3 inch",
+    badge: "Best Seller",
+    price: "790.000₫",
   },
   {
     id: "cat-2",
-    name: "BALO DU LỊCH 45L",
+    name: "BALO DU LỊCH",
     slug: "balo-du-lich",
-    description: "Sức chứa tương đương vali cabin mở phẳng 180°, phân ngăn đồ khô & ướt độc lập cho chuyến đi dài ngày.",
-    image: "https://images.unsplash.com/photo-1476979735039-2fdea9e9e407?w=700&h=800&fit=crop&auto=format",
+    subtitle: "Sức Chứa 45L • Mở Phẳng 180° Cabin",
+    description: "Dung tích tương đương vali cabin, phân ngăn đồ khô & ướt độc lập hoàn hảo cho các chuyến công tác và du lịch.",
+    image: "https://images.unsplash.com/photo-1581605405669-fcdf81165afa?w=800&h=800&fit=crop&auto=format",
     count: 18,
     rating: 4.9,
     reviews: 840,
-    spec: "45L Sức Chứa",
-    badge: "Siêu Dung Tích",
-    gradient: "from-[#FF0844] via-[#FF4E50] to-[#F9D423]",
-    glowColor: "shadow-red-500/40",
-    shapeClass: "rounded-t-[24px] rounded-b-[48px]",
+    spec: "Dung tích 45L Siêu Chứa",
+    badge: "Cabin Approved",
+    price: "890.000₫",
   },
   {
     id: "cat-3",
-    name: "BALO CHỐNG NƯỚC IPX7",
+    name: "BALO CHỐNG NƯỚC",
     slug: "balo-chong-nuoc",
-    description: "Công nghệ ép nhiệt siêu âm không đường may với vải TPU dẻo dai. Bảo vệ thiết bị tuyệt đối dưới mưa bão và dã ngoại.",
-    image: "https://images.unsplash.com/photo-1622260614927-208cfe3f5cfd?w=700&h=800&fit=crop&auto=format",
+    subtitle: "Chuẩn Kháng Nước IPX7 • Ép Nhiệt TPU",
+    description: "Chất liệu TPU tráng phủ nano cao cấp kết hợp khóa kéo kín nước, bảo vệ thiết bị tuyệt đối dưới mọi cơn mưa bão.",
+    image: "https://images.unsplash.com/photo-1622260614927-208cfe3f5cfd?w=800&h=800&fit=crop&auto=format",
     count: 12,
     rating: 5.0,
-    reviews: 1329,
-    spec: "Kháng Nước IPX7",
-    badge: "Kháng Nước 100%",
-    gradient: "from-[#1E293B] via-[#0F172A] to-[#020617]",
-    glowColor: "shadow-blue-500/50",
-    shapeClass: "rounded-[44px] sm:rounded-[52px]",
+    reviews: 1320,
+    spec: "Kháng Nước Toàn Diện IPX7",
+    badge: "100% Waterproof",
+    price: "950.000₫",
   },
   {
     id: "cat-4",
-    name: "BALO THỜI TRANG URBAN",
+    name: "BALO THỜI TRANG",
     slug: "balo-thoi-trang",
-    description: "Phong cách tối giản Đô thị (Urban Futuristic) với chất liệu da PU xước chống bám bẩn và ngăn khóa ẩn chống trộm.",
-    image: "https://images.unsplash.com/photo-1581605405669-fcdf81165afa?w=700&h=800&fit=crop&auto=format",
+    subtitle: "Urban Futuristic • Tối Giản Hiện Đại",
+    description: "Thiết kế đường nét công nghệ vị lai, da PU cao cấp chống xước với ngăn khóa ẩn chống trộm an toàn nơi đông người.",
+    image: "https://images.unsplash.com/photo-1546938576-6e6a64f317cc?w=800&h=800&fit=crop&auto=format",
     count: 20,
-    rating: 4.7,
+    rating: 4.8,
     reviews: 620,
-    spec: "Slim Futuristic",
-    badge: "Urban Minimal",
-    gradient: "from-[#00c6ff] via-[#0072ff] to-[#240b36]",
-    glowColor: "shadow-indigo-500/40",
-    shapeClass: "rounded-t-[48px] rounded-b-[24px]",
+    spec: "Slim Minimalist",
+    badge: "Urban Trending",
+    price: "720.000₫",
   },
   {
     id: "cat-5",
-    name: "BALO HỌC SINH ERGONOMIC",
+    name: "BALO HỌC SINH",
     slug: "balo-hoc-sinh",
-    description: "Thiết kế Ergonomic bảo vệ cột sống, dải phản quang đêm 360° cùng trọng lượng siêu nhẹ chống sệ lưng cho học sinh.",
-    image: "https://images.unsplash.com/photo-1535982330050-f1c2fb79ff78?w=700&h=800&fit=crop&auto=format",
-    count: 15,
+    subtitle: "Bảo Vệ Cột Sống • Siêu Nhẹ 550g",
+    description: "Chuẩn công thái học Ergonomic trợ lực giảm tải trọng lượng lên cột sống, tích hợp dải phản quang đêm 360° an toàn.",
+    image: "https://images.unsplash.com/photo-1577733966973-d680bffd2e80?w=800&h=800&fit=crop&auto=format",
+    count: 16,
     rating: 4.9,
-    reviews: 410,
-    spec: "Siêu Nhẹ 580g",
+    reviews: 450,
+    spec: "Ergonomic Giảm 30% Tải Trọng",
     badge: "Bảo Vệ Cột Sống",
-    gradient: "from-[#F7971E] via-[#FFD200] to-[#F15A24]",
-    glowColor: "shadow-amber-500/40",
-    shapeClass: "rounded-t-[20px] rounded-b-[44px]",
+    price: "650.000₫",
   },
 ];
 
@@ -103,209 +100,212 @@ interface CategoryStyleSliderProps {
 }
 
 export default function CategoryStyleSlider({ initialCategories = [] }: CategoryStyleSliderProps) {
-  const items = initialCategories.length > 0 ? initialCategories : CATEGORIES;
-  const [activeIndex, setActiveIndex] = useState(() => Math.min(2, Math.max(0, items.length - 1)));
+  const items = initialCategories.length > 0
+    ? initialCategories.map((cat, idx) => ({
+      ...cat,
+      subtitle: cat.subtitle || DEFAULT_CATEGORIES[idx % DEFAULT_CATEGORIES.length].subtitle,
+      price: cat.price || DEFAULT_CATEGORIES[idx % DEFAULT_CATEGORIES.length].price || "690.000₫",
+    }))
+    : DEFAULT_CATEGORIES;
 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const total = items.length;
   const activeCategory = items[activeIndex] || items[0];
 
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+  const prevIndex = (activeIndex - 1 + total) % total;
+  const nextIndex = (activeIndex + 1) % total;
+
+  const prevCategory = items[prevIndex];
+  const nextCategory = items[nextIndex];
+
+  const handlePrev = useCallback(() => {
+    setActiveIndex((prev) => (prev > 0 ? prev - 1 : total - 1));
+  }, [total]);
+
+  const handleNext = useCallback(() => {
+    setActiveIndex((prev) => (prev < total - 1 ? prev + 1 : 0));
+  }, [total]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") handlePrev();
+      if (e.key === "ArrowRight") handleNext();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handlePrev, handleNext]);
+
+  // Touch Swipe for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
   };
 
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (diff > 50) handleNext();
+    else if (diff < -50) handlePrev();
+    setTouchStartX(null);
   };
 
   return (
-    <section className="bg-[#0B0D0E] py-6 sm:py-8 lg:py-10 border-t border-gray-850 relative selection:bg-[#F5B800] selection:text-black">
-      {/* Background Ambient Radial Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[550px] bg-gradient-to-r from-cyan-600/10 via-amber-500/15 to-blue-600/10 blur-[150px] pointer-events-none rounded-full" />
+    <section className="relative bg-[#ECEEF0] text-[#0B0D0E] py-16 sm:py-24 overflow-hidden select-none border-t border-gray-200">
+      {/* Studio Radial Ambient Background Lighting */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#FFFFFF_0%,_#ECEEF0_70%,_#E1E4E8_100%)] pointer-events-none" />
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-        
-        {/* --- SECTION HEADER --- */}
-        <ScrollReveal>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pt-2">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#F5B800] animate-pulse" />
-                <span className="text-xs font-bold text-[#F5B800] uppercase tracking-widest">
-                  Bộ Sưu Tập Đa Dạng
-                </span>
-              </div>
-              <h2 className="font-display font-black text-white text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight leading-tight">
-                Chọn balo theo phong cách
-              </h2>
-              <p className="text-gray-400 text-xs sm:text-sm mt-1 max-w-xl">
-                Khám phá các dòng sản phẩm được thiết kế chuẩn hóa cho từng nhu cầu di chuyển & làm việc
-              </p>
+      {/* Subtle Background Studio Grid / Glow Lines */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-white/60 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+        {/* --- MAIN 3D SHOWCASE ROW --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start min-h-[480px] sm:min-h-[540px] pt-4 sm:pt-6">
+
+          {/* ========================================================= */}
+          {/* LEFT COLUMN: VERTICAL EDITORIAL CATEGORY SELECTOR         */}
+          {/* ========================================================= */}
+          <div className="lg:col-span-5 z-20 flex flex-col justify-start space-y-4 sm:space-y-5 pt-2 sm:pt-4 -translate-y-1 sm:-translate-y-3">
+            {/* Highlighted Badge Tag */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-[#0B0D0E] text-white shadow-lg shadow-black/10 border border-[#2A2C2F] mb-2 self-start">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#F5B800] shadow-sm animate-pulse" />
+              <span className="text-xs sm:text-sm font-display font-black tracking-widest uppercase text-[#F5B800]">
+                CHỌN BALO THEO PHONG CÁCH
+              </span>
             </div>
 
-            {/* Controls Arrow Buttons */}
-            <div className="flex items-center gap-3 self-end sm:self-auto pb-1">
-              <button
-                onClick={handlePrev}
-                className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-[#F5B800] hover:text-black border border-white/10 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
-                aria-label="Previous Category"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                onClick={handleNext}
-                className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-[#F5B800] hover:text-black border border-white/10 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
-                aria-label="Next Category"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </ScrollReveal>
-
-        {/* ========================================================================= */}
-        {/* CAROUSEL TRACK - GPU HARDWARE ACCELERATED 60FPS CARDS CAROUSEL           */}
-        {/* ========================================================================= */}
-        <div className="relative pt-4 pb-6 min-h-[340px] sm:min-h-[400px] lg:min-h-[440px] flex items-center justify-center overflow-hidden">
-          
-          <div className="w-full flex items-center justify-center gap-2 sm:gap-5 lg:gap-7">
-            {items.map((cat, idx) => {
+            {items.map((category, idx) => {
               const isActive = idx === activeIndex;
-              const offset = idx - activeIndex;
-
-              // Show 3 cards on mobile, 5 on desktop
-              const isVisibleOnMobile = Math.abs(offset) <= 1;
 
               return (
                 <div
-                  key={cat.id}
+                  key={category.id}
                   onClick={() => setActiveIndex(idx)}
-                  className={`cursor-pointer transform-gpu transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] select-none relative shrink-0 w-[110px] sm:w-[170px] lg:w-[210px] h-[230px] sm:h-[300px] lg:h-[350px] ${
-                    !isVisibleOnMobile ? "hidden sm:block" : "block"
-                  } ${
-                    isActive
-                      ? `z-30 scale-105 sm:scale-115 lg:scale-120 -translate-y-3 sm:-translate-y-5 shadow-2xl ${cat.glowColor}`
-                      : "z-10 opacity-70 hover:opacity-100 hover:scale-100 scale-95 translate-y-0 shadow-lg"
-                  }`}
+                  className="cursor-pointer group flex flex-col transition-all duration-300"
                 >
-                  {/* ORGANIC GRADIENT CARD CONTAINER */}
-                  <div
-                    className={`w-full h-full relative overflow-hidden bg-gradient-to-b ${cat.gradient} ${cat.shapeClass} p-2.5 sm:p-4 flex flex-col justify-between transition-opacity duration-300 border border-white/25 shadow-2xl`}
+                  <h3
+                    className={`font-display font-black tracking-tighter uppercase transition-all duration-500 ${isActive
+                        ? "text-[#0B0D0E] text-3xl sm:text-4xl lg:text-5xl translate-x-2 drop-shadow-md scale-105 origin-left"
+                        : "text-stroke-editorial text-2xl sm:text-3xl lg:text-4xl hover:translate-x-1 hover:text-black/30"
+                      }`}
                   >
-                    {/* CARD TITLE / HEADER */}
-                    <div className="relative z-10 text-center pt-1">
-                      <h4
-                        className={`font-display font-black text-center tracking-tight leading-tight uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] transition-all duration-300 ${
-                          isActive
-                            ? "text-white text-xs sm:text-base lg:text-lg"
-                            : "text-white/90 text-[10px] sm:text-xs"
-                        }`}
-                      >
-                        {cat.name}
-                      </h4>
-                      {!isActive && (
-                        <span className="text-[9px] sm:text-[10px] text-white/90 font-bold bg-black/40 px-1.5 sm:px-2 py-0.5 rounded-full inline-block mt-1 backdrop-blur-sm">
-                          {cat.count} Mẫu
-                        </span>
-                      )}
+                    {category.name}
+                  </h3>
+
+                  {/* Active Subtitle metadata line */}
+                  {isActive && (
+                    <div className="flex items-center gap-2 mt-1.5 ml-2.5 text-xs sm:text-sm font-semibold text-gray-700 animate-fadeup">
+                      <span className="w-2 h-2 rounded-full bg-[#F5B800] shadow-sm animate-pulse" />
+                      <span>{category.subtitle || category.spec}</span>
                     </div>
-
-                    {/* STYLED PRODUCT IMAGE CAPSULE */}
-                    <div className="relative w-full flex-1 flex items-center justify-center my-1 sm:my-2">
-                      <div
-                        className={`relative overflow-hidden transform-gpu transition-transform duration-500 ${
-                          isActive
-                            ? "w-[85%] aspect-square rounded-xl sm:rounded-2xl border-2 border-white/40 shadow-[0_15px_30px_rgba(0,0,0,0.6)]"
-                            : "w-[82%] aspect-square rounded-lg sm:rounded-xl border border-white/20 shadow-md opacity-90"
-                        }`}
-                      >
-                        <img
-                          src={cat.image}
-                          alt={cat.name}
-                          className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                      </div>
-                    </div>
-
-                    {/* CENTER ACTIVE CARD METADATA (Floating Glass Pills) */}
-                    {isActive && (
-                      <div className="relative z-40 mt-auto flex items-center justify-center gap-1.5 animate-fadeIn">
-                        
-                        {/* Left Glass Pill: Rating Stars & Spec */}
-                        <div className="bg-[#0B0D0E]/90 backdrop-blur-md border border-white/20 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl text-white shadow-xl flex flex-col items-center">
-                          <div className="flex items-center gap-0.5 text-[#F5B800] text-[8px] sm:text-[9px] font-black">
-                            <span>★ ★ ★ ★ ★</span>
-                          </div>
-                          <div className="flex items-center gap-1 mt-0.5 text-[8px] sm:text-[9px] text-gray-300">
-                            <span className="font-bold text-white">{cat.reviews}</span>
-                            <span>•</span>
-                            <span className="text-[#F5B800] font-semibold truncate max-w-[80px]">{cat.spec}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* FLOOR MIRROR REFLECTION EFFECT */}
-                  <div
-                    className={`w-full h-[35px] sm:h-[45px] opacity-20 blur-[2px] pointer-events-none transition-opacity duration-300 overflow-hidden transform scale-y-[-0.5] translate-y-[-6px] bg-gradient-to-b ${cat.gradient} ${cat.shapeClass}`}
-                  />
+                  )}
                 </div>
               );
             })}
           </div>
 
-        </div>
-
-        {/* ========================================================================= */}
-        {/* BOTTOM ACTIVE CATEGORY DETAILS DISPLAY (Smooth Fade-in Transition)        */}
-        {/* ========================================================================= */}
-        <ScrollReveal>
+          {/* ========================================================= */}
+          {/* CENTER / RIGHT STAGE: 3D FLOATING BACKPACK CAROUSEL       */}
+          {/* ========================================================= */}
           <div
-            key={activeCategory.id}
-            className="mt-3 pt-6 border-t border-gray-800/80 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 bg-[#121518]/90 backdrop-blur-md p-5 sm:p-7 rounded-3xl border border-white/10 transition-all duration-500 animate-fadeIn"
+            ref={stageRef}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            className="lg:col-span-7 relative w-full h-[360px] sm:h-[440px] lg:h-[480px] flex items-center justify-center overflow-visible"
           >
-            
-            {/* Left Column: Active Info */}
-            <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-2 flex-wrap">
-                <span className="bg-[#F5B800] text-black font-black text-xs uppercase px-3 py-1 rounded-lg shadow-md">
-                  {activeCategory.badge}
-                </span>
-
-                <div className="flex items-center gap-1 text-[#F5B800] text-sm">
-                  <span>★ ★ ★ ★ ★</span>
-                  <span className="text-white font-bold ml-1.5 text-xs">
-                    {activeCategory.rating} / 5.0 ({activeCategory.reviews} Đánh giá)
-                  </span>
+            {/* --- PREVIOUS ITEM (Left Floating in Perspective) --- */}
+            {prevCategory && (
+              <div
+                onClick={handlePrev}
+                className="absolute left-0 sm:left-4 lg:left-8 top-1/2 -translate-y-1/2 w-[180px] sm:w-[240px] lg:w-[280px] cursor-pointer z-10 transition-all duration-700 ease-out -rotate-18 scale-75 opacity-40 hover:opacity-75 hover:scale-85 blur-[1.5px] hover:blur-none"
+                title={`Xem ${prevCategory.name}`}
+              >
+                <div className="relative flex flex-col items-center">
+                  <img
+                    src={prevCategory.image}
+                    alt={prevCategory.name}
+                    className="w-full h-auto max-h-[260px] sm:max-h-[300px] object-contain drop-shadow-2xl pointer-events-none"
+                  />
+                  {/* Floating shadow */}
+                  <div className="w-36 sm:w-48 h-6 bg-black/30 blur-md rounded-full mt-4 scale-y-50" />
                 </div>
               </div>
+            )}
 
-              <h3 className="font-display font-black text-white text-2xl sm:text-3xl lg:text-4xl tracking-tight uppercase">
-                {activeCategory.name}
-              </h3>
+            {/* --- ACTIVE ITEM (Center 3D Floating & Levitation) --- */}
+            <div className="relative z-30 w-[240px] sm:w-[320px] lg:w-[380px] flex flex-col items-center justify-center">
 
-              <p className="text-gray-300 text-xs sm:text-sm leading-relaxed mt-2 max-w-2xl">
-                {activeCategory.description}
-              </p>
+              {/* Product Floating Image Container with Tilted Levitation */}
+              <div className="relative animate-float-levitate transition-all duration-700">
+                <Link
+                  href={`/danh-muc/${activeCategory.slug}`}
+                  className="block group cursor-pointer"
+                  aria-label={activeCategory.name}
+                >
+                  <img
+                    key={activeCategory.id}
+                    src={activeCategory.image}
+                    alt={activeCategory.name}
+                    className="w-full h-auto max-h-[290px] sm:max-h-[380px] lg:max-h-[420px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.35)] transition-transform duration-700 group-hover:scale-105"
+                  />
+                </Link>
+              </div>
+
+              {/* Dynamic 3D Ground Shadow that pulses with levitation */}
+              <div className="w-48 sm:w-64 lg:w-72 h-8 sm:h-10 bg-black/35 blur-xl rounded-full animate-shadow-pulse pointer-events-none mt-2 scale-y-50" />
             </div>
 
-            {/* Right Column: CTA Button */}
-            <div className="w-full lg:w-auto shrink-0">
+            {/* --- NEXT ITEM (Right Floating in Perspective) --- */}
+            {nextCategory && (
+              <div
+                onClick={handleNext}
+                className="absolute right-0 sm:right-4 lg:right-8 top-1/2 -translate-y-1/2 w-[180px] sm:w-[240px] lg:w-[280px] cursor-pointer z-10 transition-all duration-700 ease-out rotate-18 scale-75 opacity-40 hover:opacity-75 hover:scale-85 blur-[1.5px] hover:blur-none"
+                title={`Xem ${nextCategory.name}`}
+              >
+                <div className="relative flex flex-col items-center">
+                  <img
+                    src={nextCategory.image}
+                    alt={nextCategory.name}
+                    className="w-full h-auto max-h-[260px] sm:max-h-[300px] object-contain drop-shadow-2xl pointer-events-none"
+                  />
+                  {/* Floating shadow */}
+                  <div className="w-36 sm:w-48 h-6 bg-black/30 blur-md rounded-full mt-4 scale-y-50" />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ========================================================= */}
+        {/* BOTTOM CENTER: EDITORIAL BRAND TITLE, SPECS & SEE MORE CTA */}
+        {/* ========================================================= */}
+        <ScrollReveal>
+          <div className="mt-8 sm:mt-12 text-center flex flex-col items-center justify-center animate-fadeIn">
+
+            {/* Big Editorial Title */}
+            <h2 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl tracking-tight uppercase text-[#0B0D0E] leading-none drop-shadow-sm">
+              {activeCategory.name}
+            </h2>
+
+            {/* Subtitle / Spec / Price */}
+            <p className="text-gray-500 font-medium text-xs sm:text-sm uppercase tracking-widest mt-2 sm:mt-3 max-w-xl">
+              {activeCategory.subtitle || activeCategory.description} &bull; <span className="text-[#0B0D0E] font-bold">TỪ {activeCategory.price || "690.000₫"}</span>
+            </p>
+
+            {/* Clean Pill CTA Button ("SEE MORE") */}
+            <div className="mt-5 sm:mt-6">
               <Link
                 href={`/danh-muc/${activeCategory.slug}`}
-                className="w-full lg:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#F5B800] to-amber-400 hover:from-white hover:to-white text-black font-display font-black text-xs sm:text-sm uppercase tracking-widest px-8 py-4 rounded-2xl shadow-xl shadow-[#F5B800]/20 transition-all duration-300 hover:scale-105 group"
+                className="inline-flex items-center gap-3 bg-[#0B0D0E] hover:bg-[#F5B800] text-white hover:text-black font-display font-bold text-xs uppercase tracking-[0.2em] px-8 py-3.5 rounded-full shadow-2xl hover:shadow-[#F5B800]/30 transition-all duration-300 hover:scale-105 active:scale-95 group"
               >
-                <span>Khám Phá Bộ Sưu Tập</span>
-                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7-7 7M3 12h18" />
+                <span>XEM BỘ SƯU TẬP</span>
+                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             </div>
-
           </div>
         </ScrollReveal>
 

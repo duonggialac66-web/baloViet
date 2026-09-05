@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { formatPrice } from "@/data/products";
-import { ArrowRight, ShieldCheck, Zap, Droplets, Wind, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Leaf } from "lucide-react";
 
 export interface PromoOffer {
   id: string;
@@ -15,7 +14,7 @@ export interface PromoOffer {
   code?: string | null;
   discountValue?: string | null;
   minOrder?: string | null;
-  giftText?: string | null;
+  giftText?: string | null; // Used for focal point / object-position (e.g. "center right", "80% 50%")
   ctaText?: string | null;
   targetUrl?: string | null;
   imageUrl: string;
@@ -26,64 +25,67 @@ export interface PromoOffer {
 
 const defaultPromotions: PromoOffer[] = [
   {
-    id: "promo-1",
-    tag: "CÔNG NGHỆ LÀM MÁT",
-    badge: "ICEVIBES™",
-    title: "ICEVIBES™",
-    highlight: "Sợi Siêu Nhẹ Làm Mát 360°",
-    description: "Công nghệ sợi vải thông minh tản nhiệt vượt trội, giảm nhiệt tức thì và tạo cảm giác mát lạnh dễ chịu suốt cả ngày dài vận động.",
-    code: "ICEVIBES100K",
-    discountValue: "Giảm 100K",
-    ctaText: "SĂN DEAL ICEVIBES",
-    targetUrl: "/san-pham?tag=icevibes",
-    imageUrl: "https://images.unsplash.com/photo-1544441893-675973e31985?w=1600&h=900&fit=crop",
+    id: "promo-eco-tradein",
+    tag: "HÀNH TRÌNH XANH",
+    badge: "ĐỔI BALO CŨ NHẬN NGAY",
+    title: "ĐỔI BALO CŨ\nNHẬN NGAY",
+    highlight: "TRỢ GIÁ",
+    discountValue: "200.000Đ",
+    description: "Đổi balo cũ bất kỳ nhận ngay voucher trợ giá 200.000đ nâng cấp lên dòng Balo Việt chất liệu vải sợi tái chế 900D siêu bền bỉ.",
+    code: "ECO200",
+    ctaText: "THAM GIA NGAY",
+    targetUrl: "/san-pham?tag=eco",
+    imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1920&h=1080&fit=crop&auto=format",
+    giftText: "center right",
   },
   {
-    id: "promo-2",
-    tag: "THẤU KHÍ TỐI ĐA",
-    badge: "AIRDRY™",
-    title: "AIRDRY™",
-    highlight: "Thoát Khí Gấp 3 Lần",
-    description: "Cấu trúc sợi vi xốp gia tăng lưu thông không khí, giữ cho balo và cơ thể luôn khô ráo, không đọng hơi ẩm.",
-    code: "AIRDRY200K",
-    discountValue: "Trợ giá 200K",
-    ctaText: "KHÁM PHÁ AIRDRY",
-    targetUrl: "/san-pham?tag=airdry",
-    imageUrl: "https://images.unsplash.com/photo-1520975954732-35dd22299614?w=1600&h=900&fit=crop",
+    id: "promo-flash-sale",
+    tag: "FLASH SALE MÙA DU LỊCH",
+    badge: "ĐẠI TIỆC ƯU ĐÃI",
+    title: "ĐẠI TIỆC MÙA HÈ\nBALO VIỆT PRO",
+    highlight: "GIẢM ĐẾN",
+    discountValue: "45%",
+    description: "Giảm tới 45% toàn bộ bộ sưu tập Balo Laptop & Du Lịch chống nước IPX6. Tặng kèm Áo Mưa Balo chuyên dụng trị giá 150.000đ cho đơn từ 990K.",
+    code: "FLASHSALE45",
+    ctaText: "SĂN DEAL NGAY",
+    targetUrl: "/san-pham",
+    imageUrl: "https://images.unsplash.com/photo-1544441893-675973e31985?w=1920&h=1080&fit=crop&auto=format",
+    giftText: "center center",
   },
   {
-    id: "promo-3",
-    tag: "BẢO VỆ KHÁNG NƯỚC",
-    badge: "RAINSHIELD™",
-    title: "RAINSHIELD™",
-    highlight: "Kháng Nước IPX6 Tuyệt Đối",
-    description: "Bề mặt phủ màng trượt nước chuyên dụng, ngăn ngừa nước mưa thấm đọng, bảo vệ an toàn đồ dùng điện tử bên trong.",
-    code: "RAINSHIELD15",
-    discountValue: "Giảm 15%",
-    ctaText: "SĂN DEAL RAINSHIELD",
-    targetUrl: "/san-pham?tag=rainshield",
-    imageUrl: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1600&h=900&fit=crop",
+    id: "promo-welcome-member",
+    tag: "ĐẶC QUYỀN THÀNH VIÊN",
+    badge: "QUÀ TẶNG BẠN MỚI",
+    title: "ĐĂNG KÝ THÀNH VIÊN\nNHẬN QUÀ NGAY",
+    highlight: "GIẢM NGAY",
+    discountValue: "15% + FREESHIP",
+    description: "Đăng ký thành viên nhận ngay voucher giảm 15% trực tiếp cho đơn hàng đầu tiên. Miễn phí giao hàng hỏa tốc 2H toàn quốc.",
+    code: "WELCOME15",
+    ctaText: "NHẬN MÃ 15% NGAY",
+    targetUrl: "/dang-ky",
+    imageUrl: "https://images.unsplash.com/photo-1520975954732-35dd22299614?w=1920&h=1080&fit=crop&auto=format",
+    giftText: "center center",
   },
   {
-    id: "promo-4",
-    tag: "SIÊU BỀN QUÂN SỰ",
-    badge: "DURABLETEX™",
-    title: "DURABLETEX™",
-    highlight: "Chống Trầy & Chịu Lực Cao",
-    description: "Chất liệu Cordura D900 cao cấp gia cố đường may đúp, chịu ma sát cực tốt, chống xước rách tối đa khi va đập.",
-    code: "DURABLE500K",
-    discountValue: "Tiết kiệm 500K",
-    ctaText: "XEM CHI TIẾT BỘ SƯU TẬP",
-    targetUrl: "/san-pham?tag=durabletex",
-    imageUrl: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=1600&h=900&fit=crop",
+    id: "promo-combo-duo",
+    tag: "COMBO TIẾT KIỆM",
+    badge: "COMBO ĐÔI HÀNH TRÌNH",
+    title: "MUA BALO ĐÔI\nTIẾT KIỆM CỰC ĐỈNH",
+    highlight: "TIẾT KIỆM ĐẾN",
+    discountValue: "500.000Đ",
+    description: "Mua 1 Balo Laptop Công Sở + 1 Balo Du Lịch bất kỳ, giảm trực tiếp 500.000đ. Tặng kèm Túi Đeo Chéo EDC chống nước cao cấp trị giá 250K.",
+    code: "COMBODUO",
+    ctaText: "CHỌN COMBO NGAY",
+    targetUrl: "/san-pham",
+    imageUrl: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=1920&h=1080&fit=crop&auto=format",
+    giftText: "center right",
   },
 ];
 
-const AUTO_ROTATE_INTERVAL = 6000;
+const AUTO_ROTATE_INTERVAL = 7000;
 
 interface HeroSectionProps {
   initialPromotions?: PromoOffer[];
-  products?: any[];
 }
 
 export default function HeroSection({ initialPromotions = [] }: HeroSectionProps) {
@@ -111,22 +113,40 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
     setActiveIndex((prev) => (prev < promotionsList.length - 1 ? prev + 1 : 0));
   };
 
-  const getTechIcon = (index: number) => {
-    switch (index % 4) {
-      case 0:
-        return <Wind className="w-4 h-4 text-cyan-400" />;
-      case 1:
-        return <Droplets className="w-4 h-4 text-blue-400" />;
-      case 2:
-        return <Zap className="w-4 h-4 text-amber-400" />;
-      default:
-        return <ShieldCheck className="w-4 h-4 text-emerald-400" />;
+  // Parse transform configuration (position, scale/zoom)
+  const imageTransform = (() => {
+    const raw = currentPromo.giftText;
+    let pos = "center right";
+    let scale = 1;
+
+    if (raw) {
+      try {
+        if (raw.startsWith("{")) {
+          const parsed = JSON.parse(raw);
+          if (parsed.x !== undefined && parsed.y !== undefined) {
+            pos = `${parsed.x}% ${parsed.y}%`;
+          } else if (parsed.pos) {
+            pos = parsed.pos;
+          }
+          if (parsed.scale) scale = Number(parsed.scale) || 1;
+        } else {
+          pos = raw;
+        }
+      } catch (e) {
+        pos = raw;
+      }
     }
-  };
+
+    return {
+      objectPosition: pos,
+      transform: `scale(${scale})`,
+      transformOrigin: pos,
+    };
+  })();
 
   return (
     <section 
-      className="relative min-h-[calc(100vh-70px)] sm:min-h-[calc(100vh-76px)] h-full bg-[#070b12] text-white pt-20 sm:pt-24 lg:pt-28 pb-6 sm:pb-10 px-4 sm:px-8 lg:px-16 flex flex-col justify-between overflow-hidden border-b border-gray-800/80 select-none group/hero"
+      className="relative min-h-[640px] sm:min-h-[720px] lg:min-h-[820px] bg-[#0B0D0E] text-white pt-24 sm:pt-28 lg:pt-32 pb-0 flex flex-col justify-between overflow-hidden select-none group/hero"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
@@ -137,167 +157,138 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
         else if (diff < -50) handlePrev();
         touchStartX.current = null;
       }}
-      aria-label="Hero Showcase Carousel"
+      aria-label="Hero Promotion Banner"
     >
-      {/* Dynamic Active Hero Full Background Image */}
+      {/* === 1. CINEMATIC HERO BACKGROUND IMAGE === */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <img
-          key={`bg-${currentPromo.id}`}
+          key={`hero-bg-${currentPromo.id}`}
           src={currentPromo.imageUrl}
           alt={currentPromo.title}
-          className="w-full h-full object-cover object-center hero-fade-in"
+          style={imageTransform}
+          className="w-full h-full object-cover hero-fade-in filter brightness-[0.88] contrast-[1.08] transition-all duration-700"
         />
-        {/* Layered Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070b12] via-[#070b12]/85 to-[#070b12]/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#070b12] via-[#070b12]/90 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-30" />
+        {/* Balanced Cinematic Gradients: Left darkening for text contrast without blacking out artwork */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B0D0E]/95 via-[#0B0D0E]/70 to-transparent sm:w-3/4 lg:w-3/5" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0D0E] via-transparent to-[#0B0D0E]/40" />
       </div>
 
-      {/* ================= FADED NAVIGATION BUTTONS ON BOTH SIDES ================= */}
+      {/* === 2. MAIN PROMOTION TYPOGRAPHY & SHOWCASE === */}
+      <div className="relative z-10 max-w-[1440px] mx-auto w-full px-6 lg:px-12 my-auto py-8 sm:py-12">
+        <div className="max-w-2xl space-y-4 sm:space-y-5 hero-slide-up" key={`hero-info-${currentPromo.id}`}>
+          
+          {/* Tag Badge */}
+          <div className="inline-flex items-center gap-2 border border-[#F5B800]/80 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[#F5B800] shadow-md">
+            <Leaf className="w-3.5 h-3.5 fill-[#F5B800]" />
+            <span className="font-display font-bold text-xs uppercase tracking-widest text-[#F5B800]">
+              {currentPromo.tag || "HÀNH TRÌNH XANH"}
+            </span>
+          </div>
+
+          {/* Giant Bold Title */}
+          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] uppercase tracking-tight leading-[0.92] text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">
+            {currentPromo.title ? (
+              currentPromo.title.split("\n").map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))
+            ) : (
+              <>
+                <span className="block">ĐỔI BALO CŨ</span>
+                <span className="block">NHẬN NGAY</span>
+              </>
+            )}
+          </h1>
+
+          {/* Highlight & Huge Yellow Discount Block */}
+          <div className="space-y-0.5 pt-0.5">
+            {currentPromo.highlight && (
+              <div className="flex items-center gap-3 w-fit">
+                <div className="h-[2px] w-10 sm:w-14 bg-[#F5B800]" />
+                <span className="font-display font-black text-xs sm:text-sm tracking-[0.25em] uppercase text-white drop-shadow">
+                  {currentPromo.highlight}
+                </span>
+                <div className="h-[2px] w-10 sm:w-14 bg-[#F5B800]" />
+              </div>
+            )}
+
+            {currentPromo.discountValue && (
+              <div className="font-display font-black text-5xl sm:text-7xl lg:text-[5.5rem] tracking-tight text-[#F5B800] leading-none drop-shadow-[0_4px_30px_rgba(245,184,0,0.45)]">
+                {currentPromo.discountValue}
+              </div>
+            )}
+          </div>
+
+          {/* Campaign Description */}
+          {currentPromo.description && (
+            <p className="text-gray-300 text-sm sm:text-base max-w-lg leading-relaxed font-light drop-shadow-md">
+              {currentPromo.description}
+            </p>
+          )}
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-2">
+            <Link
+              href={currentPromo.targetUrl || "/san-pham"}
+              className="inline-flex items-center gap-2.5 bg-[#F5B800] hover:bg-white text-black font-display font-black text-sm uppercase tracking-wider px-7 py-3 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 group"
+            >
+              <span>{currentPromo.ctaText || "THAM GIA NGAY"}</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            <Link
+              href="/san-pham"
+              className="text-xs sm:text-sm font-display font-bold uppercase tracking-widest text-white hover:text-[#F5B800] transition-colors py-2 px-1"
+            >
+              XEM CHI TIẾT
+            </Link>
+          </div>
+
+          {/* Slide Navigation Arrows (< >) */}
+          <div className="flex items-center gap-3 pt-4 sm:pt-6">
+            <button
+              onClick={handlePrev}
+              className="w-10 h-10 rounded-full border border-white/20 bg-black/40 hover:bg-[#F5B800] text-white hover:text-black flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg backdrop-blur-sm group/btn"
+              aria-label="Previous promotion"
+              title="Ưu đãi trước"
+            >
+              <ChevronLeft className="w-5 h-5 group-hover/btn:-translate-x-0.5 transition-transform" />
+            </button>
+
+            <div className="px-3.5 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-sm text-xs font-mono font-bold text-gray-300">
+              <span className="text-[#F5B800]">{activeIndex + 1}</span>
+              <span className="text-gray-500 mx-1.5">/</span>
+              <span>{promotionsList.length}</span>
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="w-10 h-10 rounded-full border border-white/20 bg-black/40 hover:bg-[#F5B800] text-white hover:text-black flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-lg backdrop-blur-sm group/btn"
+              aria-label="Next promotion"
+              title="Ưu đãi tiếp theo"
+            >
+              <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Floating Edge Navigation Buttons on Desktop */}
       <button
         onClick={handlePrev}
-        className="hidden md:flex absolute left-2 sm:left-4 lg:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-40 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
-        aria-label="Chương trình trước"
+        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/10 bg-black/30 hover:bg-[#F5B800] text-white hover:text-black items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-2xl backdrop-blur-md opacity-0 group-hover/hero:opacity-100"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5 lg:w-6 lg:h-6" />
+        <ChevronLeft className="w-6 h-6" />
       </button>
 
       <button
         onClick={handleNext}
-        className="hidden md:flex absolute right-2 sm:right-4 lg:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-black/50 hover:bg-[#FFB800] text-white/80 hover:text-black border border-white/20 items-center justify-center transition-all duration-300 cursor-pointer shadow-2xl opacity-40 hover:opacity-100 group-hover/hero:opacity-80 backdrop-blur-md"
-        aria-label="Chương trình tiếp"
+        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/10 bg-black/30 hover:bg-[#F5B800] text-white hover:text-black items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 shadow-2xl backdrop-blur-md opacity-0 group-hover/hero:opacity-100"
+        aria-label="Next slide"
       >
-        <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6" />
+        <ChevronRight className="w-6 h-6" />
       </button>
-
-      {/* Main Content Showcase for the Selected 1 Active Promotion */}
-      <div className="relative z-10 max-w-[1440px] mx-auto w-full my-auto py-3 sm:py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-          
-          {/* Active Promo Showcase (Left & Center Details) */}
-          <div key={`content-${currentPromo.id}`} className="lg:col-span-8 space-y-3 sm:space-y-4 hero-slide-up">
-            
-            {/* Tag & Discount Badge */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <span className="px-3 py-1 rounded-md bg-black/70 border border-white/20 text-white font-mono font-bold text-[11px] sm:text-xs uppercase tracking-wider backdrop-blur-md">
-                {currentPromo.tag}
-              </span>
-              {currentPromo.discountValue && (
-                <span className="px-3 py-1 rounded-md bg-[#FFB800] text-black font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-lg">
-                  {currentPromo.discountValue}
-                </span>
-              )}
-            </div>
-
-            {/* Big Prominent Promotion Program Name Headline */}
-            <h1 className="font-display font-black text-3xl sm:text-5xl md:text-6xl lg:text-[76px] xl:text-[84px] uppercase tracking-tight leading-[1.05] text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)] break-words">
-              {currentPromo.badge || currentPromo.title}
-              {currentPromo.highlight && (
-                <span className="block text-[#FFB800] drop-shadow-[0_0_35px_rgba(255,184,0,0.5)] text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mt-1 sm:mt-1.5">
-                  {currentPromo.highlight}
-                </span>
-              )}
-            </h1>
-
-            {/* Description */}
-            <div className="max-w-2xl pt-1">
-              <p className="text-gray-200 text-sm sm:text-base lg:text-lg leading-relaxed font-light drop-shadow-md line-clamp-3">
-                {currentPromo.description}
-              </p>
-            </div>
-
-            {/* CTA Button */}
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 sm:pt-2">
-              <Link
-                href={currentPromo.targetUrl || "/san-pham"}
-                className="inline-flex items-center gap-2.5 sm:gap-3 bg-[#FFB800] text-black font-extrabold text-xs sm:text-sm uppercase tracking-widest px-6 sm:px-8 py-3 sm:py-3.5 rounded-full hover:bg-white transition-all shadow-2xl hover:scale-105 group"
-              >
-                <span>{currentPromo.ctaText || "SĂN DEAL NGAY"}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-          </div>
-
-          {/* Right Card Spotlight */}
-          <div key={`card-${currentPromo.id}`} className="hidden lg:flex lg:col-span-4 justify-center items-center hero-scale-up">
-            <div className="relative w-full max-w-[340px] aspect-[3/4] rounded-2xl overflow-hidden border-2 border-cyan-400/50 shadow-[0_0_45px_rgba(6,182,212,0.35)] bg-gray-950 p-4 flex flex-col justify-between group">
-              <img
-                src={currentPromo.imageUrl}
-                alt={currentPromo.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-              
-              <div className="relative z-10 flex justify-between">
-                <span className="px-2.5 py-1 rounded bg-black/80 text-[11px] font-bold text-white font-mono border border-white/20">
-                  PROGRAM 0{activeIndex + 1}
-                </span>
-              </div>
-
-              <div className="relative z-10 rounded-xl bg-cyan-950/90 border border-cyan-400/60 p-3.5 backdrop-blur-md">
-                <h3 className="font-black text-lg text-cyan-200 uppercase">{currentPromo.badge || currentPromo.title}</h3>
-                <p className="text-xs text-cyan-300/80 font-mono">{currentPromo.highlight}</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* ================= BOTTOM CAROUSEL SELECTOR (4 Cards Carousel) ================= */}
-      <div className="relative z-10 max-w-[1440px] mx-auto w-full pt-2 sm:pt-3 border-t border-gray-800/80">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-1.5 sm:gap-2">
-            <Tag className="w-3.5 h-3.5 text-[#FFB800]" />
-            Chương trình ưu đãi ({activeIndex + 1}/{promotionsList.length})
-          </span>
-        </div>
-
-        {/* Carousel Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-          {promotionsList.slice(0, 4).map((promo, idx) => {
-            const isSelected = activeIndex === idx;
-
-            return (
-              <div
-                key={promo.id || idx}
-                onClick={() => setActiveIndex(idx)}
-                className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 p-2 sm:p-2.5 border ${
-                  isSelected
-                    ? "bg-gradient-to-r from-cyan-950/90 via-blue-950/90 to-slate-900/90 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-[1.02]"
-                    : "bg-gray-900/80 hover:bg-gray-800/90 border-white/10 opacity-75 hover:opacity-100"
-                }`}
-              >
-                {/* Background Thumbnail Image */}
-                <div className="absolute inset-0 z-0 opacity-20 overflow-hidden">
-                  <img src={promo.imageUrl} alt={promo.title} className="w-full h-full object-cover" />
-                </div>
-
-                <div className="relative z-10 flex items-center justify-between min-w-0">
-                  <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-                    <div className={`p-1 sm:p-1.5 rounded-lg border shrink-0 ${isSelected ? "bg-cyan-500/20 border-cyan-400" : "bg-black/40 border-white/10"}`}>
-                      {getTechIcon(idx)}
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className={`font-black text-[11px] sm:text-xs md:text-sm uppercase tracking-wide truncate ${isSelected ? "text-cyan-200" : "text-white"}`}>
-                        {promo.badge || promo.title}
-                      </h4>
-                      <p className="text-[9px] sm:text-[10px] text-gray-400 font-mono truncate">{promo.highlight}</p>
-                    </div>
-                  </div>
-
-                  {isSelected && (
-                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping shrink-0 ml-1" />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </section>
   );
 }
-
-
