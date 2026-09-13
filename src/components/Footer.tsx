@@ -23,7 +23,7 @@ export default function Footer() {
     <footer className="bg-[#0B0D0E] border-t border-[#2A2C2F]">
       {/* Main footer */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
