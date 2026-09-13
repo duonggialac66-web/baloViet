@@ -9,7 +9,6 @@ import { useAuth } from "@/store/authContext";
 const navLinks = [
   { label: "Trang chủ", href: "/" },
   { label: "Sản phẩm", href: "/san-pham" },
-  { label: "Bộ sưu tập", href: "/bo-suu-tap" },
   { label: "Về chúng tôi", href: "/ve-chung-toi" },
   { label: "Blog", href: "/blog" },
   { label: "Liên hệ", href: "/lien-he" },
@@ -57,8 +56,11 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#0B0D0E]/95 backdrop-blur-md border-b border-[#2A2C2F]" : pathname === "/" ? "bg-transparent" : "bg-[#0B0D0E]"
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-[#0B0D0E]/95 backdrop-blur-md border-b border-[#2A2C2F]"
+            : "bg-transparent"
+        }`}
       >
         <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-16 lg:h-20">

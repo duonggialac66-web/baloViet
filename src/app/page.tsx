@@ -12,6 +12,9 @@ import CategoryStyleSlider, { type CategoryItem } from "@/components/home/Catego
 import BrandGuaranteeSection, { type BrandGuaranteeConfig } from "@/components/home/BrandGuaranteeSection";
 import type { Product } from "@/data/products";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Home() {
   let dbProducts: any[] = [];
   let activePromotions: any[] = [];
