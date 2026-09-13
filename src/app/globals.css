@@ -1,11 +1,14 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-display: 'Barlow Condensed', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-display: var(--font-display), 'Barlow Condensed', sans-serif;
+  --font-futuristic: var(--font-space), 'Space Grotesk', sans-serif;
+  --font-syne: var(--font-syne), 'Syne', sans-serif;
+  --font-body: var(--font-body), 'Inter', sans-serif;
   --color-brand-black: #0B0D0E;
   --color-brand-cream: #F3F1EB;
   --color-brand-gold: #F5B800;
+  --color-brand-red: #FF1E27;
   --color-brand-card: #161819;
   --color-brand-muted: #1E2022;
   --color-brand-border: #2A2C2F;
@@ -192,4 +195,209 @@ body {
   -webkit-text-stroke: 1.5px #0B0D0E;
   color: rgba(11, 13, 14, 0.08);
 }
+
+/* ===== Products Page Animations ===== */
+
+/* ─── Hero Product Entrance: drops in when page loads or category switches ─── */
+@keyframes heroProductDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(8px);
+    filter: blur(0px);
+  }
+  80% {
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+}
+.hero-product-entrance {
+  animation: heroProductDrop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ─── Annotation lines: slide in from center outward with stagger ─── */
+@keyframes annotationSlideIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+}
+.hero-annotation-entrance {
+  opacity: 0;
+  animation: annotationSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Gentle hover float for the product image (after entrance) ─── */
+@keyframes heroFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-hero-float {
+  animation: heroFloat 4.5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* ─── Ring glow pulse ─── */
+@keyframes ringGlowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+.animate-ring-glow {
+  animation: ringGlowPulse 3s ease-in-out infinite;
+}
+
+/* ─── Banner image fade + scale transition on category switch ─── */
+@keyframes bannerFadeIn {
+  0% { opacity: 0; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-banner-fade {
+  animation: bannerFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Glow pulse for platforms ─── */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 60px 20px rgba(245, 184, 0, 0.25),
+                0 0 120px 60px rgba(245, 184, 0, 0.08);
+    opacity: 0.7;
+  }
+  50% {
+    box-shadow: 0 0 80px 30px rgba(245, 184, 0, 0.35),
+                0 0 160px 80px rgba(245, 184, 0, 0.12);
+    opacity: 1;
+  }
+}
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* ─── Dashed arc for Hot Deals section ─── */
+@keyframes dashedArcDraw {
+  from { stroke-dashoffset: 800; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-dashed-arc {
+  animation: dashedArcDraw 2s ease-out forwards;
+}
+
+/* ─── Slide in from left for hero text ─── */
+@keyframes slideInLeft {
+  0% { opacity: 0; transform: translateX(-40px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Scale entrance for cards ─── */
+@keyframes scaleIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ─── Typography utilities ─── */
+.font-futuristic {
+  font-family: var(--font-futuristic);
+}
+.font-syne {
+  font-family: var(--font-syne);
+}
+
+/* ─── Continuous slow rotation for circular badge ─── */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spinSlow 16s linear infinite;
+}
+
+/* ─── 3D Glowing Gold Pedestal Rim Glow ─── */
+@keyframes goldPedestalGlow {
+  0%, 100% {
+    box-shadow: 0 0 35px 8px rgba(245, 184, 0, 0.6),
+                0 0 70px 20px rgba(245, 184, 0, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 50px 14px rgba(245, 184, 0, 0.8),
+                0 0 100px 30px rgba(245, 184, 0, 0.4);
+  }
+}
+.animate-gold-pedestal {
+  animation: goldPedestalGlow 3s ease-in-out infinite;
+}
+
+/* ─── Cyberpunk HUD Annotation Animations ─── */
+@keyframes hudRadarPing {
+  0% {
+    r: 0.6;
+    opacity: 0.9;
+    stroke-width: 0.4;
+  }
+  70% {
+    r: 2.8;
+    opacity: 0.3;
+    stroke-width: 0.25;
+  }
+  100% {
+    r: 3.5;
+    opacity: 0;
+    stroke-width: 0.1;
+  }
+}
+.animate-hud-ping {
+  animation: hudRadarPing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  transform-origin: center;
+}
+
+@keyframes hudDashFlow {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-hud-dash {
+  animation: hudDashFlow 1.2s linear infinite;
+}
+
+@keyframes hudPulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 184, 0, 0.25), inset 0 0 10px rgba(245, 184, 0, 0.05);
+    border-color: rgba(245, 184, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(245, 184, 0, 0.5), inset 0 0 15px rgba(245, 184, 0, 0.15);
+    border-color: rgba(245, 184, 0, 0.85);
+  }
+}
+.animate-hud-card {
+  animation: hudPulseGlow 3s ease-in-out infinite;
+}
+
 

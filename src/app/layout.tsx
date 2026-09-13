@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Barlow_Condensed, Inter, Syne, Space_Grotesk } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import Header from "@/components/Header";
@@ -14,8 +14,28 @@ const barlowCondensed = Barlow_Condensed({
   weight: ["600", "700", "800", "900"],
   style: ["normal", "italic"],
   variable: "--font-display",
+  display: "swap",
 });
-const inter = Inter({ subsets: ["latin", "vietnamese"], variable: "--font-body" });
+
+const inter = Inter({ 
+  subsets: ["latin", "vietnamese"], 
+  variable: "--font-body",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://baloviet.vn"),
@@ -53,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       </head>
-      <body className={`${barlowCondensed.variable} ${inter.variable} bg-[#0B0D0E] min-h-screen flex flex-col`}>
+      <body className={`${barlowCondensed.variable} ${inter.variable} ${syne.variable} ${spaceGrotesk.variable} bg-[#0B0D0E] min-h-screen flex flex-col`}>
         <ToastProvider>
           <AuthProvider hasSession={hasSession}>
             <CartProvider>

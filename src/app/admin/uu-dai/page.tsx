@@ -26,18 +26,18 @@ export default async function AdminPromotionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#121417] p-6 rounded-2xl border border-[#22242B]">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Ưu đãi & Banner Hero</h1>
-          <p className="text-gray-500 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-syne">Quản lý Ưu đãi & Banner Hero</h1>
+          <p className="text-[#9CA3AF] text-xs sm:text-sm mt-1 font-sans">
             Thiết lập các chương trình khuyến mãi, voucher và banner xuất hiện trên Hero Carousel trang chủ.
           </p>
         </div>
         <Link
           href="/admin/uu-dai/tao-moi"
-          className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 transition-colors font-medium shadow-sm"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F5B800] text-black font-bold rounded-xl hover:bg-[#e0a800] transition-colors font-sans text-xs uppercase tracking-wider shrink-0 shadow-[0_0_15px_rgba(245,184,0,0.25)]"
         >
-          <Plus className="w-5 h-5" /> Thêm ưu đãi mới
+          <Plus className="w-4 h-4" /> Thêm ưu đãi mới
         </Link>
       </div>
 
@@ -50,7 +50,7 @@ export default async function AdminPromotionsPage() {
             header: "Hình nền Hero Background",
             key: "imageUrl",
             render: (item) => (
-              <div className="relative w-48 sm:w-56 h-28 bg-gray-950 rounded-xl overflow-hidden border border-gray-700 shadow-md group shrink-0">
+              <div className="relative w-48 sm:w-56 h-28 bg-[#181A1F] rounded-xl overflow-hidden border border-[#2A2D35] shadow-md group shrink-0">
                 {item.imageUrl ? (
                   <>
                     <img
@@ -60,13 +60,13 @@ export default async function AdminPromotionsPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="absolute bottom-2 left-2 right-2">
-                      <span className="text-[10px] font-bold bg-[#FFB800] text-black px-2 py-0.5 rounded uppercase">
+                      <span className="text-[10px] font-bold bg-[#F5B800] text-black px-2 py-0.5 rounded uppercase">
                         {item.badge || item.title}
                       </span>
                     </div>
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">Chưa có background</div>
+                  <div className="w-full h-full flex items-center justify-center text-xs text-[#9CA3AF]">Chưa có background</div>
                 )}
               </div>
             ),
@@ -77,19 +77,19 @@ export default async function AdminPromotionsPage() {
             render: (item) => (
               <div className="space-y-1 max-w-sm">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-semibold bg-gray-100 text-gray-800 px-2 py-0.5 rounded border border-gray-200">
+                  <span className="text-[10px] font-mono font-bold bg-[#181A1F] text-[#9CA3AF] px-2 py-0.5 rounded border border-[#2A2D35]">
                     {item.tag || "TAG BỘ SƯU TẬP"}
                   </span>
                   {item.discountValue && (
-                    <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded">
+                    <span className="text-[10px] font-mono font-bold text-[#F5B800] bg-[#F5B800]/15 px-2 py-0.5 rounded border border-[#F5B800]/30">
                       {item.discountValue}
                     </span>
                   )}
                 </div>
-                <h3 className="font-bold text-gray-900 text-base">{item.title}</h3>
-                <p className="text-xs text-gray-500 line-clamp-2">{item.description}</p>
+                <h3 className="font-bold text-white text-sm">{item.title}</h3>
+                <p className="text-xs text-[#9CA3AF] line-clamp-2">{item.description}</p>
                 {item.code && (
-                  <p className="text-xs font-mono text-gray-600">Mã: <strong className="text-gray-900">{item.code}</strong></p>
+                  <p className="text-[11px] font-mono text-[#9CA3AF]">Mã: <strong className="text-[#F5B800]">{item.code}</strong></p>
                 )}
               </div>
             ),
@@ -98,7 +98,7 @@ export default async function AdminPromotionsPage() {
             header: "Thứ tự",
             key: "sortOrder",
             render: (item) => (
-              <span className="font-mono text-sm font-bold bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md border border-gray-200">
+              <span className="font-mono text-xs font-bold bg-[#181A1F] text-[#F5B800] px-2.5 py-1 rounded-md border border-[#2A2D35]">
                 #{item.sortOrder || 0}
               </span>
             ),
@@ -117,7 +117,7 @@ export default async function AdminPromotionsPage() {
               <div className="flex items-center gap-2">
                 <Link
                   href={`/admin/uu-dai/${item.id}`}
-                  className="px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium text-xs rounded-md transition-colors flex items-center gap-1"
+                  className="px-3 py-1.5 border border-[#F5B800]/40 text-[#F5B800] hover:bg-[#F5B800]/15 font-bold text-xs rounded-lg transition-colors flex items-center gap-1"
                   title="Chỉnh sửa background và ưu đãi"
                 >
                   <Edit2 className="w-3.5 h-3.5" /> Sửa

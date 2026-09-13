@@ -27,26 +27,32 @@ export default async function AdminCustomersPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Quản lý Khách hàng</h1>
-        <p className="text-gray-500 mt-2">{customers.length} khách hàng đã đăng ký.</p>
+      <div className="flex justify-between items-center bg-[#121417] p-6 rounded-2xl border border-[#22242B]">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-syne">Quản lý Khách hàng</h1>
+          <p className="text-[#9CA3AF] text-xs sm:text-sm mt-1 font-sans">{customers.length} khách hàng đã đăng ký tài khoản.</p>
+        </div>
       </div>
 
       <DataTable
         data={customers}
         keyExtractor={(item) => item.id}
         columns={[
-          { header: "Họ tên", key: "fullName", render: (item) => <span className="font-medium">{item.fullName}</span> },
-          { header: "Email", key: "email" },
-          { header: "SĐT", key: "phone", render: (item) => item.phone || "—" },
-          { header: "Ngày ĐK", key: "createdAt", render: (item) => new Date(item.createdAt!).toLocaleDateString("vi-VN") },
+          { header: "Họ tên", key: "fullName", render: (item) => <span className="font-bold text-white font-sans text-xs">{item.fullName}</span> },
+          { header: "Email", key: "email", render: (item) => <span className="font-mono text-xs text-[#9CA3AF]">{item.email}</span> },
+          { header: "SĐT", key: "phone", render: (item) => <span className="font-mono text-xs text-[#9CA3AF]">{item.phone || "—"}</span> },
+          { header: "Ngày ĐK", key: "createdAt", render: (item) => <span className="font-mono text-xs text-[#9CA3AF]">{new Date(item.createdAt!).toLocaleDateString("vi-VN")}</span> },
           { header: "Trạng thái", key: "isActive", render: (item) => (
-            <span className={`px-2 py-1 text-xs rounded-full ${item.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            <span className={`px-2.5 py-1 text-[10px] font-mono font-bold rounded-md uppercase border ${
+              item.isActive 
+                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" 
+                : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+            }`}>
               {item.isActive ? "Hoạt động" : "Đã khóa"}
             </span>
           )},
           { header: "", key: "actions", render: (item) => (
-            <Link href={`/admin/khach-hang/${item.id}`} className="text-amber-600 hover:underline text-sm">Chi tiết</Link>
+            <Link href={`/admin/khach-hang/${item.id}`} className="text-[#F5B800] hover:underline font-mono text-xs font-bold">Chi tiết &rarr;</Link>
           )},
         ]}
       />

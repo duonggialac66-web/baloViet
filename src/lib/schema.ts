@@ -28,17 +28,34 @@ export const products = pgTable("products", {
   categoryIdx: index("products_category_idx").on(table.categorySlug),
 }));
 
+export interface CategoryDisplaySettings {
+  imageX: number;       // % offset from center (-50 to 50)
+  imageY: number;       // % offset from center (-50 to 50)
+  imageScale: number;   // % scale (50–200)
+  themeColor?: string;  // Hex color or 'auto'
+  annotations: {
+    label: string;
+    dotX: number;       // % position on the showcase area
+    dotY: number;
+    labelX: number;
+    labelY: number;
+    side: "left" | "right";
+  }[];
+}
+
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   description: text("description"),
-  imageId: text("image_id"),       // Cloudinary public ID
+  imageId: text("image_id"),
   imageAlt: text("image_alt"),
+  displaySettings: jsonb("display_settings").$type<CategoryDisplaySettings>(),
   count: integer("count").notNull().default(0),
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),
 });
+
 
 export const uiConfigs = pgTable("ui_configs", {
   id: text("id").primaryKey(), // "slider_cat_1"

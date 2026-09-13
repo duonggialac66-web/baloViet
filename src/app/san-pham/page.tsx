@@ -1,25 +1,48 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { db } from "@/lib/db";
-import { products as productsSchema } from "@/lib/schema";
-import { desc } from "drizzle-orm";
-import ProductCard from "@/components/ProductCard";
+import { 
+  products as productsSchema, 
+  categories as categoriesSchema,
+  promotions as promotionsSchema
+} from "@/lib/schema";
+import { eq, desc, asc } from "drizzle-orm";
+import ProductsPageClient from "@/components/product/ProductsPageClient";
 import type { Product } from "@/data/products";
+import type { PromotionItem } from "@/components/product/HotDealsCarousel";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Tất cả sản phẩm – Balo Việt",
-  description: "Khám phá toàn bộ bộ sưu tập balo chính hãng của Balo Việt.",
+  description: "Khám phá toàn bộ bộ sưu tập balo chính hãng của Balo Việt. Thiết kế công thái học, chống nước IPX7 và đệm chống sốc 360°.",
 };
 
 export default async function SanPhamPage() {
   let dbProducts: any[] = [];
+  let dbCategories: any[] = [];
+  let dbPromotions: any[] = [];
+
   try {
-    dbProducts = await db
-      .select()
-      .from(productsSchema)
-      .orderBy(desc(productsSchema.createdAt));
+    const [prods, cats, promos] = await Promise.all([
+      db
+        .select()
+        .from(productsSchema)
+        .orderBy(desc(productsSchema.createdAt)),
+      db
+        .select()
+        .from(categoriesSchema),
+      db
+        .select()
+        .from(promotionsSchema)
+        .where(eq(promotionsSchema.isActive, true))
+        .orderBy(asc(promotionsSchema.sortOrder)),
+    ]);
+    dbProducts = prods;
+    dbCategories = cats;
+    dbPromotions = promos;
   } catch (err) {
-    console.warn("Error fetching products:", err);
+    console.warn("Error fetching products, categories, or promotions:", err);
   }
 
   const productsList: Product[] = dbProducts.map((p) => ({
@@ -35,57 +58,60 @@ export default async function SanPhamPage() {
               p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
               p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp",
     categorySlug: p.categorySlug,
-    stock: p.stock,
-    rating: p.rating,
-    reviews: p.reviews,
-    shortDescription: p.shortDescription,
-    description: p.description,
+    stock: p.stock ?? 0,
+    rating: p.rating ?? 4.8,
+    reviews: p.reviews ?? 0,
+    shortDescription: p.shortDescription || "",
+    description: p.description || "",
     specifications: (p.specifications as Record<string, string>) || {},
     tags: p.tags || [],
-    images: (p.imageIds || []).map((url: string, index: number) => ({
-      url,
-      alt: p.imageAlts?.[index] || p.name,
-      thumbnail: url,
-    })),
+    images: (p.imageIds && p.imageIds.length > 0)
+      ? p.imageIds.map((url: string, index: number) => ({
+          url,
+          alt: p.imageAlts?.[index] || p.name,
+          thumbnail: url,
+        }))
+      : [{
+          url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
+          alt: p.name,
+          thumbnail: "",
+        }],
     colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
     isBestSeller: p.isBestSeller ?? false,
     isNew: p.isNew ?? false,
   }));
 
-  return (
-    <main className="min-h-screen pt-24 pb-16 bg-[#0B0D0E]">
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-gray-800">
-          <div>
-            <h1 className="font-display font-black text-white text-3xl lg:text-5xl uppercase tracking-tight mb-2">
-              Bộ Sưu Tập Balo
-            </h1>
-            <p className="text-gray-400 text-sm sm:text-base">
-              Hiển thị {productsList.length} sản phẩm chính hãng cao cấp
-            </p>
-          </div>
-          <div className="mt-4 md:mt-0">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 bg-[#F5B800] text-black font-display font-bold uppercase tracking-widest text-xs px-5 py-2.5 hover:bg-white transition-colors rounded-sm"
-            >
-              ← Về trang chủ
-            </Link>
-          </div>
-        </div>
+  const formattedCategories = dbCategories.map((c) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    imageId: c.imageId,
+    description: c.description,
+    displaySettings: c.displaySettings || null,
+    count: c.count,
+  }));
 
-        {productsList.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-            {productsList.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="py-16 text-center text-gray-500">
-            <p className="text-lg">Chưa có sản phẩm nào trong kho dữ liệu.</p>
-          </div>
-        )}
-      </div>
+  const formattedPromotions: PromotionItem[] = dbPromotions.map((pr) => ({
+    id: pr.id,
+    tag: pr.tag,
+    badge: pr.badge,
+    title: pr.title,
+    highlight: pr.highlight,
+    discountValue: pr.discountValue,
+    description: pr.description,
+    code: pr.code,
+    ctaText: pr.ctaText,
+    targetUrl: pr.targetUrl,
+    imageUrl: pr.imageUrl,
+  }));
+
+  return (
+    <main className="min-h-screen bg-[#0B0D0E]">
+      <ProductsPageClient
+        products={productsList}
+        categories={formattedCategories}
+        promotions={formattedPromotions}
+      />
     </main>
   );
 }

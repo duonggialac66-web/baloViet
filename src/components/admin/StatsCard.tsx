@@ -12,23 +12,23 @@ interface StatsCardProps {
 
 export default function StatsCard({ title, value, icon, trend }: StatsCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 flex flex-col">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-[#121417] rounded-2xl border border-[#22242B] p-5 sm:p-6 flex flex-col justify-between shadow-xl">
+      <div className="flex justify-between items-start mb-3">
         <div>
-          <p className="text-gray-500 text-sm font-medium mb-1">{title}</p>
-          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+          <p className="text-[#9CA3AF] text-xs font-medium font-sans uppercase tracking-wider mb-1">{title}</p>
+          <h3 className="text-2xl font-bold text-white font-mono">{value}</h3>
         </div>
-        <div className="p-3 bg-amber-50 text-amber-600 rounded-lg">
+        <div className="p-3 bg-[#F5B800]/10 border border-[#F5B800]/30 rounded-xl text-[#F5B800]">
           {icon}
         </div>
       </div>
       
       {trend && (
-        <div className="mt-auto flex items-center text-sm">
-          <span className={`font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+        <div className="mt-auto flex items-center text-xs font-mono pt-1">
+          <span className={`font-bold ${trend.isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
             {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
           </span>
-          <span className="text-gray-500 ml-2">so với tháng trước</span>
+          <span className="text-[#9CA3AF] ml-2 font-sans">so với tháng trước</span>
         </div>
       )}
     </div>

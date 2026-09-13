@@ -25,10 +25,10 @@ export default async function AdminOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-center bg-[#121417] p-6 rounded-2xl border border-[#22242B]">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Quản lý Đơn hàng</h1>
-          <p className="text-gray-500 mt-2">Xem và cập nhật trạng thái các đơn hàng của khách hàng.</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white font-syne">Quản lý Đơn hàng</h1>
+          <p className="text-[#9CA3AF] text-xs sm:text-sm mt-1 font-sans">Xem và cập nhật trạng thái các đơn hàng của khách hàng.</p>
         </div>
       </div>
 
@@ -36,17 +36,21 @@ export default async function AdminOrdersPage() {
         data={allOrders}
         keyExtractor={(item) => item.id}
         columns={[
-          { header: "Mã Đơn", key: "orderNumber", render: (item) => <span className="font-medium">#{item.orderNumber}</span> },
+          { header: "Mã Đơn", key: "orderNumber", render: (item) => <span className="font-mono font-bold text-white">#{item.orderNumber}</span> },
           { header: "Khách Hàng", key: "customerName", render: (item) => (
             <div>
-              <p className="font-medium text-gray-900">{item.customerName}</p>
-              <p className="text-xs text-gray-500">{item.customerPhone}</p>
+              <p className="font-bold text-white font-sans text-xs">{item.customerName}</p>
+              <p className="text-[10px] text-[#9CA3AF] font-mono mt-0.5">{item.customerPhone}</p>
             </div>
           ) },
-          { header: "Ngày Đặt", key: "createdAt", render: (item) => new Date(item.createdAt!).toLocaleString('vi-VN') },
-          { header: "Tổng Tiền", key: "total", render: (item) => <span className="text-amber-600 font-medium">{formatPrice(item.total)}</span> },
+          { header: "Ngày Đặt", key: "createdAt", render: (item) => <span className="font-mono text-xs text-[#9CA3AF]">{new Date(item.createdAt!).toLocaleString('vi-VN')}</span> },
+          { header: "Tổng Tiền", key: "total", render: (item) => <span className="text-[#F5B800] font-mono font-bold text-xs">{formatPrice(item.total)}</span> },
           { header: "Thanh toán", key: "paymentStatus", render: (item) => (
-             <span className={`px-2 py-1 text-xs rounded-full ${item.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+             <span className={`px-2.5 py-1 text-[10px] font-mono font-bold rounded-md uppercase border ${
+               item.paymentStatus === 'paid' 
+                 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+                 : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+             }`}>
                {item.paymentStatus === 'paid' ? 'Đã TT' : 'Chưa TT'}
              </span>
           )},
@@ -57,7 +61,7 @@ export default async function AdminOrdersPage() {
             render: (item) => (
               <Link 
                 href={`/admin/don-hang/${item.id}`} 
-                className="inline-flex items-center justify-center px-3 py-1.5 border border-amber-600 text-amber-600 hover:bg-amber-50 rounded-md text-sm font-medium transition-colors"
+                className="inline-flex items-center justify-center px-3 py-1.5 border border-[#F5B800]/40 text-[#F5B800] hover:bg-[#F5B800]/15 rounded-lg text-xs font-bold font-sans transition-colors"
               >
                 Chi tiết
               </Link>
