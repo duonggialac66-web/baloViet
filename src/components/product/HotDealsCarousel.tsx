@@ -145,14 +145,14 @@ export default function HotDealsCarousel({ products, promotions = [] }: HotDeals
           <button
             type="button"
             onClick={handlePrev}
-            className="absolute left-0 sm:left-4 z-30 w-12 h-12 rounded-full border border-white/10 bg-black/60 hover:bg-[#F5B800] hover:text-black transition-colors flex items-center justify-center text-white text-xl shadow-xl active:scale-95 cursor-pointer"
+            className="absolute left-1 sm:left-4 z-30 w-9 h-9 sm:w-12 sm:h-12 rounded-full border border-white/15 bg-black/70 hover:bg-[#F5B800] hover:text-black transition-colors flex items-center justify-center text-white text-base sm:text-xl shadow-xl active:scale-95 cursor-pointer backdrop-blur-sm"
             aria-label="Previous Deal"
           >
             ←
           </button>
 
           {/* 3 Cards Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-stretch w-full max-w-6xl mx-auto px-6 sm:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 items-stretch w-full max-w-6xl mx-auto px-5 sm:px-12">
             
             {/* 1. LEFT CARD */}
             <div className="hidden md:block transition-all duration-500 hover:scale-105">
@@ -309,7 +309,7 @@ export default function HotDealsCarousel({ products, promotions = [] }: HotDeals
           <button
             type="button"
             onClick={handleNext}
-            className="absolute right-0 sm:right-4 z-30 w-12 h-12 rounded-full border border-white/10 bg-black/60 hover:bg-[#F5B800] hover:text-black transition-colors flex items-center justify-center text-white text-xl shadow-xl active:scale-95 cursor-pointer"
+            className="absolute right-1 sm:right-4 z-30 w-9 h-9 sm:w-12 sm:h-12 rounded-full border border-white/15 bg-black/70 hover:bg-[#F5B800] hover:text-black transition-colors flex items-center justify-center text-white text-base sm:text-xl shadow-xl active:scale-95 cursor-pointer backdrop-blur-sm"
             aria-label="Next Deal"
           >
             →

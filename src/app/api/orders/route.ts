@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     const { user } = await getSession();
     const body = await req.json();
-    const { items, shippingAddress, customerEmail, customerPhone, customerName, paymentMethod, note } = body;
+    const { items, shippingAddress, customerEmail, customerPhone, customerName, paymentMethod, note, couponCode, discount: clientDiscount } = body;
 
     if (!items || items.length === 0 || !shippingAddress || !customerPhone || !customerName) {
       return NextResponse.json({ error: "Thông tin đơn hàng không đầy đủ" }, { status: 400 });
@@ -59,10 +59,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Shipping fee rules
+    // Shipping fee & discount rules
     const shippingFee = subtotal >= 1000000 ? 0 : 30000;
-    const discount = 0;
-    const total = subtotal + shippingFee - discount;
+    const discount = typeof clientDiscount === "number" && clientDiscount > 0 ? Math.min(clientDiscount, subtotal + shippingFee) : 0;
+    const total = Math.max(0, subtotal + shippingFee - discount);
 
     const orderId = nanoid();
     // Generate order number like ORD-20260827-XYZ1
@@ -70,52 +70,56 @@ export async function POST(req: NextRequest) {
     const randomSuffix = nanoid(4).toUpperCase();
     const orderNumber = `ORD-${dateStr}-${randomSuffix}`;
 
+    const formattedNote = [
+      note ? note.trim() : null,
+      couponCode ? `[Mã giảm giá áp dụng: ${couponCode.toUpperCase()} (-${new Intl.NumberFormat("vi-VN").format(discount)}đ)]` : null,
+    ].filter(Boolean).join(" ");
+
     // 2. Perform DB Updates (transacting order creation & stock reduction)
-    await db.transaction(async (tx) => {
-      // Create Order
-      await tx.insert(orders).values({
-        id: orderId,
-        orderNumber,
-        userId: user ? user.id : null,
-        customerName,
-        customerEmail: user ? user.email : customerEmail,
-        customerPhone,
-        shippingAddress,
-        subtotal,
-        shippingFee,
-        discount,
-        total,
-        status: "pending",
-        paymentMethod,
-        paymentStatus: "unpaid",
-        note: note ? note.trim() : null,
+    // Neon HTTP driver doesn't support traditional transactions, so we execute sequentially.
+    // Create Order
+    await db.insert(orders).values({
+      id: orderId,
+      orderNumber,
+      userId: user ? user.id : null,
+      customerName,
+      customerEmail: user ? user.email : customerEmail,
+      customerPhone,
+      shippingAddress,
+      subtotal,
+      shippingFee,
+      discount,
+      total,
+      status: "pending",
+      paymentMethod,
+      paymentStatus: "unpaid",
+      note: formattedNote || null,
+    });
+
+    // Create Order Items
+    for (const item of itemsToInsert) {
+      await db.insert(orderItems).values({
+        ...item,
+        orderId,
       });
 
-      // Create Order Items
-      for (const item of itemsToInsert) {
-        await tx.insert(orderItems).values({
-          ...item,
-          orderId,
-        });
-
-        // Reduce stock
-        await tx
-          .update(products)
-          .set({
-            stock: sql`stock - ${item.quantity}`,
-            updatedAt: new Date(),
-          })
-          .where(eq(products.id, item.productId));
-      }
-    });
+      // Reduce stock
+      await db
+        .update(products)
+        .set({
+          stock: sql`stock - ${item.quantity}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(products.id, item.productId));
+    }
 
     return NextResponse.json({
       success: true,
       orderId,
       orderNumber,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Order creation error:", error);
-    return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống khi tạo đơn hàng" }, { status: 500 });
+    return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống khi tạo đơn hàng", details: error.message || String(error) }, { status: 500 });
   }
 }

@@ -324,7 +324,7 @@ export default function BackgroundRemoverModal({
               <label className="flex items-center justify-center gap-2 border border-dashed border-gray-300 hover:border-amber-500 rounded p-3 cursor-pointer bg-white text-xs font-medium text-gray-700 hover:text-amber-700 transition-colors text-center">
                 <Upload className="w-4 h-4" />
                 <span>{originalImageSrc ? "Đổi ảnh khác" : "Chọn ảnh từ máy tính"}</span>
-                <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+                <input type="file" accept="image/*" onChange={handleFileUpload} className="text-black hidden" />
               </label>
             </div>
 
@@ -430,7 +430,7 @@ export default function BackgroundRemoverModal({
                     <input
                       type="range" min="5" max="80" value={brushSize}
                       onChange={(e) => setBrushSize(Number(e.target.value))}
-                      className="w-full accent-amber-600"
+                      className="text-black w-full accent-amber-600"
                     />
                   </div>
                 )}

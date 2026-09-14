@@ -46,7 +46,7 @@ const defaultPromotions: PromoOffer[] = [
     title: "ĐẠI TIỆC MÙA HÈ\nBALO VIỆT PRO",
     highlight: "GIẢM ĐẾN",
     discountValue: "45%",
-    description: "Giảm tới 45% toàn bộ bộ sưu tập Balo Laptop & Du Lịch chống nước IPX6. Tặng kèm Áo Mưa Balo chuyên dụng trị giá 150.000đ cho đơn từ 990K.",
+    description: "Giảm tới 45% toàn bộ các sản phẩm Balo Laptop & Du Lịch chống nước IPX6. Tặng kèm Áo Mưa Balo chuyên dụng trị giá 150.000đ cho đơn từ 990K.",
     code: "FLASHSALE45",
     ctaText: "SĂN DEAL NGAY",
     targetUrl: "/san-pham",
@@ -137,7 +137,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
   const colorInfo = useImageColor(currentPromo.imageUrl, imageTransform.themeColor);
 
   return (
-    <section 
+    <section
       className="relative h-screen min-h-[540px] max-h-[740px] pt-16 sm:pt-20 lg:pt-20 pb-0 flex flex-col justify-between overflow-hidden select-none group/hero transition-colors duration-700"
       style={{
         backgroundColor: colorInfo.bgColor,
@@ -157,22 +157,28 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
     >
       {/* === 1. CINEMATIC HERO BACKGROUND / PRODUCT IMAGE WITH SEAMLESS BLEND === */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        
+
         {/* Dynamic Ambient Background Glow sampling image/theme color */}
         <div
-          className="absolute inset-0 pointer-events-none transition-all duration-700"
+          className="absolute inset-0 pointer-events-none transition-all duration-700 md:block hidden"
           style={{
             background: colorInfo.isLight
               ? `radial-gradient(circle at ${imageTransform.posX}% ${imageTransform.posY}%, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 60%, ${colorInfo.bgColor} 100%)`
               : `radial-gradient(circle at ${imageTransform.posX}% ${imageTransform.posY}%, ${colorInfo.bgColor}77 0%, ${colorInfo.bgColor}22 50%, #0B0D0E 90%)`,
           }}
         />
+        
+        {/* Mobile ambient background */}
+        <div 
+          className="absolute inset-0 pointer-events-none transition-all duration-700 md:hidden block"
+          style={{ backgroundColor: colorInfo.bgColor }}
+        />
 
         {currentPromo.imageUrl ? (
           imageTransform.isProductPng ? (
             /* Floating Product PNG Mode (Direct position X/Y + scale) */
             <div
-              className="absolute z-10"
+              className="absolute z-10 hidden md:block"
               style={{
                 left: `${imageTransform.posX}%`,
                 top: `${imageTransform.posY}%`,
@@ -194,32 +200,45 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
               </div>
             </div>
           ) : (
-            /* Full Cover Photo Mode with Seamless Soft Edge Gradient Mask */
-            <div
-              className="w-full h-full overflow-hidden"
-              style={{
-                transform: `scale(${imageTransform.scale})`,
-                transformOrigin: `${imageTransform.posX}% ${imageTransform.posY}%`,
-                WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
-                maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
-              }}
-            >
-              <img
-                key={`hero-bg-${currentPromo.id}`}
-                src={currentPromo.imageUrl}
-                alt={currentPromo.title}
+            /* Full Cover Photo Mode */
+            <>
+              <style dangerouslySetInnerHTML={{__html: `
+                @media (min-width: 768px) {
+                  .hero-mask-desktop {
+                    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%);
+                    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%);
+                  }
+                  .hero-image-pos {
+                    object-position: ${imageTransform.posX}% ${imageTransform.posY}%;
+                  }
+                }
+                @media (max-width: 767px) {
+                  .hero-image-pos {
+                    object-position: center center;
+                  }
+                }
+              `}} />
+              <div
+                className="w-full h-full overflow-hidden hero-mask-desktop"
                 style={{
-                  objectPosition: `${imageTransform.posX}% ${imageTransform.posY}%`,
+                  transform: `scale(${imageTransform.scale})`,
+                  transformOrigin: `center center`,
                 }}
-                className="w-full h-full object-cover hero-fade-in filter brightness-[0.96] contrast-[1.03] transition-all duration-700"
-              />
-            </div>
+              >
+                <img
+                  key={`hero-bg-${currentPromo.id}`}
+                  src={currentPromo.imageUrl}
+                  alt={currentPromo.title}
+                  className="w-full h-full object-cover hero-image-pos hero-fade-in filter brightness-[0.4] md:brightness-[0.96] contrast-[1.03] transition-all duration-700"
+                />
+              </div>
+            </>
           )
         ) : null}
 
-        {/* Smooth Seamless Color Gradients matching extracted image edge color */}
+        {/* Smooth Seamless Color Gradients matching extracted image edge color (Desktop only) */}
         <div
-          className="absolute inset-0 w-full pointer-events-none transition-all duration-700"
+          className="absolute inset-0 w-full pointer-events-none transition-all duration-700 hidden md:block"
           style={{
             background: colorInfo.isLight
               ? `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}E6 40%, transparent 100%)`
@@ -227,11 +246,21 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
           }}
         />
         <div
-          className="absolute inset-0 pointer-events-none transition-all duration-700"
+          className="absolute inset-0 pointer-events-none transition-all duration-700 hidden md:block"
           style={{
             background: colorInfo.isLight
               ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}44 100%)`
               : `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}66 100%)`,
+          }}
+        />
+        
+        {/* Mobile simple overlay to ensure text readability */}
+        <div 
+          className="absolute inset-0 pointer-events-none transition-all duration-700 md:hidden block"
+          style={{
+            background: colorInfo.isLight 
+              ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 100%)`
+              : `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(0,0,0,0.6) 100%)`
           }}
         />
       </div>
@@ -239,7 +268,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
       {/* === 2. MAIN PROMOTION TYPOGRAPHY & SHOWCASE === */}
       <div className="relative z-10 max-w-[1440px] mx-auto w-full px-6 lg:px-12 my-auto py-3 sm:py-6">
         <div className="max-w-2xl space-y-3 sm:space-y-4 hero-slide-up" key={`hero-info-${currentPromo.id}`}>
-          
+
           {/* Tag Badge */}
           <div
             className="inline-flex items-center gap-2 border border-[#F5B800]/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[#F5B800] shadow-md"
@@ -254,9 +283,8 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
           {/* Giant Bold Title with Adaptive Text Color */}
           <h1
             style={{ color: colorInfo.textColor }}
-            className={`font-display font-black text-3xl sm:text-5xl md:text-6xl lg:text-[4.25rem] uppercase tracking-tight leading-[0.95] ${
-              colorInfo.isLight ? "drop-shadow-[0_2px_10px_rgba(255,255,255,0.8)]" : "drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]"
-            }`}
+            className={`font-display font-black text-3xl sm:text-5xl md:text-6xl lg:text-[4.25rem] uppercase tracking-tight leading-[0.95] ${colorInfo.isLight ? "drop-shadow-[0_2px_10px_rgba(255,255,255,0.8)]" : "drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]"
+              }`}
           >
             {currentPromo.title ? (
               currentPromo.title.split("\n").map((line, i) => (
@@ -342,11 +370,10 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
             <button
               key={promo.id}
               onClick={() => setActiveIndex(idx)}
-              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                activeIndex === idx
-                  ? "w-8 bg-[#F5B800] shadow-[0_0_10px_rgba(245,184,0,0.6)]"
-                  : colorInfo.isLight ? "w-2 bg-black/30 hover:bg-black/60" : "w-2 bg-white/20 hover:bg-white/40"
-              }`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${activeIndex === idx
+                ? "w-8 bg-[#F5B800] shadow-[0_0_10px_rgba(245,184,0,0.6)]"
+                : colorInfo.isLight ? "w-2 bg-black/30 hover:bg-black/60" : "w-2 bg-white/20 hover:bg-white/40"
+                }`}
               title={promo.tag}
             />
           ))}

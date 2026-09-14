@@ -124,7 +124,7 @@ Balo du lịch 40L đạt kích thước xách tay chuẩn của mọi hãng hà
     isFeatured: false,
     views: 2100,
     content: `
-Balo Việt chính thức ra mắt bộ sưu tập sản phẩm mới 2026 ứng dụng tiêu chuẩn kháng nước **IPX6**. Đây là kết quả nghiên cứu và phát triển trong 18 tháng nhằm giải quyết nỗi lo ngập nước & mưa rào bất chợt của người dùng tại các đô thị Việt Nam.
+Balo Việt chính thức ra mắt dòng sản phẩm mới 2026 ứng dụng tiêu chuẩn kháng nước **IPX6**. Đây là kết quả nghiên cứu và phát triển trong 18 tháng nhằm giải quyết nỗi lo ngập nước & mưa rào bất chợt của người dùng tại các đô thị Việt Nam.
 
 #### Điểm cải tiến công nghệ nổi bật:
 - **Vải ép màng Nano TPU 3 lớp:** Chống trầy xước, chống bám bụi và chống thấm nước hoàn hảo.

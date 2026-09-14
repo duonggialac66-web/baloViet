@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { Product } from "@/data/products";
 import { formatPrice } from "@/data/products";
@@ -19,6 +20,7 @@ export default function ProductsPageClient({
   categories,
   promotions = [],
 }: ProductsPageClientProps) {
+  const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({
@@ -28,6 +30,17 @@ export default function ProductsPageClient({
 
   const { addItem } = useCart();
   const { addToast } = useToast();
+
+  useEffect(() => {
+    const cat = searchParams?.get("category") || searchParams?.get("cat") || searchParams?.get("c");
+    const q = searchParams?.get("q");
+    if (cat) {
+      setActiveCategory(cat);
+    }
+    if (q) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
 
   const toggleFavorite = (productId: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -115,7 +128,7 @@ export default function ProductsPageClient({
                   setSearchQuery(e.target.value);
                   setVisibleCount(5);
                 }}
-                className="w-full bg-[#121316] border border-[#222428] rounded-full px-4 py-2 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#F5B800] transition-colors text-center font-sans"
+                className="w-full bg-[#121316] border border-[#222428] rounded-full px-4 py-2 text-xs sm:text-sm text-black placeholder-gray-500 focus:outline-none focus:border-[#F5B800] transition-colors text-center font-sans"
               />
               {searchQuery && (
                 <button
@@ -133,22 +146,22 @@ export default function ProductsPageClient({
           </div>
         </div>
 
-        {/* Product Grid — 3 items per row on mobile (grid-cols-3) */}
+        {/* Product Grid — 2 items per row on mobile (grid-cols-2), 3 on tablet, 4 on desktop */}
         {filteredProducts.length > 0 ? (
           <div className="space-y-10">
-            <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
               {displayedProducts.map((product, idx) => {
                 const isFav = favorites[product.id] ?? idx === 1;
 
                 return (
                   <article
                     key={product.id}
-                    className="group bg-[#121316] border border-white/5 hover:border-[#F5B800]/40 rounded-xl sm:rounded-3xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                    className="group bg-[#121316] border border-white/5 hover:border-[#F5B800]/40 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                   >
                     {/* Top Image Showcase */}
                     <Link
                       href={`/san-pham/${product.slug}`}
-                      className="block relative p-2 sm:p-6 aspect-square flex items-center justify-center overflow-hidden"
+                      className="block relative p-3 sm:p-6 aspect-square flex items-center justify-center overflow-hidden"
                     >
                       <img
                         src={
@@ -165,12 +178,12 @@ export default function ProductsPageClient({
                     </Link>
 
                     {/* Card Bottom */}
-                    <div className="p-2 sm:p-5 pt-0 flex flex-col items-center text-center">
+                    <div className="p-3 sm:p-5 pt-0 flex flex-col items-center text-center">
                       {/* Centered Wishlist Heart Circle */}
                       <button
                         type="button"
                         onClick={(e) => toggleFavorite(product.id, e)}
-                        className="w-6 h-6 sm:w-9 sm:h-9 rounded-full bg-[#1A1C20] hover:bg-[#25282E] flex items-center justify-center transition-all duration-300 shadow-md mb-1.5 hover:scale-110 active:scale-90"
+                        className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#1A1C20] hover:bg-[#25282E] flex items-center justify-center transition-all duration-300 shadow-md mb-2 hover:scale-110 active:scale-90"
                         aria-label="Wishlist"
                       >
                         <svg
@@ -190,29 +203,29 @@ export default function ProductsPageClient({
 
                       {/* Product Name */}
                       <Link href={`/san-pham/${product.slug}`} className="block w-full">
-                        <h3 className="font-sans font-bold text-white text-[10px] sm:text-sm tracking-tight hover:text-[#F5B800] transition-colors line-clamp-1">
+                        <h3 className="font-sans font-bold text-white text-xs sm:text-sm tracking-tight hover:text-[#F5B800] transition-colors line-clamp-1">
                           {product.name}
                         </h3>
                       </Link>
 
                       {/* Price */}
-                      <div className="mt-1 flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
-                        <span className="font-sans text-[10px] sm:text-sm text-[#F5B800] font-bold">
+                      <div className="mt-1 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span className="font-sans text-xs sm:text-sm text-[#F5B800] font-bold">
                           {formatPrice(product.salePrice ?? product.price)}
                         </span>
                         {product.salePrice && (
-                          <span className="text-[8px] sm:text-[10px] text-gray-500 line-through font-sans hidden sm:inline">
+                          <span className="text-[10px] text-gray-500 line-through font-sans hidden xs:inline">
                             {formatPrice(product.price)}
                           </span>
                         )}
                       </div>
 
                       {/* Quick Add Button */}
-                      <div className="mt-2 w-full">
+                      <div className="mt-2.5 w-full">
                         <button
                           type="button"
                           onClick={(e) => handleQuickAdd(product, e)}
-                          className="w-full py-1.5 sm:py-2 rounded-lg bg-[#F5B800] hover:bg-[#E5AB00] text-[#0B0D0E] font-sans text-[9px] sm:text-xs uppercase tracking-wider transition-all duration-300 font-bold shadow-[0_0_12px_rgba(245,184,0,0.25)]"
+                          className="w-full py-2 sm:py-2.5 rounded-xl bg-[#F5B800] hover:bg-[#E5AB00] text-[#0B0D0E] font-sans text-xs uppercase tracking-wider transition-all duration-300 font-bold shadow-[0_0_12px_rgba(245,184,0,0.25)]"
                         >
                           Thêm giỏ
                         </button>

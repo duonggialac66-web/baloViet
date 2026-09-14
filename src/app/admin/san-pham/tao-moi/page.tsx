@@ -93,7 +93,7 @@ export default function AdminCreateProductPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 placeholder="VD: Balo Kanken Classic"
               />
             </div>
@@ -105,7 +105,7 @@ export default function AdminCreateProductPage() {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 placeholder="VD: KANKEN-CLASSIC-BLK"
               />
             </div>
@@ -116,7 +116,7 @@ export default function AdminCreateProductPage() {
                 name="categorySlug"
                 value={formData.categorySlug}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="balo-laptop">Balo Laptop</option>
                 <option value="balo-du-lich">Balo Du Lịch</option>
@@ -133,7 +133,7 @@ export default function AdminCreateProductPage() {
                 name="stock"
                 value={formData.stock}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -146,7 +146,7 @@ export default function AdminCreateProductPage() {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -158,7 +158,7 @@ export default function AdminCreateProductPage() {
                 name="salePrice"
                 value={formData.salePrice}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -182,7 +182,7 @@ export default function AdminCreateProductPage() {
               name="shortDescription"
               value={formData.shortDescription}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
+              className="text-black w-full border border-gray-300 rounded-md p-2"
               rows={2}
             />
           </div>
@@ -194,7 +194,7 @@ export default function AdminCreateProductPage() {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
+              className="text-black w-full border border-gray-300 rounded-md p-2"
               rows={5}
             />
           </div>

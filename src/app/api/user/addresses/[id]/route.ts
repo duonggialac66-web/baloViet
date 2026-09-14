@@ -32,16 +32,15 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Không tìm thấy địa chỉ này" }, { status: 404 });
     }
 
-    await db.transaction(async (tx) => {
       if (isDefault) {
         // Set all other addresses for this user to isDefault = false
-        await tx
+        await db
           .update(addresses)
           .set({ isDefault: false })
           .where(eq(addresses.userId, user.id));
       }
 
-      await tx
+      await db
         .update(addresses)
         .set({
           fullName: fullName ? fullName.trim() : undefined,
@@ -53,7 +52,6 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
           isDefault: isDefault !== undefined ? isDefault : undefined,
         })
         .where(eq(addresses.id, addressId));
-    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -85,26 +83,24 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
 
     const wasDefault = checkResult[0].isDefault;
 
-    await db.transaction(async (tx) => {
       // Delete address
-      await tx.delete(addresses).where(eq(addresses.id, addressId));
+      await db.delete(addresses).where(eq(addresses.id, addressId));
 
       // If we deleted the default address, make another one default
       if (wasDefault) {
-        const remaining = await tx
+        const remaining = await db
           .select()
           .from(addresses)
           .where(eq(addresses.userId, user.id))
           .limit(1);
 
         if (remaining.length > 0) {
-          await tx
+          await db
             .update(addresses)
             .set({ isDefault: true })
             .where(eq(addresses.id, remaining[0].id));
         }
       }
-    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

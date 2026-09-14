@@ -91,7 +91,7 @@ export default function BlogListingPage() {
                 placeholder="Tìm kiếm bài viết..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#181A1F] border border-[#2A2D35] text-white text-xs rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-[#F5B800] transition-colors"
+                className="w-full bg-[#181A1F] border border-[#2A2D35] text-black text-xs rounded-xl pl-10 pr-4 py-2.5 outline-none focus:border-[#F5B800] transition-colors"
               />
             </div>
           </div>

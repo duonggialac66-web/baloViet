@@ -132,7 +132,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -143,7 +143,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.subtitle}
                 onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -154,7 +154,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.hotline}
                 onChange={(e) => setFormData({ ...formData, hotline: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white font-bold rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black font-bold rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -165,7 +165,7 @@ export default function AdminContactPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -176,7 +176,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -187,7 +187,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.workingHours}
                 onChange={(e) => setFormData({ ...formData, workingHours: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function AdminContactPage() {
               placeholder="https://www.google.com/maps/embed?pb=..."
               value={formData.mapEmbedUrl}
               onChange={(e) => setFormData({ ...formData, mapEmbedUrl: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-xs font-mono focus:border-[#F5B800] outline-none"
+              className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-xs font-mono focus:border-[#F5B800] outline-none"
             />
             <p className="text-[11px] text-gray-500 mt-1">
               Hướng dẫn: Trên Google Maps, bấm "Chia sẻ" ➔ "Nhúng bản đồ" ➔ Copy đường dẫn trong `src="..."`.
@@ -240,7 +240,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.facebookUrl}
                 onChange={(e) => setFormData({ ...formData, facebookUrl: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -249,7 +249,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.instagramUrl}
                 onChange={(e) => setFormData({ ...formData, instagramUrl: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -258,7 +258,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.tiktokUrl}
                 onChange={(e) => setFormData({ ...formData, tiktokUrl: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -267,7 +267,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.youtubeUrl}
                 onChange={(e) => setFormData({ ...formData, youtubeUrl: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -276,7 +276,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.formTitle}
                 onChange={(e) => setFormData({ ...formData, formTitle: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -285,7 +285,7 @@ export default function AdminContactPage() {
                 type="text"
                 value={formData.formSubtitle}
                 onChange={(e) => setFormData({ ...formData, formSubtitle: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
           </div>

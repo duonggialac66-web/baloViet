@@ -66,7 +66,7 @@ export default function ImageInputWithRemover({
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             required={required}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10"
+            className="text-black w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10"
           />
           {value && (
             <button
@@ -88,7 +88,7 @@ export default function ImageInputWithRemover({
             type="file"
             accept="image/*"
             onChange={handleFileUpload}
-            className="hidden"
+            className="text-black hidden"
           />
         </label>
       </div>

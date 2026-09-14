@@ -61,6 +61,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
   const [loading, setLoading] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
 
   // Parse initial transform if present in giftText
   const parseInitialTransform = () => {
@@ -270,7 +271,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   !isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
                 }`}
               >
-                🖼️ Ảnh Bìa (Cover)
+                🖼️ Ảnh Bìa
               </button>
               <button
                 type="button"
@@ -279,7 +280,28 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
                 }`}
               >
-                🎒 Balo 3D / PNG
+                🎒 PNG
+              </button>
+            </div>
+            
+            <div className="flex items-center gap-1 bg-black/80 border border-white/10 p-1 rounded-lg">
+              <button
+                type="button"
+                onClick={() => setPreviewMode("desktop")}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+                  previewMode === "desktop" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                💻 Web
+              </button>
+              <button
+                type="button"
+                onClick={() => setPreviewMode("mobile")}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
+                  previewMode === "mobile" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                }`}
+              >
+                📱 Mobile
               </button>
             </div>
 
@@ -291,28 +313,40 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
         </div>
 
         {/* Live Widescreen Interactive Hero Preview Frame with Dynamic Edge Color Blend */}
-        <div
-          ref={previewRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className="relative w-full h-[380px] sm:h-[460px] lg:h-[520px] rounded-2xl overflow-hidden border-2 border-amber-500/40 shadow-2xl cursor-grab active:cursor-grabbing select-none flex flex-col justify-between p-6 sm:p-10 lg:p-12 group transition-colors duration-500"
-          style={{
-            backgroundColor: colorInfo.bgColor,
-            color: colorInfo.textColor,
-          }}
-          title="Nhấn giữ và kéo chuột trực tiếp trên khung để di chuyển ảnh"
-        >
-          {/* Ambient Color Flow Glow Behind Image */}
+        <div className="flex justify-center w-full">
           <div
-            className="absolute inset-0 pointer-events-none transition-all duration-500"
+            ref={previewRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className={`relative rounded-2xl overflow-hidden border-2 border-amber-500/40 shadow-2xl cursor-grab active:cursor-grabbing select-none flex flex-col justify-between group transition-all duration-500 ${
+              previewMode === "desktop" 
+                ? "w-full h-[380px] sm:h-[460px] lg:h-[520px] p-6 sm:p-10 lg:p-12"
+                : "w-[375px] h-[667px] p-6 max-w-full"
+            }`}
             style={{
-              background: colorInfo.isLight
-                ? `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 60%, ${colorInfo.bgColor} 100%)`
-                : `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor}66 0%, ${colorInfo.bgColor}22 50%, #0B0D0E 90%)`,
+              backgroundColor: colorInfo.bgColor,
+              color: colorInfo.textColor,
             }}
-          />
+            title="Nhấn giữ và kéo chuột trực tiếp trên khung để di chuyển ảnh"
+          >
+          {/* Ambient Color Flow Glow Behind Image */}
+          {previewMode === "desktop" ? (
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-500"
+              style={{
+                background: colorInfo.isLight
+                  ? `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 60%, ${colorInfo.bgColor} 100%)`
+                  : `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor}66 0%, ${colorInfo.bgColor}22 50%, #0B0D0E 90%)`,
+              }}
+            />
+          ) : (
+            <div 
+              className="absolute inset-0 pointer-events-none transition-all duration-700"
+              style={{ backgroundColor: colorInfo.bgColor }}
+            />
+          )}
 
           {/* Background image / Product PNG with real-time Pan & Zoom transform */}
           {formData.imageUrl ? (
@@ -345,18 +379,20 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 className="w-full h-full overflow-hidden pointer-events-none"
                 style={{
                   transform: `scale(${zoomScale})`,
-                  transformOrigin: `${posX}% ${posY}%`,
-                  WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
-                  maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
+                  transformOrigin: previewMode === "desktop" ? `${posX}% ${posY}%` : `center center`,
+                  ...(previewMode === "desktop" ? {
+                    WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
+                    maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
+                  } : {})
                 }}
               >
                 <img
                   src={formData.imageUrl}
                   alt="Hero Background Preview"
                   style={{
-                    objectPosition: `${posX}% ${posY}%`,
+                    objectPosition: previewMode === "desktop" ? `${posX}% ${posY}%` : `center center`,
                   }}
-                  className="w-full h-full object-cover filter brightness-95 contrast-105 transition-transform duration-75"
+                  className={`w-full h-full object-cover transition-transform duration-75 filter ${previewMode === "desktop" ? "brightness-95 contrast-105" : "brightness-[0.4] contrast-105"}`}
                 />
               </div>
             )
@@ -367,22 +403,35 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
           )}
 
           {/* Smooth Edge Color Gradients for seamless text contrast */}
-          <div
-            className="absolute inset-0 w-full pointer-events-none transition-all duration-500"
-            style={{
-              background: colorInfo.isLight
-                ? `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}E6 40%, transparent 100%)`
-                : `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}CC 45%, transparent 100%)`,
-            }}
-          />
-          <div
-            className="absolute inset-0 pointer-events-none transition-all duration-500"
-            style={{
-              background: colorInfo.isLight
-                ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}44 100%)`
-                : `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}66 100%)`,
-            }}
-          />
+          {previewMode === "desktop" ? (
+            <>
+              <div
+                className="absolute inset-0 w-full pointer-events-none transition-all duration-500"
+                style={{
+                  background: colorInfo.isLight
+                    ? `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}E6 40%, transparent 100%)`
+                    : `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}CC 45%, transparent 100%)`,
+                }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none transition-all duration-500"
+                style={{
+                  background: colorInfo.isLight
+                    ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}44 100%)`
+                    : `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}66 100%)`,
+                }}
+              />
+            </>
+          ) : (
+            <div 
+              className="absolute inset-0 pointer-events-none transition-all duration-500"
+              style={{
+                background: colorInfo.isLight 
+                  ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 100%)`
+                  : `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(0,0,0,0.6) 100%)`
+              }}
+            />
+          )}
 
           {/* Live Focal Point Crosshair Indicator */}
           <div
@@ -472,6 +521,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
             </div>
           </div>
         </div>
+      </div>
 
       </div>
 
@@ -498,7 +548,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   type="color"
                   value={themeColor === "auto" ? colorInfo.bgColor : themeColor}
                   onChange={(e) => setThemeColor(e.target.value)}
-                  className="w-7 h-7 rounded cursor-pointer border border-neutral-600 bg-transparent"
+                  className="text-black w-7 h-7 rounded cursor-pointer border border-neutral-600 bg-white border-gray-300"
                   title="Tự chọn màu Hex"
                 />
               </div>
@@ -552,7 +602,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   step="0.05"
                   value={zoomScale}
                   onChange={(e) => setZoomScale(parseFloat(e.target.value))}
-                  className="flex-1 accent-cyan-400 h-2 bg-neutral-700 rounded-lg cursor-pointer"
+                  className="text-black flex-1 accent-cyan-400 h-2 bg-neutral-700 rounded-lg cursor-pointer"
                 />
 
                 <button
@@ -596,7 +646,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                     max="100"
                     value={posX}
                     onChange={(e) => setPosX(parseInt(e.target.value))}
-                    className="w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
+                    className="text-black w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
                   />
                 </div>
 
@@ -611,7 +661,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                     max="100"
                     value={posY}
                     onChange={(e) => setPosY(parseInt(e.target.value))}
-                    className="w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
+                    className="text-black w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
                   />
                 </div>
               </div>
@@ -648,7 +698,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="VD: ĐỔI BALO CŨ&#10;NHẬN NGAY"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
+                className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -663,7 +713,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   value={formData.tag}
                   onChange={handleChange}
                   placeholder="VD: HÀNH TRÌNH XANH"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
+                  className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -677,7 +727,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   value={formData.highlight}
                   onChange={handleChange}
                   placeholder="VD: TRỢ GIÁ HOẶC GIẢM ĐẾN"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
+                  className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -692,7 +742,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 value={formData.discountValue}
                 onChange={handleChange}
                 placeholder="VD: 200.000Đ hoặc 45%"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-bold text-amber-600 focus:ring-2 focus:ring-amber-500"
+                className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-bold text-amber-600 focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -706,7 +756,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Mô tả ngắn gọn thể lệ ưu đãi..."
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
+                className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500"
               />
             </div>
 
@@ -721,7 +771,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   value={formData.ctaText}
                   onChange={handleChange}
                   placeholder="VD: THAM GIA NGAY"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
+                  className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -735,7 +785,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   value={formData.code}
                   onChange={handleChange}
                   placeholder="VD: ECO200"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono font-bold focus:ring-2 focus:ring-amber-500"
+                  className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono font-bold focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -750,7 +800,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 value={formData.targetUrl}
                 onChange={handleChange}
                 placeholder="VD: /san-pham"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-amber-500"
+                className="text-black w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-amber-500"
               />
             </div>
           </div>
@@ -762,7 +812,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 name="isActive"
                 checked={formData.isActive}
                 onChange={handleChange}
-                className="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 cursor-pointer"
+                className="text-black w-4 h-4 text-amber-600 rounded focus:ring-amber-500 cursor-pointer"
               />
               <span className="text-sm font-semibold text-gray-800">Hiển thị ưu đãi này trên trang chủ</span>
             </label>

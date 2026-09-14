@@ -281,7 +281,7 @@ export default function AddressManager() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-brand-subdued mb-1">
                     Họ và tên *
@@ -291,7 +291,7 @@ export default function AddressManager() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                    className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                   />
                 </div>
                 <div>
@@ -303,12 +303,12 @@ export default function AddressManager() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                    className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-brand-subdued mb-1">
                     Tỉnh / TP *
@@ -319,7 +319,7 @@ export default function AddressManager() {
                     onChange={(e) => setProvince(e.target.value)}
                     required
                     placeholder="Hà Nội"
-                    className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                    className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                   />
                 </div>
                 <div>
@@ -332,7 +332,7 @@ export default function AddressManager() {
                     onChange={(e) => setDistrict(e.target.value)}
                     required
                     placeholder="Cầu Giấy"
-                    className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                    className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                   />
                 </div>
                 <div>
@@ -345,7 +345,7 @@ export default function AddressManager() {
                     onChange={(e) => setWard(e.target.value)}
                     required
                     placeholder="Dịch Vọng"
-                    className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                    className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                   />
                 </div>
               </div>
@@ -360,7 +360,7 @@ export default function AddressManager() {
                   onChange={(e) => setStreet(e.target.value)}
                   required
                   placeholder="Số 10, Đường Xuân Thủy"
-                  className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
+                  className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body"
                 />
               </div>
 
@@ -370,7 +370,7 @@ export default function AddressManager() {
                   id="isDefault"
                   checked={isDefault}
                   onChange={(e) => setIsDefault(e.target.checked)}
-                  className="accent-brand-gold h-4 w-4 rounded"
+                  className="text-black accent-brand-gold h-4 w-4 rounded"
                 />
                 <label htmlFor="isDefault" className="text-xs text-brand-cream font-body select-none">
                   Đặt địa chỉ này làm mặc định

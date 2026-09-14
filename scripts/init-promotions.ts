@@ -21,7 +21,7 @@ const initialPromotions = [
     badge: "GIẢM ĐẾN 45%",
     title: "ĐẠI TIỆC ƯU ĐÃI",
     highlight: "BALO VIỆT PRO",
-    description: "Giảm tới 45% toàn bộ bộ sưu tập Balo Laptop & Du Lịch chống nước IPX6. Tặng kèm Áo Mưa Balo chuyên dụng trị giá 150.000đ cho đơn từ 990K.",
+    description: "Giảm tới 45% toàn bộ các sản phẩm Balo Laptop & Du Lịch chống nước IPX6. Tặng kèm Áo Mưa Balo chuyên dụng trị giá 150.000đ cho đơn từ 990K.",
     code: "FLASHSALE45",
     discountValue: "Giảm 100.000đ",
     minOrder: "Đơn từ 699.000đ",

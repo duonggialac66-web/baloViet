@@ -79,7 +79,7 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email của bạn"
                   required
-                  className="flex-1 bg-[#1E2022] border border-[#2A2C2F] text-white text-sm px-3 py-2.5 outline-none placeholder:text-[#6B6E72] focus:border-[#F5B800] transition-colors"
+                  className="flex-1 bg-[#1E2022] border border-[#2A2C2F] text-black text-sm px-3 py-2.5 outline-none placeholder:text-[#6B6E72] focus:border-[#F5B800] transition-colors"
                 />
                 <button
                   type="submit"
@@ -102,9 +102,9 @@ export default function Footer() {
             <ul className="space-y-3">
               {[
                 { label: "Giới thiệu", href: "/ve-chung-toi" },
+                { label: "Chương trình ưu đãi", href: "/uu-dai" },
                 { label: "Câu chuyện thương hiệu", href: "/ve-chung-toi#story" },
-                { label: "Tuyển dụng", href: "/tuyen-dung" },
-                { label: "Blog", href: "/blog" },
+                { label: "Blog & Tin tức", href: "/blog" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="text-[#6B6E72] text-sm hover:text-[#F5B800] transition-colors">

@@ -131,7 +131,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             
@@ -142,7 +142,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="categorySlug"
                 value={formData.categorySlug}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="balo-laptop">Balo Laptop</option>
                 <option value="balo-du-lich">Balo Du Lịch</option>
@@ -169,7 +169,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="stock"
                 value={formData.stock}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -182,7 +182,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -194,7 +194,7 @@ export default function ProductEditClient({ product }: { product: any }) {
                 name="salePrice"
                 value={formData.salePrice}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                className="text-black w-full border border-gray-300 rounded-md p-2"
                 min="0"
               />
             </div>
@@ -218,7 +218,7 @@ export default function ProductEditClient({ product }: { product: any }) {
               name="shortDescription"
               value={formData.shortDescription}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
+              className="text-black w-full border border-gray-300 rounded-md p-2"
               rows={2}
             />
           </div>
@@ -230,7 +230,7 @@ export default function ProductEditClient({ product }: { product: any }) {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
+              className="text-black w-full border border-gray-300 rounded-md p-2"
               rows={8}
             />
           </div>

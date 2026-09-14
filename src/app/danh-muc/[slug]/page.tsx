@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = category?.name ? `${category.name} – Balo Việt` : "Danh mục sản phẩm – Balo Việt";
-  const description = category?.description || "Khám phá bộ sưu tập balo cao cấp chính hãng từ Balo Việt.";
+  const description = category?.description || "Khám phá các sản phẩm balo cao cấp chính hãng từ Balo Việt.";
 
   return {
     title,
@@ -117,7 +117,7 @@ export default async function DanhMucPage({ params }: Props) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-gray-800 gap-4">
           <div>
             <span className="text-xs font-bold text-[#F5B800] uppercase tracking-widest block mb-1">
-              BỘ SƯU TẬP
+              DANH MỤC SẢN PHẨM
             </span>
             <h1 className="font-display font-black text-white text-3xl sm:text-4xl lg:text-5xl uppercase tracking-tight">
               {categoryTitle}

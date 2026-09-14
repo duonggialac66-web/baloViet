@@ -9,6 +9,7 @@ import { useAuth } from "@/store/authContext";
 const navLinks = [
   { label: "Trang chủ", href: "/" },
   { label: "Sản phẩm", href: "/san-pham" },
+  { label: "Ưu đãi", href: "/uu-dai", isHot: true },
   { label: "Về chúng tôi", href: "/ve-chung-toi" },
   { label: "Blog", href: "/blog" },
   { label: "Liên hệ", href: "/lien-he" },
@@ -87,13 +88,20 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`text-sm font-body font-medium uppercase tracking-widest transition-colors duration-150 relative group ${isActive ? "text-[#F5B800]" : "text-white hover:text-[#F5B800]"
-                      }`}
+                    className={`text-sm font-body font-medium uppercase tracking-widest transition-colors duration-150 relative group flex items-center gap-1 ${
+                      isActive ? "text-[#F5B800]" : "text-white hover:text-[#F5B800]"
+                    }`}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
+                    {link.isHot && (
+                      <span className="text-[9px] font-mono font-extrabold bg-gradient-to-r from-amber-500 to-red-500 text-white px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">
+                        HOT
+                      </span>
+                    )}
                     <span
-                      className={`absolute -bottom-1 left-0 h-px bg-[#F5B800] transition-all duration-200 ${isActive ? "w-full" : "w-0 group-hover:w-full"
-                        }`}
+                      className={`absolute -bottom-1 left-0 h-px bg-[#F5B800] transition-all duration-200 ${
+                        isActive ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
                     />
                   </Link>
                 );
@@ -212,7 +220,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm sản phẩm..."
-                className="w-full bg-transparent border-b-2 border-[#F5B800] text-white font-display font-bold text-xl sm:text-3xl lg:text-4xl uppercase tracking-wider py-3 sm:py-4 pr-12 sm:pr-14 outline-none placeholder:text-[#6B6E72]"
+                className="w-full bg-white border-gray-300 border-b-2 border-[#F5B800] text-black font-display font-bold text-xl sm:text-3xl lg:text-4xl uppercase tracking-wider py-3 sm:py-4 pr-12 sm:pr-14 outline-none placeholder:text-[#6B6E72]"
                 autoFocus
               />
               <button

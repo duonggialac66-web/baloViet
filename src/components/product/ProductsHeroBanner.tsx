@@ -278,7 +278,7 @@ export default function ProductsHeroBanner({
           {/* ======================================================= */}
           {/* RIGHT COLUMN: SHOWCASE — Ring fixed center, image admin-positioned */}
           {/* ======================================================= */}
-          <div className="lg:col-span-7 relative flex items-center justify-center" style={{ minHeight: "480px" }}>
+          <div className="lg:col-span-7 relative flex items-center justify-center min-h-[340px] sm:min-h-[420px] lg:min-h-[480px]">
 
             {/* ─── THE RING (Fixed Center, perspective oval) ─── */}
             <div
@@ -307,8 +307,8 @@ export default function ProductsHeroBanner({
                 left: `calc(50% + ${displaySettings.imageX}%)`,
                 top: `calc(45% + ${displaySettings.imageY}%)`,
                 transform: "translate(-50%, -50%)",
-                width: "300px",
-                height: "360px",
+                width: "min(300px, 75vw)",
+                height: "min(360px, 80vw)",
               }}
             >
               {/* Middle wrapper: applies admin's scale factor safely without animation override */}

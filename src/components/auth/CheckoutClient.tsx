@@ -19,7 +19,7 @@ interface Address {
 }
 
 export default function CheckoutClient() {
-  const { items, totalPrice, clear } = useCart();
+  const { items, totalPrice, coupon, discountAmount, applyCoupon, removeCoupon, clear } = useCart();
   const { user } = useAuth();
   const { addToast } = useToast();
   const router = useRouter();
@@ -36,6 +36,11 @@ export default function CheckoutClient() {
   const [street, setStreet] = useState("");
   const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "bank_transfer">("cod");
+
+  // Coupon states
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -87,8 +92,26 @@ export default function CheckoutClient() {
     }
   };
 
-  const shippingFee = totalPrice >= 1000000 || totalPrice === 0 ? 0 : 30000;
-  const totalAmount = totalPrice + shippingFee;
+  const handleApplyCoupon = async (codeToApply?: string) => {
+    const targetCode = codeToApply || couponInput;
+    if (!targetCode.trim()) return;
+    setCouponLoading(true);
+    setCouponError(null);
+    const result = await applyCoupon(targetCode);
+    setCouponLoading(false);
+    if (result.success) {
+      addToast(result.message, "success");
+      setCouponInput("");
+    } else {
+      setCouponError(result.message);
+      addToast(result.message, "error");
+    }
+  };
+
+  const baseShippingFee = totalPrice >= 1000000 || totalPrice === 0 ? 0 : 30000;
+  const shippingFee = coupon?.discountType === "freeship" ? 0 : baseShippingFee;
+  const effectiveDiscount = coupon?.discountType === "freeship" ? baseShippingFee : discountAmount;
+  const totalAmount = Math.max(0, totalPrice + shippingFee - (coupon?.discountType === "freeship" ? 0 : discountAmount));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,11 +158,13 @@ export default function CheckoutClient() {
         ward,
         street,
       },
-      customerEmail: user?.email || `guest_${Date.now()}@baloviet.vn`, // Default email structure for guest checkouts
+      customerEmail: user?.email || `guest_${Date.now()}@baloviet.vn`,
       customerPhone: phone,
       customerName: fullName,
       paymentMethod,
       note,
+      couponCode: coupon?.code || null,
+      discount: effectiveDiscount,
     };
 
     try {
@@ -153,7 +178,7 @@ export default function CheckoutClient() {
 
       if (res.ok) {
         addToast("Đặt hàng thành công!", "success");
-        clear(); // clear cart
+        clear();
         router.push(`/dat-hang-thanh-cong?orderId=${data.orderId}&orderNumber=${data.orderNumber}`);
       } else {
         setFormError(data.error || "Đã xảy ra lỗi khi tạo đơn hàng");
@@ -218,7 +243,7 @@ export default function CheckoutClient() {
             <select
               value={selectedAddressId}
               onChange={(e) => handleAddressChange(e.target.value)}
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2.5 rounded text-sm outline-none focus:border-brand-gold font-body"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2.5 rounded text-sm outline-none focus:border-brand-gold font-body"
             >
               {addresses.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -231,7 +256,7 @@ export default function CheckoutClient() {
         )}
 
         {/* Input fields */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-[10px] font-semibold uppercase tracking-widest text-brand-subdued mb-1">
               Họ và tên *
@@ -242,7 +267,7 @@ export default function CheckoutClient() {
               onChange={(e) => setFullName(e.target.value)}
               required
               disabled={selectedAddressId !== "new" && addresses.length > 0}
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
             />
           </div>
           <div>
@@ -255,12 +280,12 @@ export default function CheckoutClient() {
               onChange={(e) => setPhone(e.target.value)}
               required
               disabled={selectedAddressId !== "new" && addresses.length > 0}
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block text-[10px] font-semibold uppercase tracking-widest text-brand-subdued mb-1">
               Tỉnh / Thành phố *
@@ -272,7 +297,7 @@ export default function CheckoutClient() {
               required
               disabled={selectedAddressId !== "new" && addresses.length > 0}
               placeholder="Ví dụ: Hà Nội"
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
             />
           </div>
           <div>
@@ -286,7 +311,7 @@ export default function CheckoutClient() {
               required
               disabled={selectedAddressId !== "new" && addresses.length > 0}
               placeholder="Ví dụ: Cầu Giấy"
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
             />
           </div>
           <div>
@@ -300,7 +325,7 @@ export default function CheckoutClient() {
               required
               disabled={selectedAddressId !== "new" && addresses.length > 0}
               placeholder="Ví dụ: Dịch Vọng"
-              className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+              className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
             />
           </div>
         </div>
@@ -316,7 +341,7 @@ export default function CheckoutClient() {
             required
             disabled={selectedAddressId !== "new" && addresses.length > 0}
             placeholder="Ví dụ: Số 12, Ngõ 45 Trần Thái Tông"
-            className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
+            className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body disabled:opacity-60"
           />
         </div>
 
@@ -330,7 +355,7 @@ export default function CheckoutClient() {
             onChange={(e) => setNote(e.target.value)}
             rows={3}
             placeholder="Ghi chú về thời gian giao hàng, hướng dẫn tìm nhà..."
-            className="w-full bg-brand-muted border border-brand-border text-white px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body resize-none"
+            className="w-full bg-white border border-brand-border text-black px-3 py-2 rounded text-sm outline-none focus:border-brand-gold font-body resize-none"
           />
         </div>
 
@@ -355,7 +380,7 @@ export default function CheckoutClient() {
                 name="payment"
                 checked={paymentMethod === "cod"}
                 onChange={() => setPaymentMethod("cod")}
-                className="accent-brand-gold"
+                className="text-black accent-brand-gold"
               />
               <div>
                 <p className="font-body text-xs font-bold text-white uppercase tracking-wider">Thanh toán khi nhận hàng (COD)</p>
@@ -376,7 +401,7 @@ export default function CheckoutClient() {
                 name="payment"
                 checked={paymentMethod === "bank_transfer"}
                 onChange={() => setPaymentMethod("bank_transfer")}
-                className="accent-brand-gold"
+                className="text-black accent-brand-gold"
               />
               <div>
                 <p className="font-body text-xs font-bold text-white uppercase tracking-wider">Chuyển khoản qua Ngân hàng</p>
@@ -430,6 +455,66 @@ export default function CheckoutClient() {
           ))}
         </div>
 
+        {/* Voucher / Coupon Code input block */}
+        <div className="border-t border-brand-border/60 pt-4 space-y-3">
+          <label className="block text-[10px] font-semibold uppercase tracking-widest text-brand-subdued">
+            Mã giảm giá / Voucher
+          </label>
+          {coupon ? (
+            <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-lg flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-emerald-400 font-mono flex items-center gap-1.5">
+                  <span>🎟️</span> {coupon.code}
+                </p>
+                <p className="text-[11px] text-emerald-200 mt-0.5">{coupon.discountText}</p>
+              </div>
+              <button
+                type="button"
+                onClick={removeCoupon}
+                className="text-xs text-red-400 hover:text-red-300 underline font-body"
+              >
+                Hủy áp dụng
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                  placeholder="Nhập mã (VD: WELCOME15)"
+                  className="flex-1 bg-white border border-brand-border text-black px-3 py-2 rounded text-xs outline-none focus:border-brand-gold uppercase tracking-wider font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleApplyCoupon()}
+                  disabled={couponLoading || !couponInput.trim()}
+                  className="bg-brand-gold hover:bg-white text-black font-display font-bold uppercase tracking-wider text-xs px-4 py-2 rounded transition-colors disabled:opacity-50"
+                >
+                  {couponLoading ? "..." : "Áp dụng"}
+                </button>
+              </div>
+              {couponError && (
+                <p className="text-[11px] text-red-400 font-body">{couponError}</p>
+              )}
+              {/* Quick Coupon Suggestions */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {["WELCOME15", "ECO200", "BALOVIET20", "FREESHIP"].map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => handleApplyCoupon(c)}
+                    className="text-[10px] font-mono bg-brand-muted hover:bg-brand-border border border-brand-border/60 text-brand-gold px-2 py-0.5 rounded transition-colors"
+                  >
+                    +{c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Pricing breakdown */}
         <div className="border-t border-brand-border/60 pt-4 space-y-2 text-xs font-body text-brand-subdued">
           <div className="flex justify-between">
@@ -442,6 +527,12 @@ export default function CheckoutClient() {
               {shippingFee === 0 ? "Miễn phí" : formatPrice(shippingFee)}
             </span>
           </div>
+          {effectiveDiscount > 0 && (
+            <div className="flex justify-between text-emerald-400 font-medium">
+              <span>Giảm giá ({coupon?.code}):</span>
+              <span>-{formatPrice(effectiveDiscount)}</span>
+            </div>
+          )}
           <div className="flex justify-between text-sm font-bold border-t border-brand-border/40 pt-3 mt-2">
             <span className="text-white font-display uppercase tracking-wider">Tổng cộng:</span>
             <span className="text-brand-gold text-base">{formatPrice(totalAmount)}</span>

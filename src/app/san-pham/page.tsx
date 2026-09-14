@@ -15,8 +15,10 @@ export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Tất cả sản phẩm – Balo Việt",
-  description: "Khám phá toàn bộ bộ sưu tập balo chính hãng của Balo Việt. Thiết kế công thái học, chống nước IPX7 và đệm chống sốc 360°.",
+  description: "Khám phá các danh mục balo chính hãng của Balo Việt. Thiết kế công thái học, chống nước IPX7 và đệm chống sốc 360°.",
 };
+
+import { Suspense } from "react";
 
 export default async function SanPhamPage() {
   let dbProducts: any[] = [];
@@ -107,11 +109,13 @@ export default async function SanPhamPage() {
 
   return (
     <main className="min-h-screen bg-[#0B0D0E]">
-      <ProductsPageClient
-        products={productsList}
-        categories={formattedCategories}
-        promotions={formattedPromotions}
-      />
+      <Suspense fallback={<div className="min-h-screen bg-[#0B0D0E]" />}>
+        <ProductsPageClient
+          products={productsList}
+          categories={formattedCategories}
+          promotions={formattedPromotions}
+        />
+      </Suspense>
     </main>
   );
 }
