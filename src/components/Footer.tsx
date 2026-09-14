@@ -23,7 +23,7 @@ export default function Footer() {
     <footer className="bg-[#0B0D0E] border-t border-[#2A2C2F]">
       {/* Main footer */}
       <div className="max-w-[1440px] mx-auto px-6 lg:px-10 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 lg:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-4">
@@ -79,7 +79,7 @@ export default function Footer() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email của bạn"
                   required
-                  className="flex-1 bg-[#1E2022] border border-[#2A2C2F] text-white text-sm px-3 py-2.5 outline-none placeholder:text-[#6B6E72] focus:border-[#F5B800] transition-colors"
+                  className="flex-1 bg-[#1E2022] border border-[#2A2C2F] text-black text-sm px-3 py-2.5 outline-none placeholder:text-[#6B6E72] focus:border-[#F5B800] transition-colors"
                 />
                 <button
                   type="submit"
@@ -102,9 +102,9 @@ export default function Footer() {
             <ul className="space-y-3">
               {[
                 { label: "Giới thiệu", href: "/ve-chung-toi" },
+                { label: "Chương trình ưu đãi", href: "/uu-dai" },
                 { label: "Câu chuyện thương hiệu", href: "/ve-chung-toi#story" },
-                { label: "Tuyển dụng", href: "/tuyen-dung" },
-                { label: "Blog", href: "/blog" },
+                { label: "Blog & Tin tức", href: "/blog" },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="text-[#6B6E72] text-sm hover:text-[#F5B800] transition-colors">

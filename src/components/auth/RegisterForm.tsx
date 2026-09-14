@@ -114,7 +114,7 @@ export default function RegisterForm() {
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Nguyễn Văn A"
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -128,7 +128,7 @@ export default function RegisterForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@example.com"
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -141,7 +141,7 @@ export default function RegisterForm() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="0901234567"
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -156,7 +156,7 @@ export default function RegisterForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full bg-brand-muted border border-brand-border text-white pl-4 pr-12 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+              className="w-full bg-white border border-brand-border text-black pl-4 pr-12 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
             />
             <button
               type="button"
@@ -204,7 +204,7 @@ export default function RegisterForm() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="••••••••"
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 

@@ -15,6 +15,7 @@ export default function FeaturedProducts({ products = [] }: FeaturedProductsProp
   const [scrollProgress, setScrollProgress] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [mobileVisibleCount, setMobileVisibleCount] = useState(8);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -185,50 +186,79 @@ export default function FeaturedProducts({ products = [] }: FeaturedProductsProp
               Xem tất cả sản phẩm
             </Link>
           </div>
-        ) : viewMode === "slider" ? (
-          /* ======================================================= */
-          /* SLIDER MODE (Smooth Carousel Track with Edge Fades)      */
-          /* ======================================================= */
-          <div className="relative group">
-            <div
-              ref={scrollRef}
-              className="flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide py-3 px-1 snap-x snap-mandatory scroll-smooth"
-              style={{ WebkitOverflowScrolling: "touch" }}
-            >
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex-shrink-0 w-[170px] xs:w-[210px] sm:w-[280px] lg:w-[320px] snap-start"
-                >
-                  <ProductCard product={product} variant="featured" />
+        ) : (
+          <>
+            {/* ======================================================= */
+            /* MOBILE GRID VIEW (Only visible on mobile, hides slider)   */
+            /* ======================================================= */}
+            <div className="block sm:hidden">
+              <div className="grid grid-cols-2 gap-3 py-2">
+                {products.slice(0, mobileVisibleCount).map((product) => (
+                  <div key={product.id} className="w-full">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              
+              {mobileVisibleCount < products.length && (
+                <div className="mt-6 flex justify-center">
+                  <button
+                    onClick={() => setMobileVisibleCount(prev => prev + 8)}
+                    className="px-6 py-2.5 rounded-full border border-gray-300 text-sm font-bold text-gray-700 hover:bg-gray-50 active:scale-95 transition-all shadow-sm"
+                  >
+                    Xem thêm {products.length - mobileVisibleCount} sản phẩm
+                  </button>
                 </div>
-              ))}
+              )}
             </div>
 
-            {/* Scroll Progress Bar */}
-            <div className="mt-6 flex items-center justify-between gap-4 pt-2">
-              <div className="flex-1 max-w-xs h-1.5 bg-gray-300/80 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#0B0D0E] transition-all duration-300 rounded-full"
-                  style={{ width: `${Math.max(15, scrollProgress)}%` }}
-                />
-              </div>
-              <p className="text-xs font-semibold text-gray-500">
-                Hiển thị <span className="text-[#0B0D0E] font-bold">{products.length}</span> sản phẩm nổi bật
-              </p>
+            {/* ======================================================= */
+            /* DESKTOP VIEW (Visible on sm and up)                       */
+            /* ======================================================= */}
+            <div className="hidden sm:block">
+              {viewMode === "slider" ? (
+                /* SLIDER MODE */
+                <div className="relative group">
+                  <div
+                    ref={scrollRef}
+                    className="flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide py-3 px-1 snap-x snap-mandatory scroll-smooth"
+                    style={{ WebkitOverflowScrolling: "touch" }}
+                  >
+                    {products.map((product) => (
+                      <div
+                        key={product.id}
+                        className="flex-shrink-0 w-[170px] xs:w-[210px] sm:w-[280px] lg:w-[320px] snap-start"
+                      >
+                        <ProductCard product={product} variant="featured" />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Scroll Progress Bar */}
+                  <div className="mt-6 flex items-center justify-between gap-4 pt-2">
+                    <div className="flex-1 max-w-xs h-1.5 bg-gray-300/80 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#0B0D0E] transition-all duration-300 rounded-full"
+                        style={{ width: `${Math.max(15, scrollProgress)}%` }}
+                      />
+                    </div>
+                    <p className="text-xs font-semibold text-gray-500">
+                      Hiển thị <span className="text-[#0B0D0E] font-bold">{products.length}</span> sản phẩm nổi bật
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                /* GRID MODE */
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 py-2">
+                  {products.map((product) => (
+                    <div key={product.id} className="w-full">
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ) : (
-          /* ======================================================= */
-          /* GRID MODE (Responsive 2-Column Mobile & 4-Column Desktop)*/
-          /* ======================================================= */
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 py-2">
-            {products.map((product) => (
-              <div key={product.id} className="w-full">
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
+          </>
         )}
       </div>
     </section>

@@ -149,7 +149,7 @@ export default function AdminAboutPage() {
                 type="text"
                 value={formData.heroTitle}
                 onChange={(e) => setFormData({ ...formData, heroTitle: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
             <div>
@@ -160,7 +160,7 @@ export default function AdminAboutPage() {
                 type="text"
                 value={formData.heroSubtitle}
                 onChange={(e) => setFormData({ ...formData, heroSubtitle: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
               />
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function AdminAboutPage() {
               rows={3}
               value={formData.introText}
               onChange={(e) => setFormData({ ...formData, introText: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+              className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
             />
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function AdminAboutPage() {
                     type="text"
                     value={st.value}
                     onChange={(e) => handleStatChange(idx, "value", e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 text-white font-bold rounded px-3 py-1.5 text-sm outline-none focus:border-[#F5B800]"
+                    className="w-full bg-gray-900 border border-gray-700 text-black font-bold rounded px-3 py-1.5 text-sm outline-none focus:border-[#F5B800]"
                   />
                 </div>
                 <div>
@@ -201,7 +201,7 @@ export default function AdminAboutPage() {
                     type="text"
                     value={st.label}
                     onChange={(e) => handleStatChange(idx, "label", e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 text-gray-300 rounded px-3 py-1.5 text-xs outline-none focus:border-[#F5B800]"
+                    className="text-black w-full bg-gray-900 border border-gray-700 text-gray-300 rounded px-3 py-1.5 text-xs outline-none focus:border-[#F5B800]"
                   />
                 </div>
               </div>
@@ -222,7 +222,7 @@ export default function AdminAboutPage() {
               type="text"
               value={formData.storyTitle}
               onChange={(e) => setFormData({ ...formData, storyTitle: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+              className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
             />
           </div>
           <div>
@@ -233,7 +233,7 @@ export default function AdminAboutPage() {
               rows={5}
               value={formData.storyContent}
               onChange={(e) => setFormData({ ...formData, storyContent: e.target.value })}
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none leading-relaxed"
+              className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none leading-relaxed"
             />
           </div>
         </div>
@@ -253,7 +253,7 @@ export default function AdminAboutPage() {
                     type="text"
                     value={v.title}
                     onChange={(e) => handleValueChange(idx, "title", e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 text-white font-semibold rounded px-3 py-1.5 text-sm outline-none focus:border-[#F5B800]"
+                    className="w-full bg-gray-900 border border-gray-700 text-black font-semibold rounded px-3 py-1.5 text-sm outline-none focus:border-[#F5B800]"
                   />
                 </div>
                 <div>
@@ -262,7 +262,7 @@ export default function AdminAboutPage() {
                     rows={3}
                     value={v.desc}
                     onChange={(e) => handleValueChange(idx, "desc", e.target.value)}
-                    className="w-full bg-gray-900 border border-gray-700 text-gray-300 rounded px-3 py-1.5 text-xs outline-none focus:border-[#F5B800]"
+                    className="text-black w-full bg-gray-900 border border-gray-700 text-gray-300 rounded px-3 py-1.5 text-xs outline-none focus:border-[#F5B800]"
                   />
                 </div>
               </div>

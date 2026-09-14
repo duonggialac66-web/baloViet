@@ -257,7 +257,7 @@ export default function BackgroundRemoverStudio() {
               <Upload className="w-8 h-8 text-gray-400 group-hover:text-amber-600 mb-2" />
               <span className="text-xs font-semibold text-gray-700">Tải ảnh từ máy tính</span>
               <span className="text-[11px] text-gray-400 mt-1">JPG, PNG, WEBP</span>
-              <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+              <input type="file" accept="image/*" onChange={handleFileUpload} className="text-black hidden" />
             </label>
             <div className="pt-2 border-t flex items-center justify-between">
               <span className="text-xs text-gray-500">Chưa có ảnh sẵn?</span>
@@ -318,7 +318,7 @@ export default function BackgroundRemoverStudio() {
                     <span>Kích thước cọ:</span>
                     <span className="font-mono font-bold">{brushSize}px</span>
                   </div>
-                  <input type="range" min="5" max="80" value={brushSize} onChange={(e) => setBrushSize(Number(e.target.value))} className="w-full accent-amber-600" />
+                  <input type="range" min="5" max="80" value={brushSize} onChange={(e) => setBrushSize(Number(e.target.value))} className="text-black w-full accent-amber-600" />
                 </div>
               )}
             </div>

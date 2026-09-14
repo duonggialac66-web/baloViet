@@ -29,19 +29,17 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Không tìm thấy địa chỉ này" }, { status: 404 });
     }
 
-    await db.transaction(async (tx) => {
       // Unset default on all addresses
-      await tx
+      await db
         .update(addresses)
         .set({ isDefault: false })
         .where(eq(addresses.userId, user.id));
 
       // Set target address as default
-      await tx
+      await db
         .update(addresses)
         .set({ isDefault: true })
         .where(eq(addresses.id, addressId));
-    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

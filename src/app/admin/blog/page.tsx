@@ -182,7 +182,7 @@ export default function AdminBlogPage() {
             placeholder="Tìm kiếm tiêu đề bài viết..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg pl-10 pr-4 py-2 outline-none focus:border-[#F5B800]"
+            className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg pl-10 pr-4 py-2 outline-none focus:border-[#F5B800]"
           />
         </div>
 
@@ -295,7 +295,7 @@ export default function AdminBlogPage() {
                   required
                   value={formData.title}
                   onChange={handleTitleChange}
-                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
+                  className="w-full bg-gray-800 border border-gray-700 text-black rounded-lg px-4 py-2.5 text-sm focus:border-[#F5B800] outline-none"
                   placeholder="VD: Hướng dẫn chọn balo laptop..."
                 />
               </div>
@@ -308,7 +308,7 @@ export default function AdminBlogPage() {
                     required
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full bg-gray-800 border border-gray-700 text-white font-mono text-xs rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
+                    className="w-full bg-gray-800 border border-gray-700 text-black font-mono text-xs rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
                   />
                 </div>
                 <div>
@@ -316,7 +316,7 @@ export default function AdminBlogPage() {
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                    className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
+                    className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>{c}</option>
@@ -332,7 +332,7 @@ export default function AdminBlogPage() {
                   required
                   value={formData.coverImage}
                   onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
+                  className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
                 />
               </div>
 
@@ -343,7 +343,7 @@ export default function AdminBlogPage() {
                   required
                   value={formData.excerpt}
                   onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
+                  className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none"
                 />
               </div>
 
@@ -354,7 +354,7 @@ export default function AdminBlogPage() {
                   required
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none leading-relaxed"
+                  className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2.5 focus:border-[#F5B800] outline-none leading-relaxed"
                 />
               </div>
 
@@ -365,7 +365,7 @@ export default function AdminBlogPage() {
                     type="text"
                     value={formData.readingTime}
                     onChange={(e) => setFormData({ ...formData, readingTime: e.target.value })}
-                    className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2 focus:border-[#F5B800] outline-none"
+                    className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2 focus:border-[#F5B800] outline-none"
                   />
                 </div>
                 <div>
@@ -374,7 +374,7 @@ export default function AdminBlogPage() {
                     type="text"
                     value={formData.tags}
                     onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                    className="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-4 py-2 focus:border-[#F5B800] outline-none"
+                    className="w-full bg-gray-800 border border-gray-700 text-black text-sm rounded-lg px-4 py-2 focus:border-[#F5B800] outline-none"
                   />
                 </div>
               </div>
@@ -385,7 +385,7 @@ export default function AdminBlogPage() {
                   id="isFeatured"
                   checked={formData.isFeatured}
                   onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                  className="w-4 h-4 accent-[#F5B800]"
+                  className="text-black w-4 h-4 accent-[#F5B800]"
                 />
                 <label htmlFor="isFeatured" className="text-sm font-bold text-white cursor-pointer">
                   Đặt làm bài viết Nổi bật trên cùng (Featured Article)

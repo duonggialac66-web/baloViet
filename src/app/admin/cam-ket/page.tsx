@@ -224,7 +224,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, announcementTitle: e.target.value })}
                   placeholder="BẢO HÀNH 365 NGÀY - HƯ SỬA - LỖI ĐỔI"
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
@@ -238,7 +238,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, announcementSubtitle: e.target.value })}
                   placeholder="Bán hàng bằng uy tín. Bạn cứ việc mặc đẹp, hậu mãi cứ để Balo Việt lo."
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
             </div>
@@ -263,7 +263,7 @@ export default function AdminGuaranteePage() {
                     onChange={(e) => setForm({ ...form, card1Title: e.target.value })}
                     placeholder="14 NGÀY ĐỔI TRẢ"
                     required
-                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
+                    className="text-black w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
                   />
                 </div>
                 <div>
@@ -274,7 +274,7 @@ export default function AdminGuaranteePage() {
                     onChange={(e) => setForm({ ...form, card1Desc: e.target.value })}
                     placeholder="Hỗ trợ đổi sản phẩm trong vòng 14 ngày..."
                     required
-                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
+                    className="text-black w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
                   />
                 </div>
               </div>
@@ -290,7 +290,7 @@ export default function AdminGuaranteePage() {
                     onChange={(e) => setForm({ ...form, card2Title: e.target.value })}
                     placeholder="BẢO HÀNH 365 NGÀY"
                     required
-                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
+                    className="text-black w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
                   />
                 </div>
                 <div>
@@ -301,7 +301,7 @@ export default function AdminGuaranteePage() {
                     onChange={(e) => setForm({ ...form, card2Desc: e.target.value })}
                     placeholder="Bảo hành 1 năm cho lỗi kỹ thuật..."
                     required
-                    className="w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
+                    className="text-black w-full px-3.5 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 outline-none"
                   />
                 </div>
               </div>
@@ -326,7 +326,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, brandTitle: e.target.value })}
                   placeholder="BALO VIỆT – ĐỒNG HÀNH TRÊN MỌI HÀNH TRÌNH | BALO CAO CẤP CHÍNH HÃNG"
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
@@ -340,7 +340,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, brandIntro: e.target.value })}
                   placeholder="Balo Việt là thương hiệu balo & phụ kiện du lịch hàng đầu..."
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
@@ -354,7 +354,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, reasonsTitle: e.target.value })}
                   placeholder="Tại sao nên chọn Balo Việt?"
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
@@ -368,7 +368,7 @@ export default function AdminGuaranteePage() {
                   onChange={(e) => setForm({ ...form, reasonsText: e.target.value })}
                   placeholder="- Bền Bỉ: Vải Cordura...\n- Êm Ái: Quai đeo...\n- Thông Minh: Cổng sạc..."
                   required
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm font-mono text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
+                  className="text-black w-full px-3.5 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm font-mono text-gray-900 focus:ring-2 focus:ring-amber-500 focus:bg-white outline-none"
                 />
               </div>
             </div>

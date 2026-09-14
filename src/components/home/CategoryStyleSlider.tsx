@@ -123,12 +123,26 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
   const [activeIndex, setActiveIndex] = useState(0);
   const activeCategory = items[activeIndex] || items[0];
 
+  const [isPaused, setIsPaused] = useState(false);
+
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % items.length);
   }, [items.length]);
 
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      handleNext();
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [isPaused, handleNext]);
+
   return (
-    <section className="relative bg-[#EAECEE] text-[#0B0D0E] py-12 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden select-none font-sans">
+    <section 
+      className="relative bg-[#EAECEE] text-[#0B0D0E] py-12 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden select-none font-sans"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       
       {/* Studio Radial Background Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#FFFFFF_0%,_#EAECEE_75%,_#DFE2E6_100%)] pointer-events-none" />
@@ -138,12 +152,15 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
         {/* Main Card Shell (Rounded Neumorphic / Glassmorphic Card Container) */}
         <div className="bg-[#F8F9FA]/90 backdrop-blur-2xl border border-white/80 rounded-[36px] shadow-[0_20px_70px_rgba(0,0,0,0.07)] p-6 sm:p-10 lg:p-12 relative overflow-hidden">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
 
             {/* ========================================================= */}
             {/* LEFT COLUMN: VIBRANT 3D PRODUCT SHOWCASE BLOB STAGE      */}
             {/* ========================================================= */}
-            <div className="lg:col-span-6 relative flex flex-col justify-between min-h-[380px] sm:min-h-[460px] lg:min-h-[500px] rounded-[28px] overflow-hidden p-6 sm:p-10 shadow-inner group">
+            <Link
+              href={`/san-pham?category=${activeCategory.slug}#brows-latest-products`}
+              className="lg:col-span-6 relative flex flex-col justify-between h-[420px] sm:h-[480px] lg:h-[520px] rounded-[28px] overflow-hidden p-6 sm:p-10 shadow-inner group cursor-pointer"
+            >
               
               {/* Dynamic Fluid Blob Background */}
               <div
@@ -163,22 +180,24 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
               <div className="relative z-10 space-y-2">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/25 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider">
                   <Sparkles className="w-3.5 h-3.5 fill-white text-white" />
-                  <span>{activeCategory.badge || "Bộ Sưu Tập Mới"}</span>
+                  <span>{activeCategory.badge || "Danh Mục Nổi Bật"}</span>
                 </div>
 
-                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight leading-[0.95] drop-shadow-md transition-all duration-500">
-                  {activeCategory.name}
-                </h2>
+                <div className="h-[2.4em] flex items-center">
+                  <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-tight leading-[1] drop-shadow-md transition-all duration-500 group-hover:text-[#F5B800] line-clamp-2">
+                    {activeCategory.name}
+                  </h2>
+                </div>
               </div>
 
               {/* Central 3D Backpack Product Image with Levitation */}
-              <div className="relative z-20 my-auto flex items-center justify-center py-4">
-                <div className="relative w-full max-w-[280px] sm:max-w-[340px] aspect-square flex items-center justify-center">
+              <div className="relative z-20 my-auto flex items-center justify-center py-2 h-[220px] sm:h-[260px] lg:h-[280px]">
+                <div className="relative w-full h-full max-w-[260px] sm:max-w-[320px] aspect-square flex items-center justify-center">
                   <img
                     key={`showcase-${activeCategory.id}`}
                     src={activeCategory.image}
                     alt={activeCategory.name}
-                    className="w-full h-full object-contain filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.35)] animate-float-levitate transition-all duration-700"
+                    className="w-full h-full object-contain filter drop-shadow-[0_25px_40px_rgba(0,0,0,0.35)] animate-float-levitate transition-all duration-700 group-hover:scale-105"
                   />
                   {/* Pulsing Ground Shadow */}
                   <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-44 sm:w-56 h-6 bg-black/30 blur-xl rounded-full scale-y-50 pointer-events-none animate-shadow-pulse" />
@@ -187,115 +206,96 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
 
               {/* Bottom Info Pills inside Showcase Stage */}
               <div className="relative z-10 flex items-center justify-between pt-2 border-t border-white/20">
-                <span className="text-white/90 text-xs sm:text-sm font-semibold tracking-wide">
-                  {activeCategory.subtitle}
+                <span className="text-white/90 text-xs sm:text-sm font-semibold tracking-wide flex items-center gap-1 truncate max-w-[70%]">
+                  <span className="truncate">{activeCategory.subtitle}</span>
+                  <span className="text-[#F5B800] ml-1 shrink-0">↗</span>
                 </span>
-                <span className="text-white font-black text-base sm:text-lg">
+                <span className="text-white font-black text-base sm:text-lg shrink-0">
                   {activeCategory.price}
                 </span>
               </div>
 
-            </div>
+            </Link>
 
             {/* ========================================================= */}
             {/* RIGHT COLUMN: STOREHOUSE INTERACTIVE PRODUCT TABLE LIST   */}
             {/* ========================================================= */}
-            <div className="lg:col-span-6 space-y-6">
+            <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
               
-              {/* Header Title Section */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 font-mono">
-                    BỘ SƯU TẬP BALO VIỆT
-                  </span>
-                  <h3 className="text-2xl sm:text-4xl font-black text-[#0B0D0E] tracking-tight uppercase mt-0.5">
-                    Phong cách nổi bật
-                  </h3>
+              <div>
+                {/* Header Title Section */}
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400 font-mono">
+                      DANH MỤC BALO VIỆT
+                    </span>
+                    <h3 className="text-2xl sm:text-4xl font-black text-[#0B0D0E] tracking-tight uppercase mt-0.5">
+                      Phong cách nổi bật
+                    </h3>
+                  </div>
+
+                  <div className="w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-600 font-bold text-sm">
+                    ★
+                  </div>
                 </div>
 
-                <div className="w-10 h-10 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-600 font-bold text-sm">
-                  ★
+                {/* Table Column Header */}
+                <div className="grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-200/70 font-mono">
+                  <span className="col-span-7 sm:col-span-7">Danh Mục Sản Phẩm</span>
+                  <span className="col-span-5 sm:col-span-5 text-right">Thông Số Kỹ Thuật</span>
                 </div>
-              </div>
 
-              {/* Table Column Header */}
-              <div className="grid grid-cols-12 gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-gray-400 border-b border-gray-200/70 font-mono">
-                <span className="col-span-5 sm:col-span-5">Dòng Sản Phẩm</span>
-                <span className="col-span-3 sm:col-span-3 text-center">Thông Số</span>
-                <span className="col-span-2 sm:col-span-2 text-center">Ảnh</span>
-                <span className="col-span-2 sm:col-span-2 text-right">Chọn</span>
-              </div>
+                {/* Interactive List Rows */}
+                <div className="space-y-2 mt-2">
+                  {items.map((cat, idx) => {
+                    const isActive = idx === activeIndex;
 
-              {/* Interactive List Rows */}
-              <div className="space-y-2.5">
-                {items.map((cat, idx) => {
-                  const isActive = idx === activeIndex;
-
-                  return (
-                    <div
-                      key={cat.id}
-                      onClick={() => setActiveIndex(idx)}
-                      className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-2xl transition-all duration-300 cursor-pointer ${
-                        isActive
-                          ? "bg-white shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-gray-200/80 scale-[1.02]"
-                          : "hover:bg-white/60 border border-transparent opacity-75 hover:opacity-100"
-                      }`}
-                    >
-                      {/* 1. Item Name */}
-                      <div className="col-span-5 sm:col-span-5 flex items-center gap-2.5">
-                        <div
-                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                            isActive ? "bg-[#0B0D0E] scale-125" : "bg-gray-300"
-                          }`}
-                        />
-                        <div>
-                          <h4
-                            className={`font-bold text-sm sm:text-base transition-colors ${
-                              isActive ? "text-[#0B0D0E] font-black" : "text-gray-700"
+                    return (
+                      <Link
+                        key={cat.id}
+                        href={`/san-pham?category=${cat.slug}#brows-latest-products`}
+                        onMouseEnter={() => setActiveIndex(idx)}
+                        onClick={() => setActiveIndex(idx)}
+                        className={`grid grid-cols-12 gap-2 items-center px-4 py-3 rounded-2xl transition-all duration-200 cursor-pointer group ${
+                          isActive
+                            ? "bg-white shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-200/80 font-bold"
+                            : "hover:bg-white/60 border border-transparent opacity-75 hover:opacity-100"
+                        }`}
+                      >
+                        {/* 1. Item Name */}
+                        <div className="col-span-7 sm:col-span-7 flex items-center gap-2.5">
+                          <div
+                            className={`w-2.5 h-2.5 rounded-full transition-all duration-200 shrink-0 ${
+                              isActive ? "bg-[#0B0D0E] scale-125" : "bg-gray-300"
                             }`}
-                          >
-                            {cat.name}
-                          </h4>
-                          <p className="text-[11px] text-gray-400 line-clamp-1 hidden sm:block font-normal">
-                            {cat.count} mẫu có sẵn
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* 2. Spec Tag */}
-                      <div className="col-span-3 sm:col-span-3 text-center">
-                        <span className="inline-block text-[11px] font-mono font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg border border-gray-200/60 whitespace-nowrap">
-                          {cat.spec}
-                        </span>
-                      </div>
-
-                      {/* 3. Mini 3D Thumbnail Image */}
-                      <div className="col-span-2 sm:col-span-2 flex justify-center">
-                        <div className="w-10 h-10 rounded-xl bg-gray-100/80 border border-gray-200/60 p-1 flex items-center justify-center overflow-hidden">
-                          <img
-                            src={cat.image}
-                            alt={cat.name}
-                            className="w-full h-full object-contain filter drop-shadow-sm"
                           />
+                          <div>
+                            <span
+                              className={`font-bold text-sm sm:text-base transition-colors line-clamp-1 group-hover:text-[#F5B800] ${
+                                isActive ? "text-[#0B0D0E] font-black" : "text-gray-700"
+                              }`}
+                            >
+                              {cat.name}
+                            </span>
+                            <p className="text-[11px] text-gray-400 line-clamp-1 font-normal">
+                              {cat.count} mẫu có sẵn
+                            </p>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* 4. Action Button (+ / Check arrow) */}
-                      <div className="col-span-2 sm:col-span-2 flex justify-end">
-                        <button
-                          type="button"
-                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isActive
-                              ? "bg-[#0B0D0E] text-white shadow-md rotate-90"
-                              : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                          }`}
-                        >
-                          {isActive ? <ArrowRight className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+                        {/* 2. Spec Tag */}
+                        <div className="col-span-5 sm:col-span-5 flex justify-end items-center gap-2">
+                          <span className="inline-block text-[11px] font-mono font-medium text-gray-600 bg-gray-100 px-2.5 py-1 rounded-lg border border-gray-200/60 truncate max-w-full">
+                            {cat.spec}
+                          </span>
+                          <div className="w-6 h-6 rounded-full bg-gray-100 group-hover:bg-[#0B0D0E] group-hover:text-white flex items-center justify-center text-xs text-gray-500 transition-colors shrink-0">
+                            ↗
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Bottom Action Footer Control Bar (Floating Pill) */}
@@ -309,7 +309,7 @@ export default function CategoryStyleSlider({ initialCategories = [] }: Category
                   </div>
 
                   <Link
-                    href={`/danh-muc/${activeCategory.slug}`}
+                    href={`/san-pham?category=${activeCategory.slug}#brows-latest-products`}
                     className="px-5 py-2.5 rounded-full bg-[#0B0D0E] hover:bg-[#F5B800] text-white hover:text-black text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-2 shadow-md group"
                   >
                     <span>Khám phá ngay</span>

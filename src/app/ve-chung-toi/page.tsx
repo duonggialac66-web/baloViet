@@ -58,7 +58,7 @@ export default function VeChungToiPage() {
         </div>
 
         {/* BRAND STORY */}
-        <div className="bg-[#121417]/90 border border-[#22242B] rounded-3xl p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+        <div className="bg-[#121417]/90 border border-[#22242B] rounded-3xl p-5 sm:p-12 lg:p-16 relative overflow-hidden">
           <div className="max-w-3xl space-y-6">
             <h2 className="font-display font-bold text-2xl sm:text-3xl text-white uppercase tracking-wide flex items-center gap-3">
               <span className="w-8 h-1 bg-[#F5B800] rounded-full inline-block" />

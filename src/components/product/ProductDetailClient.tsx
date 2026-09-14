@@ -741,7 +741,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }: P
                           onChange={(e) => setReviewTitle(e.target.value)}
                           placeholder="Ví dụ: Balo rất đẹp, chống nước tốt"
                           required
-                          className="w-full px-4 py-2.5 bg-[#161819] border border-[#2A2C2F] rounded-xl text-sm text-white focus:border-[#F5B800] outline-none"
+                          className="w-full px-4 py-2.5 bg-[#161819] border border-[#2A2C2F] rounded-xl text-sm text-black focus:border-[#F5B800] outline-none"
                         />
                       </div>
 
@@ -755,7 +755,7 @@ export default function ProductDetailClient({ product, relatedProducts = [] }: P
                           onChange={(e) => setReviewContent(e.target.value)}
                           placeholder="Chia sẻ cảm nhận về chất liệu, ngăn chứa, quai đeo..."
                           required
-                          className="w-full px-4 py-2.5 bg-[#161819] border border-[#2A2C2F] rounded-xl text-sm text-white focus:border-[#F5B800] outline-none"
+                          className="w-full px-4 py-2.5 bg-[#161819] border border-[#2A2C2F] rounded-xl text-sm text-black focus:border-[#F5B800] outline-none"
                         />
                       </div>
 

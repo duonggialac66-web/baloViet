@@ -64,8 +64,8 @@ export default function OrderDetailsClient({ initialOrder, items }: { initialOrd
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Chi tiết đơn hàng #{order.orderNumber}</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold text-white">Chi tiết đơn hàng #{order.orderNumber}</h1>
+            <p className="text-sm text-gray-400">
               Đặt lúc: {new Date(order.createdAt).toLocaleString('vi-VN')}
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function OrderDetailsClient({ initialOrder, items }: { initialOrd
               </div>
               <div className="col-span-2 mt-4 pt-4 border-t border-gray-100">
                 <p className="text-gray-500 mb-1">Ghi chú của khách hàng:</p>
-                <p className="italic bg-yellow-50 p-3 rounded border border-yellow-100">{order.note || "Không có ghi chú"}</p>
+                <p className="italic bg-yellow-50 text-gray-800 p-3 rounded border border-yellow-100">{order.note || "Không có ghi chú"}</p>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function OrderDetailsClient({ initialOrder, items }: { initialOrd
               <select 
                 value={status} 
                 onChange={(e) => setStatus(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500"
+                className="text-black w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500"
               >
                 <option value="pending">Chờ xác nhận</option>
                 <option value="confirmed">Đã xác nhận</option>
@@ -199,7 +199,7 @@ export default function OrderDetailsClient({ initialOrder, items }: { initialOrd
               <select 
                 value={paymentStatus} 
                 onChange={(e) => setPaymentStatus(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500"
+                className="text-black w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500"
               >
                 <option value="unpaid">Chưa thanh toán</option>
                 <option value="paid">Đã thanh toán</option>
@@ -213,7 +213,7 @@ export default function OrderDetailsClient({ initialOrder, items }: { initialOrd
                 value={adminNote}
                 onChange={(e) => setAdminNote(e.target.value)}
                 placeholder="Ghi chú thêm về đơn hàng này..."
-                className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500 min-h-[100px]"
+                className="text-black w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-amber-500 focus:border-amber-500 min-h-[100px]"
               />
             </div>
           </div>

@@ -77,7 +77,7 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@example.com"
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-3 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-3 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -100,7 +100,7 @@ export default function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="w-full bg-brand-muted border border-brand-border text-white pl-4 pr-12 py-3 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+              className="w-full bg-white border border-brand-border text-black pl-4 pr-12 py-3 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
             />
             <button
               type="button"

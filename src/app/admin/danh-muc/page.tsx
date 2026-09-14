@@ -564,7 +564,7 @@ export default function AdminCategoriesPage() {
                         value={form.name}
                         onChange={(e) => handleNameChange(e.target.value)}
                         placeholder="VD: Balo Laptop"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
 
@@ -579,7 +579,7 @@ export default function AdminCategoriesPage() {
                         value={form.slug}
                         onChange={(e) => setForm({ ...form, slug: e.target.value })}
                         placeholder="VD: balo-laptop"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                   </div>
@@ -594,7 +594,7 @@ export default function AdminCategoriesPage() {
                       value={form.description}
                       onChange={(e) => setForm({ ...form, description: e.target.value })}
                       placeholder="Mô tả công năng, phong cách đặc trưng của danh mục..."
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                      className="text-black w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
                     />
                   </div>
 
@@ -905,13 +905,13 @@ export default function AdminCategoriesPage() {
                             value={ann.label}
                             onChange={(e) => updateAnnotation(i, "label", e.target.value)}
                             placeholder="Nhãn thông số"
-                            className="flex-1 min-w-[140px] px-2.5 py-1 border border-gray-300 rounded bg-white font-medium"
+                            className="text-black flex-1 min-w-[140px] px-2.5 py-1 border border-gray-300 rounded bg-white font-medium"
                           />
 
                           <select
                             value={ann.side || "right"}
                             onChange={(e) => updateAnnotation(i, "side", e.target.value)}
-                            className="px-2 py-1 border border-gray-300 rounded bg-white font-medium"
+                            className="text-black px-2 py-1 border border-gray-300 rounded bg-white font-medium"
                           >
                             <option value="left">Nhãn Trái</option>
                             <option value="right">Nhãn Phải</option>

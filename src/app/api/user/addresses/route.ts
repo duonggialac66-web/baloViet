@@ -47,35 +47,34 @@ export async function POST(req: NextRequest) {
 
     const addressId = nanoid();
 
-    await db.transaction(async (tx) => {
-      // If setting as default, unset default on other addresses of this user
-      if (isDefault) {
-        await tx
-          .update(addresses)
-          .set({ isDefault: false })
-          .where(eq(addresses.userId, user.id));
-      }
+    // Neon HTTP driver doesn't support traditional transactions, so we execute sequentially.
+    // If setting as default, unset default on other addresses of this user
+    if (isDefault) {
+      await db
+        .update(addresses)
+        .set({ isDefault: false })
+        .where(eq(addresses.userId, user.id));
+    }
 
-      // Check if this is the user's first address. If so, make it default automatically
-      const existingAddresses = await tx
-        .select()
-        .from(addresses)
-        .where(eq(addresses.userId, user.id))
-        .limit(1);
+    // Check if this is the user's first address. If so, make it default automatically
+    const existingAddresses = await db
+      .select()
+      .from(addresses)
+      .where(eq(addresses.userId, user.id))
+      .limit(1);
 
-      const makeDefault = existingAddresses.length === 0 ? true : isDefault;
+    const makeDefault = existingAddresses.length === 0 ? true : isDefault;
 
-      await tx.insert(addresses).values({
-        id: addressId,
-        userId: user.id,
-        fullName: fullName.trim(),
-        phone: phone.trim(),
-        province: province.trim(),
-        district: district.trim(),
-        ward: ward.trim(),
-        street: street.trim(),
-        isDefault: makeDefault,
-      });
+    await db.insert(addresses).values({
+      id: addressId,
+      userId: user.id,
+      fullName: fullName.trim(),
+      phone: phone.trim(),
+      province: province.trim(),
+      district: district.trim(),
+      ward: ward.trim(),
+      street: street.trim(),
+      isDefault: makeDefault,
     });
 
     return NextResponse.json({ success: true, addressId });

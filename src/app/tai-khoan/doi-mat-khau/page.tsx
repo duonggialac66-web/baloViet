@@ -107,7 +107,7 @@ export default function DoiMatKhauPage() {
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -120,7 +120,7 @@ export default function DoiMatKhauPage() {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
 
           {/* Password strength indicators */}
@@ -150,7 +150,7 @@ export default function DoiMatKhauPage() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="w-full bg-brand-muted border border-brand-border text-white px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
+            className="w-full bg-white border border-brand-border text-black px-4 py-2.5 rounded outline-none focus:border-brand-gold transition-colors font-body text-sm"
           />
         </div>
 
@@ -160,7 +160,7 @@ export default function DoiMatKhauPage() {
             id="showPassword"
             checked={showPassword}
             onChange={(e) => setShowPassword(e.target.checked)}
-            className="accent-brand-gold h-4 w-4 rounded"
+            className="text-black accent-brand-gold h-4 w-4 rounded"
           />
           <label htmlFor="showPassword" className="text-xs text-brand-cream font-body select-none">
             Hiển thị mật khẩu

@@ -78,7 +78,7 @@ export default async function AdminPromotionsPage() {
               <div className="space-y-1 max-w-sm">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono font-bold bg-[#181A1F] text-[#9CA3AF] px-2 py-0.5 rounded border border-[#2A2D35]">
-                    {item.tag || "TAG BỘ SƯU TẬP"}
+                    {item.tag || "TAG DANH MỤC"}
                   </span>
                   {item.discountValue && (
                     <span className="text-[10px] font-mono font-bold text-[#F5B800] bg-[#F5B800]/15 px-2 py-0.5 rounded border border-[#F5B800]/30">
