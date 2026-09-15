@@ -20,7 +20,7 @@ export default function VeChungToiPage() {
   }, []);
 
   return (
-    <main className="min-h-screen pt-24 pb-20 bg-[#0B0D0E] text-white">
+    <main className="relative overflow-hidden min-h-screen pt-24 pb-20 bg-[#0B0D0E] text-white">
       {/* Ambient background glows */}
       <div className="absolute top-20 right-1/4 w-[500px] h-[500px] bg-[#F5B800]/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-10 left-1/3 w-[400px] h-[400px] bg-amber-600/5 rounded-full blur-[120px] pointer-events-none" />
