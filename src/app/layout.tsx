@@ -73,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       </head>
-      <body className={`${barlowCondensed.variable} ${inter.variable} ${syne.variable} ${spaceGrotesk.variable} bg-[#0B0D0E] min-h-screen flex flex-col`}>
+      <body className={`${barlowCondensed.variable} ${inter.variable} ${syne.variable} ${spaceGrotesk.variable} bg-[#0B0D0E] min-h-screen flex flex-col overflow-x-hidden`}>
         <ToastProvider>
           <AuthProvider hasSession={hasSession}>
             <CartProvider>

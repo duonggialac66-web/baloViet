@@ -394,8 +394,8 @@ export default function AdminCategoriesPage() {
       {/* Categories Table */}
       <div className="bg-[#121417] rounded-2xl border border-[#22242B] shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left font-sans">
-            <thead className="bg-[#181A1F] border-b border-[#22242B] text-[#9CA3AF] font-mono font-bold text-[11px] uppercase tracking-wider">
+          <table className="w-full text-xs text-left font-sans block md:table">
+            <thead className="bg-[#181A1F] border-b border-[#22242B] text-[#9CA3AF] font-mono font-bold text-[11px] uppercase tracking-wider hidden md:table-header-group">
               <tr>
                 <th className="px-6 py-4 w-24">Ảnh</th>
                 <th className="px-6 py-4">Tên danh mục</th>
@@ -405,14 +405,15 @@ export default function AdminCategoriesPage() {
                 <th className="px-6 py-4 text-right w-36">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E2228] text-gray-200">
+            <tbody className="divide-y divide-[#1E2228] text-gray-200 block md:table-row-group">
               {categories.map((cat) => {
                 const imgSrc = getImageSrc(cat.imageId);
                 const s = cat.displaySettings;
                 return (
-                  <tr key={cat.id} className="hover:bg-[#181A1F]/70 transition-colors">
+                  <tr key={cat.id} className="hover:bg-[#181A1F]/70 transition-colors block md:table-row mb-4 md:mb-0 border border-[#22242B] md:border-none rounded-xl md:rounded-none overflow-hidden">
                     {/* Image Thumbnail */}
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3 md:px-6 md:py-4 block md:table-cell border-b border-[#22242B] md:border-none">
+                      <div className="flex md:hidden text-[#9CA3AF] uppercase text-[10px] font-bold mb-2">Ảnh đại diện</div>
                       <div
                         onClick={() => openEditModal(cat)}
                         className="w-12 h-12 rounded-xl border border-[#2A2C2F] bg-[#181A1F] flex items-center justify-center overflow-hidden cursor-pointer group shadow-xs hover:shadow-md transition-all relative"
@@ -434,17 +435,20 @@ export default function AdminCategoriesPage() {
                     </td>
 
                     {/* Name */}
-                    <td className="px-6 py-4 font-bold text-white text-xs">
-                      {cat.name}
+                    <td className="px-4 py-3 md:px-6 md:py-4 font-bold text-white text-xs block md:table-cell flex justify-between md:table-cell items-center border-b border-[#22242B] md:border-none">
+                      <span className="md:hidden text-[#9CA3AF] uppercase text-[10px]">Tên danh mục</span>
+                      <span>{cat.name}</span>
                     </td>
 
                     {/* Slug */}
-                    <td className="px-6 py-4 text-[#9CA3AF] font-mono text-xs">
-                      {cat.slug}
+                    <td className="px-4 py-3 md:px-6 md:py-4 text-[#9CA3AF] font-mono text-xs block md:table-cell flex justify-between md:table-cell items-center border-b border-[#22242B] md:border-none">
+                      <span className="md:hidden text-[#9CA3AF] uppercase text-[10px] font-bold">Slug</span>
+                      <span>{cat.slug}</span>
                     </td>
 
                     {/* Display settings badge */}
-                    <td className="px-6 py-4 text-xs">
+                    <td className="px-4 py-3 md:px-6 md:py-4 text-xs block md:table-cell border-b border-[#22242B] md:border-none">
+                      <div className="flex md:hidden text-[#9CA3AF] uppercase text-[10px] font-bold mb-2">Cấu hình Banner</div>
                       <div className="flex flex-wrap items-center gap-1.5 font-mono text-[10px]">
                         <span className="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/30">
                           X:{s?.imageX ?? 0}% Y:{s?.imageY ?? -5}%
@@ -459,14 +463,15 @@ export default function AdminCategoriesPage() {
                     </td>
 
                     {/* Product count */}
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 py-3 md:px-6 md:py-4 text-right md:text-center block md:table-cell flex justify-between md:table-cell items-center border-b border-[#22242B] md:border-none">
+                      <span className="md:hidden text-[#9CA3AF] uppercase text-[10px] font-bold">Số SP</span>
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-[#181A1F] text-[#F5B800] border border-[#2A2C2F]">
                         {cat.count}
                       </span>
                     </td>
 
                     {/* Actions */}
-                    <td className="px-6 py-4 text-right space-x-2 whitespace-nowrap font-sans">
+                    <td className="px-4 py-3 md:px-6 md:py-4 text-right space-x-2 font-sans block md:table-cell flex justify-end md:table-cell items-center">
                       <button
                         onClick={() => openEditModal(cat)}
                         className="inline-flex items-center gap-1 text-xs text-[#F5B800] hover:underline font-bold px-2 py-1 rounded transition-colors cursor-pointer"
