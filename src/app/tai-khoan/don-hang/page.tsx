@@ -142,8 +142,8 @@ export default async function DonHangPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm font-body border-collapse">
-            <thead>
+          <table className="w-full text-left text-sm font-body border-collapse block md:table">
+            <thead className="hidden md:table-header-group">
               <tr className="border-b border-brand-border text-brand-subdued text-xs font-semibold uppercase tracking-wider">
                 <th className="py-3 px-4">Đơn hàng</th>
                 <th className="py-3 px-4">Ngày đặt</th>
@@ -153,25 +153,30 @@ export default async function DonHangPage({ searchParams }: PageProps) {
                 <th className="py-3 px-4 text-right">Chi tiết</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-brand-border/60">
+            <tbody className="divide-y divide-brand-border/60 block md:table-row-group">
               {userOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-brand-muted/10 transition-colors">
-                  <td className="py-4 px-4 font-mono text-white text-xs font-bold">
-                    #{order.orderNumber}
+                <tr key={order.id} className="hover:bg-brand-muted/10 transition-colors block md:table-row mb-4 md:mb-0 border border-brand-border md:border-none rounded-lg md:rounded-none">
+                  <td className="py-3 px-4 md:py-4 md:px-4 font-mono text-white text-xs font-bold block md:table-cell flex justify-between items-center border-b border-brand-border/30 md:border-none">
+                    <span className="md:hidden text-brand-subdued font-semibold uppercase tracking-wider text-[10px]">Đơn hàng</span>
+                    <span>#{order.orderNumber}</span>
                   </td>
-                  <td className="py-4 px-4 text-brand-subdued text-xs">
-                    {new Date(order.createdAt).toLocaleDateString("vi-VN")}
+                  <td className="py-3 px-4 md:py-4 md:px-4 text-brand-subdued text-xs block md:table-cell flex justify-between items-center border-b border-brand-border/30 md:border-none">
+                    <span className="md:hidden text-brand-subdued font-semibold uppercase tracking-wider text-[10px]">Ngày đặt</span>
+                    <span>{new Date(order.createdAt).toLocaleDateString("vi-VN")}</span>
                   </td>
-                  <td className="py-4 px-4 text-white font-semibold">
-                    {formatPrice(order.total)}
+                  <td className="py-3 px-4 md:py-4 md:px-4 text-white font-semibold block md:table-cell flex justify-between items-center border-b border-brand-border/30 md:border-none">
+                    <span className="md:hidden text-brand-subdued font-semibold uppercase tracking-wider text-[10px]">Tổng tiền</span>
+                    <span>{formatPrice(order.total)}</span>
                   </td>
-                  <td className="py-4 px-4">
-                    {getPaymentStatusBadge(order.paymentStatus)}
+                  <td className="py-3 px-4 md:py-4 md:px-4 block md:table-cell flex justify-between items-center border-b border-brand-border/30 md:border-none">
+                    <span className="md:hidden text-brand-subdued font-semibold uppercase tracking-wider text-[10px]">Thanh toán</span>
+                    <span>{getPaymentStatusBadge(order.paymentStatus)}</span>
                   </td>
-                  <td className="py-4 px-4">
-                    {getStatusBadge(order.status)}
+                  <td className="py-3 px-4 md:py-4 md:px-4 block md:table-cell flex justify-between items-center border-b border-brand-border/30 md:border-none">
+                    <span className="md:hidden text-brand-subdued font-semibold uppercase tracking-wider text-[10px]">Trạng thái</span>
+                    <span>{getStatusBadge(order.status)}</span>
                   </td>
-                  <td className="py-4 px-4 text-right">
+                  <td className="py-3 px-4 md:py-4 md:px-4 text-right block md:table-cell flex justify-end items-center">
                     <Link
                       href={`/tai-khoan/don-hang/${order.id}`}
                       className="inline-flex bg-brand-muted border border-brand-border hover:border-brand-gold hover:text-black hover:bg-brand-gold px-3.5 py-1.5 rounded text-xs text-white font-display font-bold uppercase tracking-wider transition-colors"

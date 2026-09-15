@@ -199,8 +199,8 @@ export default function AdminBlogPage() {
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-lg">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-gray-800/80 text-xs uppercase font-mono tracking-wider text-gray-400 border-b border-gray-700">
+            <table className="w-full text-left text-sm text-gray-300 block md:table">
+              <thead className="bg-gray-800/80 text-xs uppercase font-mono tracking-wider text-gray-400 border-b border-gray-700 hidden md:table-header-group">
                 <tr>
                   <th className="p-4">Bài viết</th>
                   <th className="p-4">Chuyên mục</th>
@@ -209,10 +209,11 @@ export default function AdminBlogPage() {
                   <th className="p-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-gray-800 block md:table-row-group">
                 {filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-gray-800/50 transition-colors">
-                    <td className="p-4">
+                  <tr key={post.id} className="hover:bg-gray-800/50 transition-colors block md:table-row border-b border-gray-800 md:border-none">
+                    <td className="p-4 block md:table-cell">
+                      <div className="flex md:hidden text-xs uppercase font-mono text-gray-500 mb-2 font-bold">Bài viết</div>
                       <div className="flex items-center gap-3">
                         <img
                           src={post.coverImage}
@@ -225,20 +226,27 @@ export default function AdminBlogPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-4 block md:table-cell flex justify-between md:table-cell items-center">
+                      <span className="md:hidden text-xs uppercase font-mono text-gray-500 font-bold">Chuyên mục</span>
                       <span className="px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono">
                         {post.category}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-xs text-gray-400">{post.publishedAt}</td>
-                    <td className="p-4 text-center">
-                      {post.isFeatured ? (
-                        <Star className="w-4 h-4 text-[#F5B800] fill-[#F5B800] inline-block" />
-                      ) : (
-                        <span className="text-gray-600">-</span>
-                      )}
+                    <td className="p-4 font-mono text-xs text-gray-400 block md:table-cell flex justify-between md:table-cell items-center">
+                      <span className="md:hidden text-xs uppercase font-mono text-gray-500 font-bold">Ngày đăng</span>
+                      <span>{post.publishedAt}</span>
                     </td>
-                    <td className="p-4 text-right space-x-2">
+                    <td className="p-4 text-right md:text-center block md:table-cell flex justify-between md:table-cell items-center">
+                      <span className="md:hidden text-xs uppercase font-mono text-gray-500 font-bold">Nổi bật</span>
+                      <span>
+                        {post.isFeatured ? (
+                          <Star className="w-4 h-4 text-[#F5B800] fill-[#F5B800] inline-block" />
+                        ) : (
+                          <span className="text-gray-600">-</span>
+                        )}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right space-x-2 block md:table-cell">
                       <Link
                         href={`/blog/${post.slug}`}
                         target="_blank"

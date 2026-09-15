@@ -106,6 +106,9 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
     let posX = 82;
     let posY = 50;
     let scale = 1.0;
+    let mobileX = 50;
+    let mobileY = 50;
+    let mobileScale = 1.0;
     let isProductPng = false;
     let themeColor = "#3a6988";
 
@@ -116,6 +119,9 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
           if (parsed.x !== undefined) posX = Number(parsed.x);
           if (parsed.y !== undefined) posY = Number(parsed.y);
           if (parsed.scale !== undefined) scale = Number(parsed.scale) || 1;
+          if (parsed.mobileX !== undefined) mobileX = Number(parsed.mobileX);
+          if (parsed.mobileY !== undefined) mobileY = Number(parsed.mobileY);
+          if (parsed.mobileScale !== undefined) mobileScale = Number(parsed.mobileScale) || 1;
           if (parsed.isProductPng !== undefined) isProductPng = Boolean(parsed.isProductPng);
           if (parsed.themeColor) themeColor = parsed.themeColor;
         } else if (raw.includes("left")) {
@@ -130,7 +136,7 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
       }
     }
 
-    return { posX, posY, scale, isProductPng, themeColor };
+    return { posX, posY, scale, mobileX, mobileY, mobileScale, isProductPng, themeColor };
   })();
 
   // Dynamically extract edge color of photo (or use themeColor if provided)
@@ -177,59 +183,83 @@ export default function HeroSection({ initialPromotions = [] }: HeroSectionProps
         {currentPromo.imageUrl ? (
           imageTransform.isProductPng ? (
             /* Floating Product PNG Mode (Direct position X/Y + scale) */
-            <div
-              className="absolute z-10 hidden md:block"
-              style={{
-                left: `${imageTransform.posX}%`,
-                top: `${imageTransform.posY}%`,
-                transform: "translate(-50%, -50%)",
-                width: "min(420px, 42vw)",
-                height: "min(460px, 54vh)",
-              }}
-            >
+            <>
+              {/* Desktop PNG */}
               <div
-                className="w-full h-full flex items-center justify-center"
-                style={{ transform: `scale(${imageTransform.scale})` }}
+                className="absolute z-10 hidden md:block"
+                style={{
+                  left: `${imageTransform.posX}%`,
+                  top: `${imageTransform.posY}%`,
+                  transform: "translate(-50%, -50%)",
+                  width: "min(420px, 42vw)",
+                  height: "min(460px, 54vh)",
+                }}
               >
-                <img
-                  key={`hero-bg-${currentPromo.id}`}
-                  src={currentPromo.imageUrl}
-                  alt={currentPromo.title}
-                  className="w-full h-full object-contain filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)] hero-fade-in"
-                />
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ transform: `scale(${imageTransform.scale})` }}
+                >
+                  <img
+                    key={`hero-bg-${currentPromo.id}`}
+                    src={currentPromo.imageUrl}
+                    alt={currentPromo.title}
+                    className="w-full h-full object-contain filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)] hero-fade-in"
+                  />
+                </div>
               </div>
-            </div>
+              {/* Mobile PNG */}
+              <div
+                className="absolute z-10 md:hidden block"
+                style={{
+                  left: `${imageTransform.mobileX}%`,
+                  top: `${imageTransform.mobileY}%`,
+                  transform: "translate(-50%, -50%)",
+                  width: "280px",
+                  height: "320px",
+                }}
+              >
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  style={{ transform: `scale(${imageTransform.mobileScale})` }}
+                >
+                  <img
+                    key={`hero-bg-mobile-${currentPromo.id}`}
+                    src={currentPromo.imageUrl}
+                    alt={currentPromo.title}
+                    className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.5)] hero-fade-in"
+                  />
+                </div>
+              </div>
+            </>
           ) : (
             /* Full Cover Photo Mode */
             <>
               <style dangerouslySetInnerHTML={{__html: `
                 @media (min-width: 768px) {
-                  .hero-mask-desktop {
+                  .hero-mask-desktop-${currentPromo.id} {
                     -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%);
                     mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%);
                   }
-                  .hero-image-pos {
+                  .hero-image-pos-${currentPromo.id} {
                     object-position: ${imageTransform.posX}% ${imageTransform.posY}%;
+                    transform: scale(${imageTransform.scale});
                   }
                 }
                 @media (max-width: 767px) {
-                  .hero-image-pos {
-                    object-position: center center;
+                  .hero-image-pos-${currentPromo.id} {
+                    object-position: ${imageTransform.mobileX}% ${imageTransform.mobileY}%;
+                    transform: scale(${imageTransform.mobileScale});
                   }
                 }
               `}} />
               <div
-                className="w-full h-full overflow-hidden hero-mask-desktop"
-                style={{
-                  transform: `scale(${imageTransform.scale})`,
-                  transformOrigin: `center center`,
-                }}
+                className={`w-full h-full overflow-hidden hero-mask-desktop-${currentPromo.id}`}
               >
                 <img
                   key={`hero-bg-${currentPromo.id}`}
                   src={currentPromo.imageUrl}
                   alt={currentPromo.title}
-                  className="w-full h-full object-cover hero-image-pos hero-fade-in filter brightness-[0.4] md:brightness-[0.96] contrast-[1.03] transition-all duration-700"
+                  className={`w-full h-full object-cover hero-image-pos-${currentPromo.id} hero-fade-in filter brightness-[0.4] md:brightness-[0.96] contrast-[1.03] transition-all duration-700`}
                 />
               </div>
             </>

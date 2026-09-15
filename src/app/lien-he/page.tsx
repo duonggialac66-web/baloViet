@@ -165,7 +165,7 @@ export default function LienHePage() {
                       placeholder="Ví dụ: Nguyễn Văn A"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full bg-[#181A1F] border border-[#2A2D35] text-black rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
+                      className="w-full bg-[#181A1F] border border-[#2A2D35] text-white rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
                     />
                   </div>
                   <div>
@@ -176,7 +176,7 @@ export default function LienHePage() {
                       placeholder="you@example.com"
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full bg-[#181A1F] border border-[#2A2D35] text-black rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
+                      className="w-full bg-[#181A1F] border border-[#2A2D35] text-white rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -188,7 +188,7 @@ export default function LienHePage() {
                     placeholder="0901234567"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    className="w-full bg-[#181A1F] border border-[#2A2D35] text-black rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
+                    className="w-full bg-[#181A1F] border border-[#2A2D35] text-white rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors"
                   />
                 </div>
 
@@ -200,7 +200,7 @@ export default function LienHePage() {
                     placeholder="Nhập nội dung cần hỗ trợ hoặc tư vấn sản phẩm..."
                     value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="w-full bg-[#181A1F] border border-[#2A2D35] text-black rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors leading-relaxed"
+                    className="w-full bg-[#181A1F] border border-[#2A2D35] text-white rounded-xl px-4 py-3 text-sm focus:border-[#F5B800] outline-none transition-colors leading-relaxed"
                   />
                 </div>
 

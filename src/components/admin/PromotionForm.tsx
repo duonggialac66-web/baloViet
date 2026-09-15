@@ -66,7 +66,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
   // Parse initial transform if present in giftText
   const parseInitialTransform = () => {
     const raw = initialData?.giftText;
-    if (!raw) return { x: 82, y: 50, scale: 1.0, isProductPng: false, themeColor: "auto" };
+    if (!raw) return { x: 82, y: 50, scale: 1.0, mobileX: 50, mobileY: 50, mobileScale: 1.0, isProductPng: false, themeColor: "auto" };
     try {
       if (raw.startsWith("{")) {
         const p = JSON.parse(raw);
@@ -74,25 +74,35 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
           x: p.x !== undefined ? Number(p.x) : 82,
           y: p.y !== undefined ? Number(p.y) : 50,
           scale: p.scale !== undefined ? Number(p.scale) : 1.0,
+          mobileX: p.mobileX !== undefined ? Number(p.mobileX) : 50,
+          mobileY: p.mobileY !== undefined ? Number(p.mobileY) : 50,
+          mobileScale: p.mobileScale !== undefined ? Number(p.mobileScale) : 1.0,
           isProductPng: Boolean(p.isProductPng),
           themeColor: p.themeColor || "auto",
         };
       }
-      if (raw.includes("left")) return { x: 18, y: 50, scale: 1.0, isProductPng: false, themeColor: "auto" };
-      if (raw.includes("right")) return { x: 82, y: 50, scale: 1.0, isProductPng: false, themeColor: "auto" };
-      if (raw.includes("center")) return { x: 50, y: 50, scale: 1.0, isProductPng: false, themeColor: "auto" };
+      if (raw.includes("left")) return { x: 18, y: 50, scale: 1.0, mobileX: 50, mobileY: 50, mobileScale: 1.0, isProductPng: false, themeColor: "auto" };
+      if (raw.includes("right")) return { x: 82, y: 50, scale: 1.0, mobileX: 50, mobileY: 50, mobileScale: 1.0, isProductPng: false, themeColor: "auto" };
+      if (raw.includes("center")) return { x: 50, y: 50, scale: 1.0, mobileX: 50, mobileY: 50, mobileScale: 1.0, isProductPng: false, themeColor: "auto" };
     } catch (e) {
       // fallback
     }
-    return { x: 82, y: 50, scale: 1.0, isProductPng: false, themeColor: "auto" };
+    return { x: 82, y: 50, scale: 1.0, mobileX: 50, mobileY: 50, mobileScale: 1.0, isProductPng: false, themeColor: "auto" };
   };
 
   const initialTransform = parseInitialTransform();
   const [posX, setPosX] = useState(initialTransform.x);
   const [posY, setPosY] = useState(initialTransform.y);
   const [zoomScale, setZoomScale] = useState(initialTransform.scale);
+  const [mobilePosX, setMobilePosX] = useState(initialTransform.mobileX);
+  const [mobilePosY, setMobilePosY] = useState(initialTransform.mobileY);
+  const [mobileZoomScale, setMobileZoomScale] = useState(initialTransform.mobileScale);
   const [isProductPng, setIsProductPng] = useState(initialTransform.isProductPng);
   const [themeColor, setThemeColor] = useState(initialTransform.themeColor);
+
+  const currentX = previewMode === "mobile" ? mobilePosX : posX;
+  const currentY = previewMode === "mobile" ? mobilePosY : posY;
+  const currentScale = previewMode === "mobile" ? mobileZoomScale : zoomScale;
 
   const [formData, setFormData] = useState({
     title: initialData?.title || "ĐỔI BALO CŨ\nNHẬN NGAY",
@@ -133,8 +143,13 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
     const rect = previewRef.current.getBoundingClientRect();
     const x = Math.min(100, Math.max(0, Math.round(((clientX - rect.left) / rect.width) * 100)));
     const y = Math.min(100, Math.max(0, Math.round(((clientY - rect.top) / rect.height) * 100)));
-    setPosX(x);
-    setPosY(y);
+    if (previewMode === "mobile") {
+      setMobilePosX(x);
+      setMobilePosY(y);
+    } else {
+      setPosX(x);
+      setPosY(y);
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -152,10 +167,16 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
   };
 
   const handleResetTransform = () => {
-    setPosX(82);
-    setPosY(50);
-    setZoomScale(1.0);
-    setThemeColor("#3a6988");
+    if (previewMode === "mobile") {
+      setMobilePosX(50);
+      setMobilePosY(50);
+      setMobileZoomScale(1.0);
+    } else {
+      setPosX(82);
+      setPosY(50);
+      setZoomScale(1.0);
+      setThemeColor("#3a6988");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -172,6 +193,9 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
         x: posX,
         y: posY,
         scale: Number(zoomScale.toFixed(2)),
+        mobileX: mobilePosX,
+        mobileY: mobilePosY,
+        mobileScale: Number(mobileZoomScale.toFixed(2)),
         isProductPng,
         themeColor,
       });
@@ -254,7 +278,7 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
       {/* SECTION 1: FULL WIDESCREEN HERO PREVIEW STUDIO (COL-12)  */}
       {/* ======================================================== */}
       <div className="space-y-4">
-        
+
         {/* Header Canvas Control Toolbar */}
         <div className="flex items-center justify-between bg-neutral-900 border border-neutral-800 px-4 py-3 rounded-xl text-xs text-white">
           <div className="flex items-center gap-2 text-amber-400 font-medium">
@@ -267,47 +291,43 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
               <button
                 type="button"
                 onClick={() => setIsProductPng(false)}
-                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-                  !isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
-                }`}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${!isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                  }`}
               >
                 🖼️ Ảnh Bìa
               </button>
               <button
                 type="button"
                 onClick={() => setIsProductPng(true)}
-                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-                  isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
-                }`}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${isProductPng ? "bg-amber-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                  }`}
               >
                 🎒 PNG
               </button>
             </div>
-            
+
             <div className="flex items-center gap-1 bg-black/80 border border-white/10 p-1 rounded-lg">
               <button
                 type="button"
                 onClick={() => setPreviewMode("desktop")}
-                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-                  previewMode === "desktop" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
-                }`}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${previewMode === "desktop" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                  }`}
               >
                 💻 Web
               </button>
               <button
                 type="button"
                 onClick={() => setPreviewMode("mobile")}
-                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${
-                  previewMode === "mobile" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
-                }`}
+                className={`px-3 py-1 rounded text-xs font-bold transition-all cursor-pointer ${previewMode === "mobile" ? "bg-neutral-600 text-white shadow" : "text-neutral-400 hover:text-white"
+                  }`}
               >
                 📱 Mobile
               </button>
             </div>
 
             <div className="flex items-center gap-2 bg-black/60 border border-white/10 px-3 py-1.5 rounded-lg text-xs font-mono">
-              <span className="text-neutral-400">X:{posX}% Y:{posY}%</span>
-              <span className="text-cyan-400 font-bold">{Math.round(zoomScale * 100)}%</span>
+              <span className="text-neutral-400">X:{currentX}% Y:{currentY}%</span>
+              <span className="text-cyan-400 font-bold">{Math.round(currentScale * 100)}%</span>
             </div>
           </div>
         </div>
@@ -320,208 +340,205 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
-            className={`relative rounded-2xl overflow-hidden border-2 border-amber-500/40 shadow-2xl cursor-grab active:cursor-grabbing select-none flex flex-col justify-between group transition-all duration-500 ${
-              previewMode === "desktop" 
+            className={`relative rounded-2xl overflow-hidden border-2 border-amber-500/40 shadow-2xl cursor-grab active:cursor-grabbing select-none flex flex-col justify-between group transition-all duration-500 ${previewMode === "desktop"
                 ? "w-full h-[380px] sm:h-[460px] lg:h-[520px] p-6 sm:p-10 lg:p-12"
                 : "w-[375px] h-[667px] p-6 max-w-full"
-            }`}
+              }`}
             style={{
               backgroundColor: colorInfo.bgColor,
               color: colorInfo.textColor,
             }}
             title="Nhấn giữ và kéo chuột trực tiếp trên khung để di chuyển ảnh"
           >
-          {/* Ambient Color Flow Glow Behind Image */}
-          {previewMode === "desktop" ? (
-            <div
-              className="absolute inset-0 pointer-events-none transition-all duration-500"
-              style={{
-                background: colorInfo.isLight
-                  ? `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 60%, ${colorInfo.bgColor} 100%)`
-                  : `radial-gradient(circle at ${posX}% ${posY}%, ${colorInfo.bgColor}66 0%, ${colorInfo.bgColor}22 50%, #0B0D0E 90%)`,
-              }}
-            />
-          ) : (
-            <div 
-              className="absolute inset-0 pointer-events-none transition-all duration-700"
-              style={{ backgroundColor: colorInfo.bgColor }}
-            />
-          )}
-
-          {/* Background image / Product PNG with real-time Pan & Zoom transform */}
-          {formData.imageUrl ? (
-            isProductPng ? (
-              /* Product PNG Mode */
-              <div
-                className="absolute z-10 pointer-events-none"
-                style={{
-                  left: `${posX}%`,
-                  top: `${posY}%`,
-                  transform: "translate(-50%, -50%)",
-                  width: "min(460px, 45vw)",
-                  height: "min(500px, 58vh)",
-                }}
-              >
-                <div
-                  className="w-full h-full flex items-center justify-center"
-                  style={{ transform: `scale(${zoomScale})` }}
-                >
-                  <img
-                    src={formData.imageUrl}
-                    alt="Hero Product Preview"
-                    className="w-full h-full object-contain filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)]"
-                  />
-                </div>
-              </div>
-            ) : (
-              /* Full Cover Photo Mode with Seamless Soft Edge Gradient Mask */
-              <div
-                className="w-full h-full overflow-hidden pointer-events-none"
-                style={{
-                  transform: `scale(${zoomScale})`,
-                  transformOrigin: previewMode === "desktop" ? `${posX}% ${posY}%` : `center center`,
-                  ...(previewMode === "desktop" ? {
-                    WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
-                    maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
-                  } : {})
-                }}
-              >
-                <img
-                  src={formData.imageUrl}
-                  alt="Hero Background Preview"
-                  style={{
-                    objectPosition: previewMode === "desktop" ? `${posX}% ${posY}%` : `center center`,
-                  }}
-                  className={`w-full h-full object-cover transition-transform duration-75 filter ${previewMode === "desktop" ? "brightness-95 contrast-105" : "brightness-[0.4] contrast-105"}`}
-                />
-              </div>
-            )
-          ) : (
-            <div className="absolute inset-0 bg-neutral-950 flex items-center justify-center text-sm text-neutral-500">
-              Chưa có ảnh banner
-            </div>
-          )}
-
-          {/* Smooth Edge Color Gradients for seamless text contrast */}
-          {previewMode === "desktop" ? (
-            <>
-              <div
-                className="absolute inset-0 w-full pointer-events-none transition-all duration-500"
-                style={{
-                  background: colorInfo.isLight
-                    ? `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}E6 40%, transparent 100%)`
-                    : `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}CC 45%, transparent 100%)`,
-                }}
-              />
+            {/* Ambient Color Flow Glow Behind Image */}
+            {previewMode === "desktop" ? (
               <div
                 className="absolute inset-0 pointer-events-none transition-all duration-500"
                 style={{
                   background: colorInfo.isLight
-                    ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}44 100%)`
-                    : `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}66 100%)`,
+                    ? `radial-gradient(circle at ${currentX}% ${currentY}%, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 60%, ${colorInfo.bgColor} 100%)`
+                    : `radial-gradient(circle at ${currentX}% ${currentY}%, ${colorInfo.bgColor}66 0%, ${colorInfo.bgColor}22 50%, #0B0D0E 90%)`,
                 }}
               />
-            </>
-          ) : (
-            <div 
-              className="absolute inset-0 pointer-events-none transition-all duration-500"
-              style={{
-                background: colorInfo.isLight 
-                  ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 100%)`
-                  : `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(0,0,0,0.6) 100%)`
-              }}
-            />
-          )}
-
-          {/* Live Focal Point Crosshair Indicator */}
-          <div
-            style={{ left: `${posX}%`, top: `${posY}%` }}
-            className="absolute -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 border-dashed border-[#F5B800] bg-[#F5B800]/20 pointer-events-none z-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-[#F5B800]" />
-          </div>
-
-          {/* Hint Overlay badge */}
-          <div className="absolute top-3 right-3 z-30 opacity-80 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md border border-white/20 text-[11px] px-3.5 py-1.5 rounded-full text-[#F5B800] pointer-events-none flex items-center gap-1.5 shadow-lg">
-            <Move className="w-3.5 h-3.5" />
-            <span>Nhận diện hòa màu lề: {colorInfo.bgColor} ({colorInfo.isLight ? 'Tone sáng' : 'Tone tối'})</span>
-          </div>
-
-          {/* Real Live Text Content */}
-          <div className="relative z-10 max-w-2xl space-y-4 pointer-events-none my-auto">
-            {/* Tag */}
-            <div
-              className="inline-flex items-center gap-2 border border-[#F5B800]/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[#F5B800] text-xs font-bold uppercase shadow-sm"
-              style={{ backgroundColor: colorInfo.badgeBg }}
-            >
-              <Leaf className="w-3.5 h-3.5 fill-[#F5B800]" />
-              <span className="font-display tracking-widest">{formData.tag || "HÀNH TRÌNH XANH"}</span>
-            </div>
-
-            {/* Title */}
-            <h1
-              style={{ color: colorInfo.textColor }}
-              className={`font-display font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight leading-[0.95] ${
-                colorInfo.isLight ? "drop-shadow-[0_2px_8px_rgba(255,255,255,0.9)]" : "drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
-              }`}
-            >
-              {formData.title ? (
-                formData.title.split("\n").map((l, i) => (
-                  <span key={i} className="block">{l}</span>
-                ))
-              ) : (
-                "ĐỔI BALO CŨ NHẬN NGAY"
-              )}
-            </h1>
-
-            {/* Highlight & Discount */}
-            <div className="space-y-0.5 pt-0.5">
-              {formData.highlight && (
-                <div className="flex items-center gap-2.5 w-fit">
-                  <div className="h-[2px] w-10 bg-[#F5B800]" />
-                  <span
-                    style={{ color: colorInfo.textColor }}
-                    className="font-display font-black text-xs sm:text-sm tracking-[0.2em] uppercase"
-                  >
-                    {formData.highlight}
-                  </span>
-                  <div className="h-[2px] w-10 bg-[#F5B800]" />
-                </div>
-              )}
-
-              {formData.discountValue && (
-                <div className="font-display font-black text-4xl sm:text-6xl lg:text-7xl text-[#F5B800] leading-none drop-shadow-[0_4px_20px_rgba(245,184,0,0.4)]">
-                  {formData.discountValue}
-                </div>
-              )}
-            </div>
-
-            {/* Description */}
-            {formData.description && (
-              <p
-                style={{ color: colorInfo.subtextColor }}
-                className="text-xs sm:text-sm max-w-lg leading-relaxed line-clamp-2 font-normal"
-              >
-                {formData.description}
-              </p>
+            ) : (
+              <div
+                className="absolute inset-0 pointer-events-none transition-all duration-700"
+                style={{ backgroundColor: colorInfo.bgColor }}
+              />
             )}
 
-            {/* Buttons */}
-            <div className="flex items-center gap-3.5 pt-1">
-              <span className="inline-flex items-center gap-2 bg-[#F5B800] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider px-6 py-3 rounded-xl shadow-md">
-                <span>{formData.ctaText || "THAM GIA NGAY"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </span>
-              <span
-                style={{ color: colorInfo.textColor }}
-                className="text-xs font-display font-bold uppercase tracking-widest"
+            {/* Background image / Product PNG with real-time Pan & Zoom transform */}
+            {formData.imageUrl ? (
+              isProductPng ? (
+                /* Product PNG Mode */
+                <div
+                  className="absolute z-10 pointer-events-none"
+                  style={{
+                    left: `${currentX}%`,
+                    top: `${currentY}%`,
+                    transform: "translate(-50%, -50%)",
+                    width: previewMode === "desktop" ? "min(460px, 45vw)" : "280px",
+                    height: previewMode === "desktop" ? "min(500px, 58vh)" : "320px",
+                  }}
+                >
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={{ transform: `scale(${currentScale})` }}
+                  >
+                    <img
+                      src={formData.imageUrl}
+                      alt="Hero Product Preview"
+                      className="w-full h-full object-contain filter drop-shadow-[0_25px_50px_rgba(0,0,0,0.5)]"
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* Full Cover Photo Mode with Seamless Soft Edge Gradient Mask */
+                <div
+                  className="absolute inset-0 overflow-hidden pointer-events-none"
+                  style={
+                    previewMode === "desktop" ? {
+                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
+                      maskImage: "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 15%, black 40%, black 100%)",
+                    } : {}
+                  }
+                >
+                  <img
+                    src={formData.imageUrl}
+                    alt="Hero Background Preview"
+                    style={{
+                      objectPosition: `${currentX}% ${currentY}%`,
+                      transform: `scale(${currentScale})`,
+                    }}
+                    className={`w-full h-full object-cover transition-transform duration-75 filter ${previewMode === "desktop" ? "brightness-95 contrast-105" : "brightness-[0.4] contrast-105"}`}
+                  />
+                </div>
+              )
+            ) : (
+              <div className="absolute inset-0 bg-neutral-950 flex items-center justify-center text-sm text-neutral-500">
+                Chưa có ảnh banner
+              </div>
+            )}
+
+            {/* Smooth Edge Color Gradients for seamless text contrast */}
+            {previewMode === "desktop" ? (
+              <>
+                <div
+                  className="absolute inset-0 w-full pointer-events-none transition-all duration-500"
+                  style={{
+                    background: colorInfo.isLight
+                      ? `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}E6 40%, transparent 100%)`
+                      : `linear-gradient(to right, ${colorInfo.bgColor} 0%, ${colorInfo.bgColor}CC 45%, transparent 100%)`,
+                  }}
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none transition-all duration-500"
+                  style={{
+                    background: colorInfo.isLight
+                      ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}44 100%)`
+                      : `linear-gradient(to top, ${colorInfo.bgColor} 0%, transparent 40%, ${colorInfo.bgColor}66 100%)`,
+                  }}
+                />
+              </>
+            ) : (
+              <div
+                className="absolute inset-0 pointer-events-none transition-all duration-500"
+                style={{
+                  background: colorInfo.isLight
+                    ? `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(255,255,255,0.7) 100%)`
+                    : `linear-gradient(to top, ${colorInfo.bgColor} 0%, rgba(0,0,0,0.6) 100%)`
+                }}
+              />
+            )}
+
+            {/* Live Focal Point Crosshair Indicator */}
+            <div
+              style={{ left: `${currentX}%`, top: `${currentY}%` }}
+              className="absolute -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2 border-dashed border-[#F5B800] bg-[#F5B800]/20 pointer-events-none z-20 flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-[#F5B800]" />
+            </div>
+
+            {/* Hint Overlay badge */}
+            <div className="absolute top-3 right-3 z-30 opacity-80 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md border border-white/20 text-[11px] px-3.5 py-1.5 rounded-full text-[#F5B800] pointer-events-none flex items-center gap-1.5 shadow-lg">
+              <Move className="w-3.5 h-3.5" />
+              <span>Nhận diện hòa màu lề: {colorInfo.bgColor} ({colorInfo.isLight ? 'Tone sáng' : 'Tone tối'})</span>
+            </div>
+
+            {/* Real Live Text Content */}
+            <div className="relative z-10 max-w-2xl space-y-4 pointer-events-none my-auto">
+              {/* Tag */}
+              <div
+                className="inline-flex items-center gap-2 border border-[#F5B800]/80 backdrop-blur-md px-3.5 py-1 rounded-full text-[#F5B800] text-xs font-bold uppercase shadow-sm"
+                style={{ backgroundColor: colorInfo.badgeBg }}
               >
-                XEM CHI TIẾT
-              </span>
+                <Leaf className="w-3.5 h-3.5 fill-[#F5B800]" />
+                <span className="font-display tracking-widest">{formData.tag || "HÀNH TRÌNH XANH"}</span>
+              </div>
+
+              {/* Title */}
+              <h1
+                style={{ color: colorInfo.textColor }}
+                className={`font-display font-black text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight leading-[0.95] ${colorInfo.isLight ? "drop-shadow-[0_2px_8px_rgba(255,255,255,0.9)]" : "drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]"
+                  }`}
+              >
+                {formData.title ? (
+                  formData.title.split("\n").map((l, i) => (
+                    <span key={i} className="block">{l}</span>
+                  ))
+                ) : (
+                  "ĐỔI BALO CŨ NHẬN NGAY"
+                )}
+              </h1>
+
+              {/* Highlight & Discount */}
+              <div className="space-y-0.5 pt-0.5">
+                {formData.highlight && (
+                  <div className="flex items-center gap-2.5 w-fit">
+                    <div className="h-[2px] w-10 bg-[#F5B800]" />
+                    <span
+                      style={{ color: colorInfo.textColor }}
+                      className="font-display font-black text-xs sm:text-sm tracking-[0.2em] uppercase"
+                    >
+                      {formData.highlight}
+                    </span>
+                    <div className="h-[2px] w-10 bg-[#F5B800]" />
+                  </div>
+                )}
+
+                {formData.discountValue && (
+                  <div className="font-display font-black text-4xl sm:text-6xl lg:text-7xl text-[#F5B800] leading-none drop-shadow-[0_4px_20px_rgba(245,184,0,0.4)]">
+                    {formData.discountValue}
+                  </div>
+                )}
+              </div>
+
+              {/* Description */}
+              {formData.description && (
+                <p
+                  style={{ color: colorInfo.subtextColor }}
+                  className="text-xs sm:text-sm max-w-lg leading-relaxed line-clamp-2 font-normal"
+                >
+                  {formData.description}
+                </p>
+              )}
+
+              {/* Buttons */}
+              <div className="flex items-center gap-3.5 pt-1">
+                <span className="inline-flex items-center gap-2 bg-[#F5B800] text-black font-display font-black text-xs sm:text-sm uppercase tracking-wider px-6 py-3 rounded-xl shadow-md">
+                  <span>{formData.ctaText || "THAM GIA NGAY"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+                <span
+                  style={{ color: colorInfo.textColor }}
+                  className="text-xs font-display font-bold uppercase tracking-widest"
+                >
+                  XEM CHI TIẾT
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       </div>
 
@@ -529,10 +546,10 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
       {/* SECTION 2: 2 BALANCED SIDE-BY-SIDE CONTROL PANELS        */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+
         {/* LEFT COLUMN (COL-6): STUDIO TRANSFORM & COLOR CONTROLLERS */}
         <div className="lg:col-span-6 space-y-6">
-          
+
           <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl space-y-5 text-white shadow-xl">
             <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-neutral-800 pb-3">
               <Sliders className="w-5 h-5 text-amber-500" /> Bảng Điều Khiển Hòa Màu & Căn Vị Trí
@@ -559,11 +576,10 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                     type="button"
                     key={preset.hex}
                     onClick={() => setThemeColor(preset.hex)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                      themeColor === preset.hex
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${themeColor === preset.hex
                         ? "bg-amber-500 text-black border-amber-400 font-bold shadow-md shadow-amber-500/20"
                         : "bg-neutral-800 text-neutral-300 border-neutral-700 hover:border-neutral-500"
-                    }`}
+                      }`}
                   >
                     {preset.hex !== "auto" && (
                       <span className="w-2.5 h-2.5 rounded-full border border-black/30" style={{ backgroundColor: preset.hex }} />
@@ -582,13 +598,13 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 <label className="text-xs font-bold uppercase tracking-wider text-neutral-300 flex items-center gap-1.5">
                   <ZoomIn className="w-4 h-4 text-cyan-400" /> Thu phóng kích thước (Scale Zoom)
                 </label>
-                <span className="font-mono text-xs text-cyan-400 font-bold">{Math.round(zoomScale * 100)}%</span>
+                <span className="font-mono text-xs text-cyan-400 font-bold">{Math.round(currentScale * 100)}%</span>
               </div>
 
               <div className="flex items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => setZoomScale((prev) => Math.max(0.6, Number((prev - 0.05).toFixed(2))))}
+                  onClick={() => previewMode === "mobile" ? setMobileZoomScale((prev) => Math.max(0.6, Number((prev - 0.05).toFixed(2)))) : setZoomScale((prev) => Math.max(0.6, Number((prev - 0.05).toFixed(2))))}
                   className="p-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors cursor-pointer"
                   title="Thu nhỏ"
                 >
@@ -600,14 +616,14 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                   min="0.6"
                   max="2.5"
                   step="0.05"
-                  value={zoomScale}
-                  onChange={(e) => setZoomScale(parseFloat(e.target.value))}
+                  value={currentScale}
+                  onChange={(e) => previewMode === "mobile" ? setMobileZoomScale(parseFloat(e.target.value)) : setZoomScale(parseFloat(e.target.value))}
                   className="text-black flex-1 accent-cyan-400 h-2 bg-neutral-700 rounded-lg cursor-pointer"
                 />
 
                 <button
                   type="button"
-                  onClick={() => setZoomScale((prev) => Math.min(2.5, Number((prev + 0.05).toFixed(2))))}
+                  onClick={() => previewMode === "mobile" ? setMobileZoomScale((prev) => Math.min(2.5, Number((prev + 0.05).toFixed(2)))) : setZoomScale((prev) => Math.min(2.5, Number((prev + 0.05).toFixed(2))))}
                   className="p-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors cursor-pointer"
                   title="Phóng to"
                 >
@@ -638,14 +654,14 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 <div className="space-y-1.5 bg-black/40 border border-neutral-800 p-3 rounded-xl">
                   <div className="flex justify-between text-xs text-neutral-400">
                     <span>Tọa độ Ngang X:</span>
-                    <span className="font-mono text-[#F5B800] font-bold">{posX}%</span>
+                    <span className="font-mono text-[#F5B800] font-bold">{currentX}%</span>
                   </div>
                   <input
                     type="range"
                     min="0"
                     max="100"
-                    value={posX}
-                    onChange={(e) => setPosX(parseInt(e.target.value))}
+                    value={currentX}
+                    onChange={(e) => previewMode === "mobile" ? setMobilePosX(parseInt(e.target.value)) : setPosX(parseInt(e.target.value))}
                     className="text-black w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
                   />
                 </div>
@@ -653,14 +669,14 @@ export default function PromotionForm({ initialData, isEdit = false }: Promotion
                 <div className="space-y-1.5 bg-black/40 border border-neutral-800 p-3 rounded-xl">
                   <div className="flex justify-between text-xs text-neutral-400">
                     <span>Tọa độ Dọc Y:</span>
-                    <span className="font-mono text-[#F5B800] font-bold">{posY}%</span>
+                    <span className="font-mono text-[#F5B800] font-bold">{currentY}%</span>
                   </div>
                   <input
                     type="range"
                     min="0"
                     max="100"
-                    value={posY}
-                    onChange={(e) => setPosY(parseInt(e.target.value))}
+                    value={currentY}
+                    onChange={(e) => previewMode === "mobile" ? setMobilePosY(parseInt(e.target.value)) : setPosY(parseInt(e.target.value))}
                     className="text-black w-full accent-[#F5B800] h-2 bg-neutral-700 rounded-lg cursor-pointer"
                   />
                 </div>
