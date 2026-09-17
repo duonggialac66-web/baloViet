@@ -280,64 +280,67 @@ export default function ProductsHeroBanner({
           {/* ======================================================= */}
           <div className="lg:col-span-7 relative flex items-center justify-center min-h-[340px] sm:min-h-[420px] lg:min-h-[480px]">
 
-            {/* ─── THE RING (Fixed Center, perspective oval) ─── */}
-            <div
-              className="absolute pointer-events-none select-none transition-all duration-700 ease-out"
-              style={{
-                left: "50%",
-                bottom: "45px",
-                width: "min(380px, 75vw)",
-                height: "110px",
-                transform: `translateX(-50%) ${isEntering ? "scale(0.7)" : "scale(1)"}`,
-                opacity: isEntering ? 0 : 1,
-              }}
-            >
-              <div className="absolute inset-0 bg-[#F5B800]/20 blur-[45px] rounded-[50%] animate-ring-glow" />
-              <div className="absolute top-3 w-[98%] left-[1%] h-[90%] rounded-[50%] bg-[#0A0B0D] border-b-[8px] border-b-[#8B6A00]" />
-              <div className="relative w-full h-full rounded-[50%] bg-[#0E0F11] border-[3px] border-[#F5B800] shadow-[0_0_40px_rgba(245,184,0,0.45),0_0_80px_rgba(245,184,0,0.15),inset_0_0_25px_rgba(245,184,0,0.2)] flex items-center justify-center">
-                <div className="w-[88%] h-[80%] rounded-[50%] bg-[#141517] border border-[#2A2B30] shadow-inner" />
-              </div>
-            </div>
-
-            {/* ─── PRODUCT IMAGE — 3 Wrappers: 1. Position Center, 2. Scale factor, 3. Drop Entrance animation ─── */}
-            <div
-              key={activeCategory}
-              className="absolute z-20 pointer-events-none"
-              style={{
-                left: `calc(50% + ${displaySettings.imageX}%)`,
-                top: `calc(45% + ${displaySettings.imageY}%)`,
-                transform: "translate(-50%, -50%)",
-                width: "min(300px, 75vw)",
-                height: "min(360px, 80vw)",
-              }}
-            >
-              {/* Middle wrapper: applies admin's scale factor safely without animation override */}
+            {/* Inner responsive 1:1 container matching admin exactly */}
+            <div className="relative w-full max-w-[400px] aspect-[4/5] mx-auto">
+              
+              {/* ─── THE RING (Fixed Center, perspective oval) ─── */}
               <div
-                className="w-full h-full flex items-center justify-center"
+                className="absolute pointer-events-none select-none transition-all duration-700 ease-out"
                 style={{
-                  transform: `scale(${displaySettings.imageScale / 100})`,
+                  left: "50%",
+                  bottom: "10%",
+                  width: "85%",
+                  height: "22%",
+                  transform: `translateX(-50%) ${isEntering ? "scale(0.7)" : "scale(1)"}`,
+                  opacity: isEntering ? 0 : 1,
                 }}
               >
-                {/* Inner wrapper: applies entrance animation */}
-                <div className="w-full h-full hero-product-entrance flex items-center justify-center">
-                  <img
-                    src={displayImage}
-                    alt={currentCategory?.name || "Balo Việt"}
-                    width={500}
-                    height={500}
-                    fetchPriority="high"
-                    decoding="async"
-                    className="w-full h-full object-contain filter drop-shadow-[0_25px_45px_rgba(0,0,0,0.9)] animate-hero-float"
-                  />
+                <div className="absolute inset-0 bg-[#F5B800]/20 blur-[30px] rounded-[50%] animate-ring-glow" />
+                <div className="absolute top-[10%] w-[98%] left-[1%] h-[90%] rounded-[50%] bg-[#0A0B0D] border-b-[6px] border-b-[#8B6A00]" />
+                <div className="relative w-full h-full rounded-[50%] bg-[#0E0F11] border-[2px] border-[#F5B800] shadow-[0_0_30px_rgba(245,184,0,0.45),0_0_80px_rgba(245,184,0,0.15),inset_0_0_25px_rgba(245,184,0,0.2)] flex items-center justify-center">
+                  <div className="w-[88%] h-[80%] rounded-[50%] bg-[#141517] border border-[#2A2B30] shadow-inner" />
                 </div>
               </div>
-            </div>
 
-            {/* ─── ANNOTATION LINES (PCB Circuit Trace 45° Elbow Lines matching reference image) ─── */}
-            <div
-              className="absolute inset-0 pointer-events-none hidden sm:block"
-              style={{ zIndex: 30 }}
-            >
+              {/* ─── PRODUCT IMAGE — 3 Wrappers: 1. Position Center, 2. Scale factor, 3. Drop Entrance animation ─── */}
+              <div
+                key={activeCategory}
+                className="absolute z-20 pointer-events-none"
+                style={{
+                  left: `calc(50% + ${displaySettings.imageX}%)`,
+                  top: `calc(45% + ${displaySettings.imageY}%)`,
+                  transform: "translate(-50%, -50%)",
+                  width: "75%",
+                  height: "75%",
+                }}
+              >
+                {/* Middle wrapper: applies admin's scale factor safely without animation override */}
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  style={{
+                    transform: `scale(${displaySettings.imageScale / 100})`,
+                  }}
+                >
+                  {/* Inner wrapper: applies entrance animation */}
+                  <div className="w-full h-full hero-product-entrance flex items-center justify-center">
+                    <img
+                      src={displayImage}
+                      alt={currentCategory?.name || "Balo Việt"}
+                      width={500}
+                      height={500}
+                      fetchPriority="high"
+                      decoding="async"
+                      className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)] animate-hero-float"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ─── ANNOTATION LINES (PCB Circuit Trace 45° Elbow Lines matching reference image) ─── */}
+              <div
+                className="absolute inset-0 pointer-events-none hidden sm:block"
+                style={{ zIndex: 30 }}
+              >
               {displaySettings.annotations.map((ann, i) => {
                 const isRight = ann.side === "right";
                 const indexStr = String(i + 1).padStart(2, "0");
@@ -455,6 +458,7 @@ export default function ProductsHeroBanner({
                   </div>
                 );
               })}
+              </div>
             </div>
 
             {/* ─── Rotating Badge (top right) ─── */}

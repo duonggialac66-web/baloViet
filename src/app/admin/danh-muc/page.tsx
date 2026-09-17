@@ -651,148 +651,150 @@ export default function AdminCategoriesPage() {
                   </div>
 
                   {/* INTERACTIVE DRAG & DROP CANVAS PREVIEW (1:1 GEOMETRY WITH HERO BANNER) */}
-                  <div
-                    ref={previewRef}
-                    onWheel={handleWheel}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    onPointerCancel={handlePointerUp}
-                    className="relative w-full h-[480px] bg-[#090A0B] rounded-2xl overflow-hidden border border-[#18191C] select-none shadow-xl cursor-crosshair"
-                  >
-                    {/* Background glow effects */}
-                    <div className="absolute top-1/4 right-1/4 w-[350px] h-[350px] bg-[#F5B800]/10 rounded-full blur-[100px] pointer-events-none" />
-                    
-                    {/* Visual Guidelines (Crosshair) */}
-                    {showGuidelines && (
-                      <div className="absolute inset-0 pointer-events-none z-10">
-                        {/* Center vertical dashed line */}
-                        <div className="absolute top-0 bottom-0 left-1/2 w-px border-r border-dashed border-[#F5B800]/25" />
-                        {/* Pedestal surface line */}
-                        <div className="absolute left-0 right-0 bottom-[95px] h-px border-b border-dashed border-[#F5B800]/25" />
-                      </div>
-                    )}
-
-                    {/* Live Preview Label Header */}
-                    <div className="absolute top-3 left-4 z-40 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#F5B800]/30 text-[11px] text-[#F5B800] font-bold tracking-wide flex items-center gap-1.5 pointer-events-none">
-                      <span className="w-2 h-2 rounded-full bg-[#F5B800] animate-ping" />
-                      XEM TRƯỚC HERO BANNER (LIVE CANVAS 1:1)
-                    </div>
-
-                    {/* Toggle Guidelines button */}
-                    <button
-                      type="button"
-                      onClick={() => setShowGuidelines(!showGuidelines)}
-                      className={`absolute top-3 right-4 z-40 text-[10px] font-bold px-2.5 py-1 rounded-full border transition-colors cursor-pointer ${
-                        showGuidelines ? "bg-[#F5B800] text-black border-[#F5B800]" : "bg-black/60 text-gray-300 border-gray-700"
-                      }`}
-                    >
-                      {showGuidelines ? "✓ Ẩn trục căn chỉnh" : "Hiện trục căn chỉnh"}
-                    </button>
-
-                    {/* ─── THE FIXED RING (Pedestal) — 1:1 geometry match ─── */}
+                  <div className="flex justify-center w-full">
                     <div
-                      className="absolute pointer-events-none select-none"
-                      style={{
-                        left: "50%",
-                        bottom: "45px",
-                        width: "min(380px, 75%)",
-                        height: "110px",
-                        transform: "translateX(-50%)",
-                      }}
+                      ref={previewRef}
+                      onWheel={handleWheel}
+                      onPointerMove={handlePointerMove}
+                      onPointerUp={handlePointerUp}
+                      onPointerCancel={handlePointerUp}
+                      className="relative w-full max-w-[400px] aspect-[4/5] bg-[#090A0B] rounded-2xl overflow-hidden border border-[#18191C] select-none shadow-xl cursor-crosshair"
                     >
-                      <div className="absolute inset-0 bg-[#F5B800]/20 blur-[45px] rounded-[50%]" />
-                      <div className="absolute top-3 w-[98%] left-[1%] h-[90%] rounded-[50%] bg-[#0A0B0D] border-b-[8px] border-b-[#8B6A00]" />
-                      <div className="relative w-full h-full rounded-[50%] bg-[#0E0F11] border-[3px] border-[#F5B800] shadow-[0_0_40px_rgba(245,184,0,0.45)] flex items-center justify-center">
-                        <div className="w-[88%] h-[80%] rounded-[50%] bg-[#141517] border border-[#2A2B30]" />
-                      </div>
-                    </div>
+                      {/* Background glow effects */}
+                      <div className="absolute top-1/4 right-1/4 w-[80%] h-[80%] bg-[#F5B800]/10 rounded-full blur-[100px] pointer-events-none" />
+                      
+                      {/* Visual Guidelines (Crosshair) */}
+                      {showGuidelines && (
+                        <div className="absolute inset-0 pointer-events-none z-10">
+                          {/* Center vertical dashed line */}
+                          <div className="absolute top-0 bottom-0 left-1/2 w-px border-r border-dashed border-[#F5B800]/25" />
+                          {/* Pedestal surface line */}
+                          <div className="absolute left-0 right-0 bottom-[10%] h-px border-b border-dashed border-[#F5B800]/25" />
+                        </div>
+                      )}
 
-                    {/* ─── DRAGGABLE PRODUCT IMAGE — 1:1 base container (300px x 360px) ─── */}
-                    <div
-                      onPointerDown={(e) => handlePointerDown(e, "image")}
-                      className={`absolute z-20 cursor-grab active:cursor-grabbing group ${
-                        draggingTarget === "image" ? "ring-2 ring-amber-500 ring-offset-2 ring-offset-black rounded-lg" : ""
-                      }`}
-                      style={{
-                        left: `calc(50% + ${form.displaySettings.imageX}%)`,
-                        top: `calc(45% + ${form.displaySettings.imageY}%)`,
-                        transform: "translate(-50%, -50%)",
-                        width: "300px",
-                        height: "360px",
-                      }}
-                      title="Bấm và Kéo chuột để đặt Balo vừa vặn đĩa 3D!"
-                    >
+                      {/* Live Preview Label Header */}
+                      <div className="absolute top-3 left-4 z-40 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-[#F5B800]/30 text-[9px] text-[#F5B800] font-bold tracking-wide flex items-center gap-1.5 pointer-events-none">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#F5B800] animate-ping" />
+                        LIVE CANVAS (1:1)
+                      </div>
+
+                      {/* Toggle Guidelines button */}
+                      <button
+                        type="button"
+                        onClick={() => setShowGuidelines(!showGuidelines)}
+                        className={`absolute top-3 right-4 z-40 text-[9px] font-bold px-2 py-1 rounded-full border transition-colors cursor-pointer ${
+                          showGuidelines ? "bg-[#F5B800] text-black border-[#F5B800]" : "bg-black/60 text-gray-300 border-gray-700"
+                        }`}
+                      >
+                        {showGuidelines ? "✓ Ẩn trục" : "Hiện trục"}
+                      </button>
+
+                      {/* ─── THE FIXED RING (Pedestal) — 1:1 geometry match ─── */}
                       <div
-                        className="w-full h-full flex items-center justify-center pointer-events-none"
+                        className="absolute pointer-events-none select-none"
                         style={{
-                          transform: `scale(${form.displaySettings.imageScale / 100})`,
+                          left: "50%",
+                          bottom: "10%",
+                          width: "85%",
+                          height: "22%",
+                          transform: "translateX(-50%)",
                         }}
                       >
-                        <img
-                          src={previewImageSrc}
-                          alt="Preview Balo"
-                          className="w-full h-full object-contain filter drop-shadow-[0_25px_45px_rgba(0,0,0,0.9)]"
-                        />
+                        <div className="absolute inset-0 bg-[#F5B800]/20 blur-[30px] rounded-[50%]" />
+                        <div className="absolute top-[10%] w-[98%] left-[1%] h-[90%] rounded-[50%] bg-[#0A0B0D] border-b-[6px] border-b-[#8B6A00]" />
+                        <div className="relative w-full h-full rounded-[50%] bg-[#0E0F11] border-[2px] border-[#F5B800] shadow-[0_0_30px_rgba(245,184,0,0.45)] flex items-center justify-center">
+                          <div className="w-[88%] h-[80%] rounded-[50%] bg-[#141517] border border-[#2A2B30]" />
+                        </div>
                       </div>
 
-                      {/* Drag overlay indicator */}
-                      <div className="absolute inset-0 border-2 border-dashed border-[#F5B800]/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                        <span className="bg-black/80 text-[#F5B800] text-[10px] font-bold px-2 py-1 rounded shadow">
-                          <Move className="w-3 h-3 inline mr-1" />
-                          Kéo Balo
-                        </span>
+                      {/* ─── DRAGGABLE PRODUCT IMAGE — 1:1 base container ─── */}
+                      <div
+                        onPointerDown={(e) => handlePointerDown(e, "image")}
+                        className={`absolute z-20 cursor-grab active:cursor-grabbing group ${
+                          draggingTarget === "image" ? "ring-2 ring-amber-500 ring-offset-2 ring-offset-black rounded-lg" : ""
+                        }`}
+                        style={{
+                          left: `calc(50% + ${form.displaySettings.imageX}%)`,
+                          top: `calc(45% + ${form.displaySettings.imageY}%)`,
+                          transform: "translate(-50%, -50%)",
+                          width: "75%",
+                          height: "75%",
+                        }}
+                        title="Bấm và Kéo chuột để đặt Balo vừa vặn đĩa 3D!"
+                      >
+                        <div
+                          className="w-full h-full flex items-center justify-center pointer-events-none"
+                          style={{
+                            transform: `scale(${form.displaySettings.imageScale / 100})`,
+                          }}
+                        >
+                          <img
+                            src={previewImageSrc}
+                            alt="Preview Balo"
+                            className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)]"
+                          />
+                        </div>
+
+                        {/* Drag overlay indicator */}
+                        <div className="absolute inset-0 border-2 border-dashed border-[#F5B800]/50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                          <span className="bg-black/80 text-[#F5B800] text-[10px] font-bold px-2 py-1 rounded shadow">
+                            <Move className="w-3 h-3 inline mr-1" />
+                            Kéo Balo
+                          </span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* ─── DRAGGABLE ANNOTATION DOTS & LINES ─── */}
-                    <div className="absolute inset-0 z-30 pointer-events-none">
-                      {(form.displaySettings.annotations || []).map((ann, i) => {
-                        const isSelected = selectedAnnIndex === i;
-                        return (
-                          <div key={i} className="absolute inset-0 pointer-events-auto">
-                            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                              <line
-                                x1={ann.dotX}
-                                y1={ann.dotY}
-                                x2={ann.labelX}
-                                y2={ann.labelY}
-                                stroke={isSelected ? "#F5B800" : "#D1D5DB"}
-                                strokeWidth={isSelected ? "0.6" : "0.3"}
-                                strokeDasharray={isSelected ? "none" : "1 0.6"}
-                              />
-                            </svg>
+                      {/* ─── DRAGGABLE ANNOTATION DOTS & LINES ─── */}
+                      <div className="absolute inset-0 z-30 pointer-events-none">
+                        {(form.displaySettings.annotations || []).map((ann, i) => {
+                          const isSelected = selectedAnnIndex === i;
+                          return (
+                            <div key={i} className="absolute inset-0 pointer-events-auto">
+                              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                <line
+                                  x1={ann.dotX}
+                                  y1={ann.dotY}
+                                  x2={ann.labelX}
+                                  y2={ann.labelY}
+                                  stroke={isSelected ? "#F5B800" : "#D1D5DB"}
+                                  strokeWidth={isSelected ? "0.6" : "0.3"}
+                                  strokeDasharray={isSelected ? "none" : "1 0.6"}
+                                />
+                              </svg>
 
-                            {/* Draggable Dot */}
-                            <div
-                              onPointerDown={(e) => handlePointerDown(e, i)}
-                              className={`absolute w-5 h-5 -ml-2.5 -mt-2.5 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing transition-transform hover:scale-125 z-40 ${
-                                isSelected ? "bg-[#F5B800] ring-4 ring-[#F5B800]/40 scale-110" : "bg-[#F5B800]/80 hover:bg-[#F5B800]"
-                              }`}
-                              style={{ left: `${ann.dotX}%`, top: `${ann.dotY}%` }}
-                              title={`Chấm chỉ dẫn ${i + 1}: Kéo đến vị trí mong muốn trên balo!`}
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-black font-bold" />
+                              {/* Draggable Dot */}
+                              <div
+                                onPointerDown={(e) => handlePointerDown(e, i)}
+                                className={`absolute w-4 h-4 -ml-2 -mt-2 rounded-full flex items-center justify-center cursor-grab active:cursor-grabbing transition-transform hover:scale-125 z-40 ${
+                                  isSelected ? "bg-[#F5B800] ring-4 ring-[#F5B800]/40 scale-110" : "bg-[#F5B800]/80 hover:bg-[#F5B800]"
+                                }`}
+                                style={{ left: `${ann.dotX}%`, top: `${ann.dotY}%` }}
+                                title={`Chấm chỉ dẫn ${i + 1}: Kéo đến vị trí mong muốn trên balo!`}
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-black font-bold" />
+                              </div>
+
+                              {/* Label Box */}
+                              <div
+                                onClick={() => setSelectedAnnIndex(i)}
+                                className={`absolute text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded cursor-pointer whitespace-nowrap font-medium transition-all ${
+                                  isSelected
+                                    ? "bg-[#F5B800] text-black font-bold shadow-lg scale-105"
+                                    : "bg-black/70 text-gray-200 hover:text-white hover:bg-black border border-white/20"
+                                }`}
+                                style={{
+                                  left: `${ann.labelX}%`,
+                                  top: `${ann.labelY}%`,
+                                  transform: ann.side === "right" ? "translate(4px, -50%)" : "translate(-100%, -50%) translateX(-4px)",
+                                }}
+                              >
+                                {ann.label}
+                              </div>
                             </div>
-
-                            {/* Label Box */}
-                            <div
-                              onClick={() => setSelectedAnnIndex(i)}
-                              className={`absolute text-[11px] px-2 py-0.5 rounded cursor-pointer whitespace-nowrap font-medium transition-all ${
-                                isSelected
-                                  ? "bg-[#F5B800] text-black font-bold shadow-lg scale-105"
-                                  : "bg-black/70 text-gray-200 hover:text-white hover:bg-black border border-white/20"
-                              }`}
-                              style={{
-                                left: `${ann.labelX}%`,
-                                top: `${ann.labelY}%`,
-                                transform: ann.side === "right" ? "translate(4px, -50%)" : "translate(-100%, -50%) translateX(-4px)",
-                              }}
-                            >
-                              {ann.label}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
