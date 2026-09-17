@@ -23,24 +23,73 @@ export default function ProductsPageClient({
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState<string>("");
+  
+  const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1); // Assume 1 initially, or pass it from server if needed. For now, we'll fetch to get the real count.
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
   const [favorites, setFavorites] = useState<Record<string, boolean>>({
     [products[1]?.id || ""]: true,
   });
-  const [visibleCount, setVisibleCount] = useState<number>(5);
 
   const { addItem } = useCart();
   const { addToast } = useToast();
 
+  // Debounce search query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Initial params
   useEffect(() => {
     const cat = searchParams?.get("category") || searchParams?.get("cat") || searchParams?.get("c");
     const q = searchParams?.get("q");
-    if (cat) {
-      setActiveCategory(cat);
-    }
-    if (q) {
-      setSearchQuery(q);
-    }
+    if (cat) setActiveCategory(cat);
+    if (q) setSearchQuery(q);
+    setIsInitialized(true);
   }, [searchParams]);
+
+  // Fetch logic
+  const fetchProducts = async (currentPage: number, isReset: boolean) => {
+    setIsLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (activeCategory !== "all") params.set("category", activeCategory);
+      if (debouncedSearchQuery.trim()) params.set("q", debouncedSearchQuery.trim());
+      params.set("page", currentPage.toString());
+      params.set("limit", "8");
+
+      const res = await fetch(`/api/products?${params.toString()}`);
+      const data = await res.json();
+      
+      if (data.products) {
+        setDisplayedProducts(prev => isReset ? data.products : [...prev, ...data.products]);
+        setTotalPages(data.totalPages || 1);
+      }
+    } catch (err) {
+      console.error("Lỗi tải sản phẩm:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Trigger fetch when category or search changes (after initial load)
+  useEffect(() => {
+    if (!isInitialized) return;
+    
+    // If it's the exact initial state (no search, no category filter) and page 1, 
+    // we can just keep the SSR products. But to ensure totalPages is correct, 
+    // it's safer to fetch or let the user click Load More. 
+    // We'll fetch to get totalPages if filters change.
+    setPage(1);
+    fetchProducts(1, true);
+  }, [activeCategory, debouncedSearchQuery, isInitialized]);
 
   const toggleFavorite = (productId: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,34 +112,17 @@ export default function ProductsPageClient({
     return products.find((p) => p.isBestSeller) || products[0];
   }, [products]);
 
-  const filteredProducts = useMemo(() => {
-    let list = [...products];
-
-    if (activeCategory !== "all") {
-      list = list.filter((p) => p.categorySlug === activeCategory);
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.tags?.some((t) => t.toLowerCase().includes(q))
-      );
-    }
-
-    return list;
-  }, [products, activeCategory, searchQuery]);
-
   const handleCategoryChange = (cat: string) => {
     setActiveCategory(cat);
-    setVisibleCount(5);
   };
 
-  const displayedProducts = useMemo(() => {
-    return filteredProducts.slice(0, visibleCount);
-  }, [filteredProducts, visibleCount]);
+  const handleLoadMore = () => {
+    if (page < totalPages && !isLoading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchProducts(nextPage, false);
+    }
+  };
 
   return (
     <div className="bg-[#090A0B] min-h-screen text-white">
@@ -124,19 +156,13 @@ export default function ProductsPageClient({
                 type="text"
                 placeholder="Tìm kiếm sản phẩm..."
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setVisibleCount(5);
-                }}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[#121316] border border-[#222428] rounded-full px-4 py-2 text-xs sm:text-sm text-black placeholder-gray-500 focus:outline-none focus:border-[#F5B800] transition-colors text-center font-sans"
               />
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setVisibleCount(5);
-                  }}
+                  onClick={() => setSearchQuery("")}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs"
                 >
                   ✕
@@ -147,7 +173,7 @@ export default function ProductsPageClient({
         </div>
 
         {/* Product Grid — 2 items per row on mobile (grid-cols-2), 3 on tablet, 4 on desktop */}
-        {filteredProducts.length > 0 ? (
+        {displayedProducts.length > 0 ? (
           <div className="space-y-10">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
               {displayedProducts.map((product, idx) => {
@@ -236,18 +262,28 @@ export default function ProductsPageClient({
               })}
             </div>
 
-            {/* Load More Button (+5 items per click) */}
-            {visibleCount < filteredProducts.length && (
+            {/* Load More Button (+8 items per click) */}
+            {page < totalPages && (
               <div className="text-center pt-4">
                 <button
                   type="button"
-                  onClick={() => setVisibleCount((prev) => prev + 5)}
-                  className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-[#F5B800] hover:bg-[#E5AB00] text-[#0B0D0E] font-sans font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(245,184,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer"
+                  onClick={handleLoadMore}
+                  disabled={isLoading}
+                  className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-[#F5B800] hover:bg-[#E5AB00] text-[#0B0D0E] font-sans font-bold text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(245,184,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>Xem thêm ({filteredProducts.length - visibleCount} sản phẩm còn lại)</span>
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                  </svg>
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      Đang tải...
+                    </>
+                  ) : (
+                    <>
+                      <span>Xem thêm sản phẩm</span>
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                      </svg>
+                    </>
+                  )}
                 </button>
               </div>
             )}
@@ -262,7 +298,6 @@ export default function ProductsPageClient({
               onClick={() => {
                 setActiveCategory("all");
                 setSearchQuery("");
-                setVisibleCount(5);
               }}
               className="mt-4 px-6 py-2.5 rounded-full bg-[#F5B800] text-[#0B0D0E] text-xs font-sans tracking-wider uppercase font-bold"
             >

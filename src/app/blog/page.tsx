@@ -17,23 +17,42 @@ export default function BlogListingPage() {
   const [posts, setPosts] = useState<BlogPost[]>(INITIAL_BLOG_POSTS);
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  // Debounce search query
   useEffect(() => {
-    fetchPosts();
-  }, [selectedCategory, searchQuery]);
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
-  const fetchPosts = async () => {
+  // Reset page and posts when category or search changes
+  useEffect(() => {
+    setPage(1);
+    setPosts([]); // Clear immediately for better UX
+    fetchPosts(1, true);
+  }, [selectedCategory, debouncedSearchQuery]);
+
+  // Fetch posts handler
+  const fetchPosts = async (currentPage: number, isReset = false) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       if (selectedCategory !== "Tất cả") params.set("category", selectedCategory);
-      if (searchQuery.trim()) params.set("q", searchQuery.trim());
+      if (debouncedSearchQuery.trim()) params.set("q", debouncedSearchQuery.trim());
+      params.set("page", currentPage.toString());
+      params.set("limit", "6");
 
       const res = await fetch(`/api/blog?${params.toString()}`);
       const data = await res.json();
+      
       if (data.posts) {
-        setPosts(data.posts);
+        setPosts((prev) => isReset ? data.posts : [...prev, ...data.posts]);
+        setTotalPages(data.totalPages || 1);
       }
     } catch (err) {
       console.error("Lỗi tải bài viết blog:", err);
@@ -42,6 +61,15 @@ export default function BlogListingPage() {
     }
   };
 
+  const handleLoadMore = () => {
+    if (page < totalPages && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchPosts(nextPage);
+    }
+  };
+
+  // If we just reset, maybe no featured post should be forced? We use the first one if `posts` isn't empty.
   const featuredPost = posts.find((p) => p.isFeatured) || posts[0];
   const regularPosts = posts.filter((p) => p.id !== featuredPost?.id);
 
@@ -165,60 +193,82 @@ export default function BlogListingPage() {
               <p className="text-[#9CA3AF] text-sm">Không tìm thấy bài viết nào phù hợp.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {regularPosts.map((post) => (
-                <Link
-                  key={post.id}
-                  href={`/blog/${post.slug}`}
-                  className="group flex flex-col justify-between bg-[#121417] border border-[#22242B] hover:border-[#F5B800]/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(245,184,0,0.15)] hover:-translate-y-1"
-                >
-                  <div>
-                    {/* Cover Photo */}
-                    <div className="aspect-[16/10] relative overflow-hidden">
-                      <img
-                        src={post.coverImage}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-[#0B0D0E]/85 backdrop-blur-md border border-[#F5B800]/40 text-[#F5B800] text-[10px] font-mono font-bold uppercase tracking-wider">
-                        {post.category}
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {regularPosts.map((post) => (
+                  <Link
+                    key={post.id}
+                    href={`/blog/${post.slug}`}
+                    className="group flex flex-col justify-between bg-[#121417] border border-[#22242B] hover:border-[#F5B800]/50 rounded-2xl overflow-hidden transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(245,184,0,0.15)] hover:-translate-y-1"
+                  >
+                    <div>
+                      {/* Cover Photo */}
+                      <div className="aspect-[16/10] relative overflow-hidden">
+                        <img
+                          src={post.coverImage}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-[#0B0D0E]/85 backdrop-blur-md border border-[#F5B800]/40 text-[#F5B800] text-[10px] font-mono font-bold uppercase tracking-wider">
+                          {post.category}
+                        </div>
+                      </div>
+
+                      {/* Content Brief */}
+                      <div className="p-6 space-y-3">
+                        <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] font-mono">
+                          <Clock className="w-3.5 h-3.5 text-[#F5B800]" />
+                          <span>{post.publishedAt}</span>
+                          <span>•</span>
+                          <span>{post.readingTime}</span>
+                        </div>
+
+                        <h3 className="font-display font-bold text-lg text-white group-hover:text-[#F5B800] transition-colors leading-snug line-clamp-2">
+                          {post.title}
+                        </h3>
+
+                        <p className="text-[#9CA3AF] text-xs leading-relaxed font-sans line-clamp-3">
+                          {post.excerpt}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Content Brief */}
-                    <div className="p-6 space-y-3">
-                      <div className="flex items-center gap-2 text-[11px] text-[#9CA3AF] font-mono">
-                        <Clock className="w-3.5 h-3.5 text-[#F5B800]" />
-                        <span>{post.publishedAt}</span>
-                        <span>•</span>
-                        <span>{post.readingTime}</span>
+                    {/* Card Footer */}
+                    <div className="px-6 py-4 border-t border-[#1E2026] flex items-center justify-between bg-[#0E1013]/60">
+                      <div className="flex items-center gap-2">
+                        <img
+                          src={post.author.avatar}
+                          alt={post.author.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                        <span className="text-xs text-[#D1D5DB] font-sans font-medium">{post.author.name}</span>
                       </div>
-
-                      <h3 className="font-display font-bold text-lg text-white group-hover:text-[#F5B800] transition-colors leading-snug line-clamp-2">
-                        {post.title}
-                      </h3>
-
-                      <p className="text-[#9CA3AF] text-xs leading-relaxed font-sans line-clamp-3">
-                        {post.excerpt}
-                      </p>
+                      <ArrowRight className="w-4 h-4 text-[#F5B800] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                     </div>
-                  </div>
+                  </Link>
+                ))}
+              </div>
 
-                  {/* Card Footer */}
-                  <div className="px-6 py-4 border-t border-[#1E2026] flex items-center justify-between bg-[#0E1013]/60">
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={post.author.avatar}
-                        alt={post.author.name}
-                        className="w-6 h-6 rounded-full object-cover"
-                      />
-                      <span className="text-xs text-[#D1D5DB] font-sans font-medium">{post.author.name}</span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#F5B800] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+              {/* Load More Button */}
+              {page < totalPages && (
+                <div className="flex justify-center pt-8">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className="px-8 py-3 rounded-full bg-transparent border-2 border-[#F5B800] text-[#F5B800] font-bold text-sm uppercase tracking-wider hover:bg-[#F5B800] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        Đang tải...
+                      </>
+                    ) : (
+                      "Tải thêm bài viết"
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 

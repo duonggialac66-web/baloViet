@@ -10,8 +10,7 @@ import ProductsPageClient from "@/components/product/ProductsPageClient";
 import type { Product } from "@/data/products";
 import type { PromotionItem } from "@/components/product/HotDealsCarousel";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Tất cả sản phẩm – Balo Việt",
@@ -30,7 +29,8 @@ export default async function SanPhamPage() {
       db
         .select()
         .from(productsSchema)
-        .orderBy(desc(productsSchema.createdAt)),
+        .orderBy(desc(productsSchema.createdAt))
+        .limit(8),
       db
         .select()
         .from(categoriesSchema),
