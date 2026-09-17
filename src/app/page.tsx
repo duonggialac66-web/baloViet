@@ -12,8 +12,7 @@ import CategoryStyleSlider, { type CategoryItem } from "@/components/home/Catego
 import BrandGuaranteeSection, { type BrandGuaranteeConfig } from "@/components/home/BrandGuaranteeSection";
 import type { Product } from "@/data/products";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function Home() {
   let dbProducts: any[] = [];
@@ -23,7 +22,7 @@ export default async function Home() {
 
   try {
     const [prods, promos, cats, uis] = await Promise.all([
-      db.select().from(productsSchema).orderBy(desc(productsSchema.createdAt)),
+      db.select().from(productsSchema).orderBy(desc(productsSchema.createdAt)).limit(8),
       db.select().from(promotionsSchema).where(eq(promotionsSchema.isActive, true)).orderBy(asc(promotionsSchema.sortOrder)),
       db.select().from(categoriesSchema),
       db.select().from(uiConfigsSchema),

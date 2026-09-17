@@ -8,6 +8,9 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category");
     const q = searchParams.get("q")?.toLowerCase();
 
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "6", 10);
+
     let posts = await getStoredBlogPosts();
 
     if (category && category !== "Tất cả" && category !== "all") {
@@ -23,7 +26,19 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ posts });
+    const totalPosts = posts.length;
+    const totalPages = Math.ceil(totalPosts / limit);
+    
+    // Pagination slicing
+    const startIndex = (page - 1) * limit;
+    const paginatedPosts = posts.slice(startIndex, startIndex + limit);
+
+    return NextResponse.json({ 
+      posts: paginatedPosts, 
+      totalPages, 
+      currentPage: page,
+      totalPosts
+    });
   } catch (error) {
     console.error("Fetch blog posts error:", error);
     return NextResponse.json({ posts: INITIAL_BLOG_POSTS });
