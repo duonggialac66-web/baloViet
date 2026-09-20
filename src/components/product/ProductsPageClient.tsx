@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { Product } from "@/data/products";
@@ -13,12 +13,14 @@ interface ProductsPageClientProps {
   products: Product[];
   categories: CategoryData[];
   promotions?: PromotionItem[];
+  initialTotalPages?: number;
 }
 
 export default function ProductsPageClient({
   products,
   categories,
   promotions = [],
+  initialTotalPages = 1,
 }: ProductsPageClientProps) {
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -27,9 +29,12 @@ export default function ProductsPageClient({
   
   const [displayedProducts, setDisplayedProducts] = useState<Product[]>(products);
   const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1); // Assume 1 initially, or pass it from server if needed. For now, we'll fetch to get the real count.
+  const [totalPages, setTotalPages] = useState<number>(initialTotalPages);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+  // Track whether user has actually changed filters from the initial SSR state
+  const hasUserChangedFilters = useRef(false);
 
   const [favorites, setFavorites] = useState<Record<string, boolean>>({
     [products[1]?.id || ""]: true,
@@ -50,8 +55,14 @@ export default function ProductsPageClient({
   useEffect(() => {
     const cat = searchParams?.get("category") || searchParams?.get("cat") || searchParams?.get("c");
     const q = searchParams?.get("q");
-    if (cat) setActiveCategory(cat);
-    if (q) setSearchQuery(q);
+    if (cat) {
+      setActiveCategory(cat);
+      hasUserChangedFilters.current = true;
+    }
+    if (q) {
+      setSearchQuery(q);
+      hasUserChangedFilters.current = true;
+    }
     setIsInitialized(true);
   }, [searchParams]);
 
@@ -79,14 +90,17 @@ export default function ProductsPageClient({
     }
   };
 
-  // Trigger fetch when category or search changes (after initial load)
+  // Trigger fetch only when category or search actually changes (not on initial mount)
   useEffect(() => {
     if (!isInitialized) return;
-    
-    // If it's the exact initial state (no search, no category filter) and page 1, 
-    // we can just keep the SSR products. But to ensure totalPages is correct, 
-    // it's safer to fetch or let the user click Load More. 
-    // We'll fetch to get totalPages if filters change.
+
+    // Skip the initial fetch if no filters were applied from URL params
+    // (SSR data is already correct for the default "all" + no search state)
+    if (!hasUserChangedFilters.current) {
+      hasUserChangedFilters.current = true;
+      return;
+    }
+
     setPage(1);
     fetchProducts(1, true);
   }, [activeCategory, debouncedSearchQuery, isInitialized]);

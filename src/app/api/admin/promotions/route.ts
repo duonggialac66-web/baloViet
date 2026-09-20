@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { promotions } from "@/lib/schema";
 import { nanoid } from "nanoid";
 import { eq, asc, desc } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   try {
@@ -92,6 +93,9 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Create promotion error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("promotions");
+    revalidateTag("homepage");
   }
 }
 
@@ -160,6 +164,9 @@ export async function PUT(req: NextRequest) {
   } catch (error) {
     console.error("Update promotion error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("promotions");
+    revalidateTag("homepage");
   }
 }
 
@@ -187,6 +194,9 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Patch promotion error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("promotions");
+    revalidateTag("homepage");
   }
 }
 
@@ -210,5 +220,8 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     console.error("Delete promotion error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("promotions");
+    revalidateTag("homepage");
   }
 }

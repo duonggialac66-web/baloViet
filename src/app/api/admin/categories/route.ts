@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { categories } from "@/lib/schema";
@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
 
     revalidatePath("/san-pham");
     revalidatePath("/admin/danh-muc");
+    revalidateTag("categories");
+    revalidateTag("homepage");
     return NextResponse.json({ success: true, id });
   } catch (error) {
     console.error("Create category error:", error);
@@ -80,6 +82,8 @@ export async function PUT(req: NextRequest) {
 
     revalidatePath("/san-pham");
     revalidatePath("/admin/danh-muc");
+    revalidateTag("categories");
+    revalidateTag("homepage");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Update category error:", error);
@@ -105,6 +109,8 @@ export async function DELETE(req: NextRequest) {
 
     revalidatePath("/san-pham");
     revalidatePath("/admin/danh-muc");
+    revalidateTag("categories");
+    revalidateTag("homepage");
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Delete category error:", error);

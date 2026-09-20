@@ -3,6 +3,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { categories as categoriesSchema, products as productsSchema } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
+import { productListColumns, formatProductForCard } from "@/lib/queries";
 import ProductCard from "@/components/ProductCard";
 import type { Product } from "@/data/products";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -47,54 +48,21 @@ export default async function DanhMucPage({ params }: Props) {
   try {
     const [catRes, prodRes] = await Promise.all([
       db.select().from(categoriesSchema).where(eq(categoriesSchema.slug, slug)).limit(1),
-      db.select().from(productsSchema).where(eq(productsSchema.categorySlug, slug)).orderBy(desc(productsSchema.createdAt)),
+      db.select(productListColumns).from(productsSchema).where(eq(productsSchema.categorySlug, slug)).orderBy(desc(productsSchema.createdAt)).limit(24),
     ]);
     category = catRes[0] || null;
     dbProducts = prodRes;
 
     // If no products in category, fetch recent products as fallback
     if (dbProducts.length === 0) {
-      dbProducts = await db.select().from(productsSchema).orderBy(desc(productsSchema.createdAt)).limit(8);
+      dbProducts = await db.select(productListColumns).from(productsSchema).orderBy(desc(productsSchema.createdAt)).limit(8);
     }
   } catch (err) {
     console.warn("Error fetching category data:", err);
   }
 
-  const formattedProducts: Product[] = dbProducts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    sku: p.sku,
-    price: p.price,
-    salePrice: p.salePrice ?? undefined,
-    category: category?.name || (p.categorySlug === "balo-laptop" ? "Balo Laptop" :
-              p.categorySlug === "balo-du-lich" ? "Balo Du Lịch" :
-              p.categorySlug === "balo-hoc-sinh" ? "Balo Học Sinh" :
-              p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
-              p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp"),
-    categorySlug: p.categorySlug,
-    stock: p.stock ?? 0,
-    rating: p.rating ?? 4.9,
-    reviews: p.reviews ?? 0,
-    shortDescription: p.shortDescription || "",
-    description: p.description || "",
-    specifications: (p.specifications as Record<string, string>) || {},
-    tags: p.tags || [],
-    images: (p.imageIds && p.imageIds.length > 0)
-      ? p.imageIds.map((url: string, index: number) => ({
-          url,
-          alt: p.imageAlts?.[index] || p.name,
-          thumbnail: url,
-        }))
-      : [{
-          url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
-          alt: p.name,
-          thumbnail: "",
-        }],
-    colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
-    isBestSeller: p.isBestSeller ?? false,
-    isNew: p.isNew ?? false,
-  }));
+  // Format products using shared helper
+  const formattedProducts: Product[] = dbProducts.map(formatProductForCard);
 
   const categoryTitle = category?.name || slug.replace(/-/g, " ").toUpperCase();
 
