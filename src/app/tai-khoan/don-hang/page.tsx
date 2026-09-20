@@ -2,6 +2,17 @@ import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { orders } from "@/lib/schema";
 import { eq, desc, and } from "drizzle-orm";
+
+// Only select columns needed for the orders list table
+const orderListColumns = {
+  id: orders.id,
+  orderNumber: orders.orderNumber,
+  userId: orders.userId,
+  total: orders.total,
+  status: orders.status,
+  paymentStatus: orders.paymentStatus,
+  createdAt: orders.createdAt,
+};
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -26,11 +37,9 @@ export default async function DonHangPage({ searchParams }: PageProps) {
   let userOrders: any[] = [];
 
   try {
-    let query = db.select().from(orders).where(eq(orders.userId, user.id));
-
     if (statusFilter && statusFilter !== "all") {
       userOrders = await db
-        .select()
+        .select(orderListColumns)
         .from(orders)
         .where(
           and(
@@ -38,13 +47,15 @@ export default async function DonHangPage({ searchParams }: PageProps) {
             eq(orders.status, statusFilter)
           )
         )
-        .orderBy(desc(orders.createdAt));
+        .orderBy(desc(orders.createdAt))
+        .limit(50);
     } else {
       userOrders = await db
-        .select()
+        .select(orderListColumns)
         .from(orders)
         .where(eq(orders.userId, user.id))
-        .orderBy(desc(orders.createdAt));
+        .orderBy(desc(orders.createdAt))
+        .limit(50);
     }
   } catch (error) {
     console.error("Error loading customer orders:", error);

@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { products } from "@/lib/schema";
 import { desc } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { revalidateTag } from "next/cache";
 
 export async function GET(req: NextRequest) {
   try {
@@ -68,5 +69,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Create product error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("products");
+    revalidateTag("homepage");
   }
 }

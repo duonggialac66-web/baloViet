@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { products as productsSchema } from "@/lib/schema";
 import { eq, ne, and, desc } from "drizzle-orm";
+import { productListColumns, formatProductForCard, formatProductForDetail } from "@/lib/queries";
 import { buildCloudinaryUrl } from "@/lib/cloudinary";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 import type { Product } from "@/data/products";
@@ -20,7 +21,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let product;
   try {
     const list = await db
-      .select()
+      .select({
+        name: productsSchema.name,
+        slug: productsSchema.slug,
+        shortDescription: productsSchema.shortDescription,
+        description: productsSchema.description,
+        price: productsSchema.price,
+        salePrice: productsSchema.salePrice,
+        imageIds: productsSchema.imageIds,
+      })
       .from(productsSchema)
       .where(eq(productsSchema.slug, slug))
       .limit(1);
@@ -55,6 +64,7 @@ export default async function ProductDetailPage({ params }: Props) {
   let rawRelated: any[] = [];
 
   try {
+    // Main product: full SELECT (needs all columns for detail page)
     const productList = await db
       .select()
       .from(productsSchema)
@@ -64,9 +74,9 @@ export default async function ProductDetailPage({ params }: Props) {
     rawProduct = productList[0] || null;
 
     if (rawProduct) {
-      // Fetch related products in the same category
+      // Related products: only list columns (rendered as Cards)
       rawRelated = await db
-        .select()
+        .select(productListColumns)
         .from(productsSchema)
         .where(
           and(
@@ -104,45 +114,9 @@ export default async function ProductDetailPage({ params }: Props) {
     );
   }
 
-  // Helper to format product
-  const formatSingleProduct = (p: any): Product => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    sku: p.sku,
-    price: p.price,
-    salePrice: p.salePrice ?? undefined,
-    category: p.categorySlug === "balo-laptop" ? "Balo Laptop" :
-              p.categorySlug === "balo-du-lich" ? "Balo Du Lịch" :
-              p.categorySlug === "balo-hoc-sinh" ? "Balo Học Sinh" :
-              p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
-              p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp",
-    categorySlug: p.categorySlug,
-    stock: p.stock ?? 0,
-    rating: p.rating ?? 4.9,
-    reviews: p.reviews ?? 0,
-    shortDescription: p.shortDescription || "",
-    description: p.description || "",
-    specifications: (p.specifications as Record<string, string>) || {},
-    tags: p.tags || [],
-    images: (p.imageIds && p.imageIds.length > 0)
-      ? p.imageIds.map((url: string, index: number) => ({
-          url: url.startsWith("http") ? url : buildCloudinaryUrl(url, { width: 900 }),
-          alt: p.imageAlts?.[index] || p.name,
-          thumbnail: url,
-        }))
-      : [{
-          url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
-          alt: p.name,
-          thumbnail: "",
-        }],
-    colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
-    isBestSeller: p.isBestSeller ?? false,
-    isNew: p.isNew ?? false,
-  });
-
-  const formattedProduct = formatSingleProduct(rawProduct);
-  const formattedRelated = rawRelated.map(formatSingleProduct);
+  // Use shared helpers for formatting
+  const formattedProduct = formatProductForDetail(rawProduct);
+  const formattedRelated = rawRelated.map(formatProductForCard);
 
   // JSON-LD Product Schema
   const productSchema = {

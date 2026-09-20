@@ -5,7 +5,8 @@ import {
   categories as categoriesSchema,
   promotions as promotionsSchema
 } from "@/lib/schema";
-import { eq, desc, asc } from "drizzle-orm";
+import { eq, desc, asc, count } from "drizzle-orm";
+import { productListColumns, formatProductForCard } from "@/lib/queries";
 import ProductsPageClient from "@/components/product/ProductsPageClient";
 import type { Product } from "@/data/products";
 import type { PromotionItem } from "@/components/product/HotDealsCarousel";
@@ -19,18 +20,21 @@ export const metadata: Metadata = {
 
 import { Suspense } from "react";
 
+const PRODUCTS_PER_PAGE = 8;
+
 export default async function SanPhamPage() {
   let dbProducts: any[] = [];
   let dbCategories: any[] = [];
   let dbPromotions: any[] = [];
+  let totalPages = 1;
 
   try {
-    const [prods, cats, promos] = await Promise.all([
+    const [prods, cats, promos, totalQuery] = await Promise.all([
       db
-        .select()
+        .select(productListColumns)
         .from(productsSchema)
         .orderBy(desc(productsSchema.createdAt))
-        .limit(8),
+        .limit(PRODUCTS_PER_PAGE),
       db
         .select()
         .from(categoriesSchema),
@@ -39,49 +43,20 @@ export default async function SanPhamPage() {
         .from(promotionsSchema)
         .where(eq(promotionsSchema.isActive, true))
         .orderBy(asc(promotionsSchema.sortOrder)),
+      db
+        .select({ total: count() })
+        .from(productsSchema),
     ]);
     dbProducts = prods;
     dbCategories = cats;
     dbPromotions = promos;
+    totalPages = Math.ceil((totalQuery[0]?.total || 0) / PRODUCTS_PER_PAGE);
   } catch (err) {
     console.warn("Error fetching products, categories, or promotions:", err);
   }
 
-  const productsList: Product[] = dbProducts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    sku: p.sku,
-    price: p.price,
-    salePrice: p.salePrice ?? undefined,
-    category: p.categorySlug === "balo-laptop" ? "Balo Laptop" :
-              p.categorySlug === "balo-du-lich" ? "Balo Du Lịch" :
-              p.categorySlug === "balo-hoc-sinh" ? "Balo Học Sinh" :
-              p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
-              p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp",
-    categorySlug: p.categorySlug,
-    stock: p.stock ?? 0,
-    rating: p.rating ?? 4.8,
-    reviews: p.reviews ?? 0,
-    shortDescription: p.shortDescription || "",
-    description: p.description || "",
-    specifications: (p.specifications as Record<string, string>) || {},
-    tags: p.tags || [],
-    images: (p.imageIds && p.imageIds.length > 0)
-      ? p.imageIds.map((url: string, index: number) => ({
-          url,
-          alt: p.imageAlts?.[index] || p.name,
-          thumbnail: url,
-        }))
-      : [{
-          url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
-          alt: p.name,
-          thumbnail: "",
-        }],
-    colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
-    isBestSeller: p.isBestSeller ?? false,
-    isNew: p.isNew ?? false,
-  }));
+  // Format products using shared helper
+  const productsList: Product[] = dbProducts.map(formatProductForCard);
 
   const formattedCategories = dbCategories.map((c) => ({
     id: c.id,
@@ -114,8 +89,10 @@ export default async function SanPhamPage() {
           products={productsList}
           categories={formattedCategories}
           promotions={formattedPromotions}
+          initialTotalPages={totalPages}
         />
       </Suspense>
     </main>
   );
 }
+

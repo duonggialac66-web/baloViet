@@ -6,6 +6,8 @@ import {
   uiConfigs as uiConfigsSchema
 } from "@/lib/schema";
 import { eq, asc, desc } from "drizzle-orm";
+import { unstable_cache } from "next/cache";
+import { productListColumns, formatProductForCard } from "@/lib/queries";
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import CategoryStyleSlider, { type CategoryItem } from "@/components/home/CategoryStyleSlider";
@@ -14,6 +16,26 @@ import type { Product } from "@/data/products";
 
 export const revalidate = 60;
 
+/**
+ * Cache toàn bộ dữ liệu trang chủ vào bộ nhớ server.
+ * - Lần đầu: query DB (~50-100ms)
+ * - Các lần sau trong 60s: trả từ cache (~1-3ms)
+ * - Tự động refresh sau 60s hoặc khi gọi revalidateTag("homepage")
+ */
+const getHomepageData = unstable_cache(
+  async () => {
+    const [prods, promos, cats, uis] = await Promise.all([
+      db.select(productListColumns).from(productsSchema).orderBy(desc(productsSchema.createdAt)).limit(8),
+      db.select().from(promotionsSchema).where(eq(promotionsSchema.isActive, true)).orderBy(asc(promotionsSchema.sortOrder)),
+      db.select().from(categoriesSchema),
+      db.select().from(uiConfigsSchema),
+    ]);
+    return { products: prods, promotions: promos, categories: cats, uiConfigs: uis };
+  },
+  ["homepage-data"],
+  { revalidate: 60, tags: ["homepage", "products", "promotions", "categories"] }
+);
+
 export default async function Home() {
   let dbProducts: any[] = [];
   let activePromotions: any[] = [];
@@ -21,50 +43,17 @@ export default async function Home() {
   let dbUiConfigs: any[] = [];
 
   try {
-    const [prods, promos, cats, uis] = await Promise.all([
-      db.select().from(productsSchema).orderBy(desc(productsSchema.createdAt)).limit(8),
-      db.select().from(promotionsSchema).where(eq(promotionsSchema.isActive, true)).orderBy(asc(promotionsSchema.sortOrder)),
-      db.select().from(categoriesSchema),
-      db.select().from(uiConfigsSchema),
-    ]);
-    dbProducts = prods;
-    activePromotions = promos;
-    dbCategories = cats;
-    dbUiConfigs = uis;
+    const data = await getHomepageData();
+    dbProducts = data.products;
+    activePromotions = data.promotions;
+    dbCategories = data.categories;
+    dbUiConfigs = data.uiConfigs;
   } catch (err) {
     console.warn("Could not query data from database:", err);
   }
 
-  // Format products for frontend components
-  const formattedProducts: Product[] = dbProducts.map((p) => ({
-    id: p.id,
-    name: p.name,
-    slug: p.slug,
-    sku: p.sku,
-    price: p.price,
-    salePrice: p.salePrice ?? undefined,
-    category: p.categorySlug === "balo-laptop" ? "Balo Laptop" :
-              p.categorySlug === "balo-du-lich" ? "Balo Du Lịch" :
-              p.categorySlug === "balo-hoc-sinh" ? "Balo Học Sinh" :
-              p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
-              p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp",
-    categorySlug: p.categorySlug,
-    stock: p.stock,
-    rating: p.rating,
-    reviews: p.reviews,
-    shortDescription: p.shortDescription,
-    description: p.description,
-    specifications: (p.specifications as Record<string, string>) || {},
-    tags: p.tags || [],
-    images: (p.imageIds || []).map((url: string, index: number) => ({
-      url,
-      alt: p.imageAlts?.[index] || p.name,
-      thumbnail: url,
-    })),
-    colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
-    isBestSeller: p.isBestSeller ?? false,
-    isNew: p.isNew ?? false,
-  }));
+  // Format products for frontend components (using shared helper)
+  const formattedProducts: Product[] = dbProducts.map(formatProductForCard);
 
   // Format categories with UI configs for CategoryStyleSlider
   const sliderCategories: CategoryItem[] = dbCategories.map((c) => {
@@ -113,3 +102,4 @@ export default async function Home() {
     </main>
   );
 }
+

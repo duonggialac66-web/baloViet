@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { products } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -65,6 +66,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   } catch (error) {
     console.error("Update product error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("products");
+    revalidateTag("homepage");
   }
 }
 
@@ -83,5 +87,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   } catch (error) {
     console.error("Delete product error:", error);
     return NextResponse.json({ error: "Đã xảy ra lỗi hệ thống" }, { status: 500 });
+  } finally {
+    revalidateTag("products");
+    revalidateTag("homepage");
   }
 }

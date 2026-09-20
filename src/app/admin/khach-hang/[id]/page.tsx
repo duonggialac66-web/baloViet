@@ -22,9 +22,25 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
   if (customerResult.length === 0) notFound();
   const customer = customerResult[0];
 
-  const customerOrders = await db.select().from(orders).where(eq(orders.userId, id)).orderBy(desc(orders.createdAt));
+  // Fetch order count and total spent with SQL aggregates (avoid loading all rows)
+  const [[{ orderCount }], [{ totalSpent }]] = await Promise.all([
+    db.select({ orderCount: count() }).from(orders).where(eq(orders.userId, id)),
+    db.select({ totalSpent: sum(orders.total) }).from(orders).where(eq(orders.userId, id)),
+  ]);
 
-  const [{ totalSpent }] = await db.select({ totalSpent: sum(orders.total) }).from(orders).where(eq(orders.userId, id));
+  // Fetch recent orders with only needed columns + limit
+  const customerOrders = await db
+    .select({
+      id: orders.id,
+      orderNumber: orders.orderNumber,
+      total: orders.total,
+      status: orders.status,
+      createdAt: orders.createdAt,
+    })
+    .from(orders)
+    .where(eq(orders.userId, id))
+    .orderBy(desc(orders.createdAt))
+    .limit(20);
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -53,7 +69,7 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <p className="text-sm text-gray-500">Tổng đơn hàng</p>
-              <p className="text-2xl font-bold text-gray-900">{customerOrders.length}</p>
+              <p className="text-2xl font-bold text-gray-900">{orderCount}</p>
             </div>
             <div className="bg-white rounded-lg border border-gray-200 p-4">
               <p className="text-sm text-gray-500">Tổng chi tiêu</p>

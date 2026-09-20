@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { products as productsSchema } from "@/lib/schema";
-import { eq, desc, and, or, ilike } from "drizzle-orm";
-import type { Product } from "@/data/products";
+import { eq, desc, and, or, ilike, count } from "drizzle-orm";
+import { productListColumns, formatProductForCard } from "@/lib/queries";
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,60 +32,26 @@ export async function GET(req: NextRequest) {
 
     const finalCondition = conditions.length > 0 ? and(...conditions) : undefined;
 
-    // Fetch paginated products
-    const dbProducts = await db
-      .select()
-      .from(productsSchema)
-      .where(finalCondition)
-      .orderBy(desc(productsSchema.createdAt))
-      .limit(limit)
-      .offset(offset);
+    // Fetch paginated products (only list columns) + total count in parallel
+    const [dbProducts, totalQuery] = await Promise.all([
+      db
+        .select(productListColumns)
+        .from(productsSchema)
+        .where(finalCondition)
+        .orderBy(desc(productsSchema.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db
+        .select({ total: count() })
+        .from(productsSchema)
+        .where(finalCondition),
+    ]);
 
-    // Fetch total count for pagination
-    const totalQuery = await db
-      .select({ id: productsSchema.id })
-      .from(productsSchema)
-      .where(finalCondition);
-    
-    const totalProducts = totalQuery.length;
+    const totalProducts = totalQuery[0]?.total || 0;
     const totalPages = Math.ceil(totalProducts / limit);
 
-    // Format products for frontend
-    const formattedProducts: Product[] = dbProducts.map((p) => ({
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      sku: p.sku,
-      price: p.price,
-      salePrice: p.salePrice ?? undefined,
-      category: p.categorySlug === "balo-laptop" ? "Balo Laptop" :
-                p.categorySlug === "balo-du-lich" ? "Balo Du Lịch" :
-                p.categorySlug === "balo-hoc-sinh" ? "Balo Học Sinh" :
-                p.categorySlug === "balo-thoi-trang" ? "Balo Thời Trang" :
-                p.categorySlug === "balo-chong-nuoc" ? "Balo Chống Nước" : "Balo Cao Cấp",
-      categorySlug: p.categorySlug,
-      stock: p.stock ?? 0,
-      rating: p.rating ?? 4.8,
-      reviews: p.reviews ?? 0,
-      shortDescription: p.shortDescription || "",
-      description: p.description || "",
-      specifications: (p.specifications as Record<string, string>) || {},
-      tags: p.tags || [],
-      images: (p.imageIds && p.imageIds.length > 0)
-        ? p.imageIds.map((url: string, index: number) => ({
-            url,
-            alt: p.imageAlts?.[index] || p.name,
-            thumbnail: url,
-          }))
-        : [{
-            url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
-            alt: p.name,
-            thumbnail: "",
-          }],
-      colors: (p.colors as { name: string; hex: string }[]) || [{ name: "Đen", hex: "#000000" }],
-      isBestSeller: p.isBestSeller ?? false,
-      isNew: p.isNew ?? false,
-    }));
+    // Format products using shared helper
+    const formattedProducts = dbProducts.map(formatProductForCard);
 
     return NextResponse.json({ 
       products: formattedProducts,
@@ -99,3 +65,4 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ products: [], totalPages: 1, currentPage: 1, totalProducts: 0 });
   }
 }
+
